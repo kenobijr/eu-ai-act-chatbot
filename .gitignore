@@ -1,2 +1,12 @@
 requirements.md
-.venv
+.venv/
+.claudeignore
+.claude/
+Claude.md
+__pycache__/
+*.pyc
+.env
+.DS_Store
+*.log
+/cache/
+data/
