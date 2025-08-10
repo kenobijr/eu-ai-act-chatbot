@@ -1,6 +1,7 @@
 requirements.md
 .venv/
 .claudeignore
+.clauderules
 .claude/
 Claude.md
 __pycache__/
@@ -9,4 +10,11 @@ __pycache__/
 .DS_Store
 *.log
 /cache/
-data/
+data/chroma_db
+play.ipynb
+.env
+.env.local
+.env.*.local
+config/secrets.json
+*.key
+*.pem
