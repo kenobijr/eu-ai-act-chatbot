@@ -1,0 +1,342 @@
+{
+  "definition_01": {
+    "id": "definition_01",
+    "title": "AI system",
+    "text_content": "AI system means a machine-based system that is designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, and that, for explicit or implicit objectives, infers, from the input it receives, how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments"
+  },
+  "definition_02": {
+    "id": "definition_02",
+    "title": "risk",
+    "text_content": "risk means the combination of the probability of an occurrence of harm and the severity of that harm"
+  },
+  "definition_03": {
+    "id": "definition_03",
+    "title": "provider",
+    "text_content": "provider means a natural or legal person, public authority, agency or other body that develops an AI system or a general-purpose AI model or that has an AI system or a general-purpose AI model developed and places it on the market or puts the AI system into service under its own name or trademark, whether for payment or free of charge"
+  },
+  "definition_04": {
+    "id": "definition_04",
+    "title": "deployer",
+    "text_content": "deployer means a natural or legal person, public authority, agency or other body using an AI system under its authority except where the AI system is used in the course of a personal non-professional activity"
+  },
+  "definition_05": {
+    "id": "definition_05",
+    "title": "authorised representative",
+    "text_content": "authorised representative means a natural or legal person located or established in the Union who has received and accepted a written mandate from a provider of an AI system or a general-purpose AI model to, respectively, perform and carry out on its behalf the obligations and procedures established by this Regulation"
+  },
+  "definition_06": {
+    "id": "definition_06",
+    "title": "importer",
+    "text_content": "importer means a natural or legal person located or established in the Union that places on the market an AI system that bears the name or trademark of a natural or legal person established in a third country"
+  },
+  "definition_07": {
+    "id": "definition_07",
+    "title": "distributor",
+    "text_content": "distributor means a natural or legal person in the supply chain, other than the provider or the importer, that makes an AI system available on the Union market"
+  },
+  "definition_08": {
+    "id": "definition_08",
+    "title": "operator",
+    "text_content": "operator means a provider, product manufacturer, deployer, authorised representative, importer or distributor"
+  },
+  "definition_09": {
+    "id": "definition_09",
+    "title": "placing on the market",
+    "text_content": "placing on the market means the first making available of an AI system or a general-purpose AI model on the Union market"
+  },
+  "definition_10": {
+    "id": "definition_10",
+    "title": "making available on the market",
+    "text_content": "making available on the market means the supply of an AI system or a general-purpose AI model for distribution or use on the Union market in the course of a commercial activity, whether in return for payment or free of charge"
+  },
+  "definition_11": {
+    "id": "definition_11",
+    "title": "putting into service",
+    "text_content": "putting into service means the supply of an AI system for first use directly to the deployer or for own use in the Union for its intended purpose"
+  },
+  "definition_12": {
+    "id": "definition_12",
+    "title": "intended purpose",
+    "text_content": "intended purpose means the use for which an AI system is intended by the provider, including the specific context and conditions of use, as specified in the information supplied by the provider in the instructions for use, promotional or sales materials and statements, as well as in the technical documentation"
+  },
+  "definition_13": {
+    "id": "definition_13",
+    "title": "reasonably foreseeable misuse",
+    "text_content": "reasonably foreseeable misuse means the use of an AI system in a way that is not in accordance with its intended purpose, but which may result from reasonably foreseeable human behaviour or interaction with other systems, including other AI systems"
+  },
+  "definition_14": {
+    "id": "definition_14",
+    "title": "safety component",
+    "text_content": "safety component means a component of a product or of an AI system which fulfils a safety function for that product or AI system, or the failure or malfunctioning of which endangers the health and safety of persons or property"
+  },
+  "definition_15": {
+    "id": "definition_15",
+    "title": "instructions for use",
+    "text_content": "instructions for use means the information provided by the provider to inform the deployer of, in particular, an AI system’s intended purpose and proper use"
+  },
+  "definition_16": {
+    "id": "definition_16",
+    "title": "recall of an AI system",
+    "text_content": "recall of an AI system means any measure aiming to achieve the return to the provider or taking out of service or disabling the use of an AI system made available to deployers"
+  },
+  "definition_17": {
+    "id": "definition_17",
+    "title": "withdrawal of an AI system",
+    "text_content": "withdrawal of an AI system means any measure aiming to prevent an AI system in the supply chain being made available on the market"
+  },
+  "definition_18": {
+    "id": "definition_18",
+    "title": "performance of an AI system",
+    "text_content": "performance of an AI system means the ability of an AI system to achieve its intended purpose"
+  },
+  "definition_19": {
+    "id": "definition_19",
+    "title": "notifying authority",
+    "text_content": "notifying authority means the national authority responsible for setting up and carrying out the necessary procedures for the assessment, designation and notification of conformity assessment bodies and for their monitoring"
+  },
+  "definition_20": {
+    "id": "definition_20",
+    "title": "conformity assessment",
+    "text_content": "conformity assessment means the process of demonstrating whether the requirements set out inChapter III, Section 2 relating to a high-risk AI system have been fulfilled"
+  },
+  "definition_21": {
+    "id": "definition_21",
+    "title": "conformity assessment body",
+    "text_content": "conformity assessment body means a body that performs third-party conformity assessment activities, including testing, certification and inspection"
+  },
+  "definition_22": {
+    "id": "definition_22",
+    "title": "notified body",
+    "text_content": "notified body means a conformity assessment body notified in accordance with this Regulation and other relevant Union harmonisation legislation"
+  },
+  "definition_23": {
+    "id": "definition_23",
+    "title": "substantial modification",
+    "text_content": "substantial modification means a change to an AI system after its placing on the market or putting into service which is not foreseen or planned in the initial conformity assessment carried out by the provider and as a result of which the compliance of the AI system with the requirements set out inChapter III, Section 2 is affected or results in a modification to the intended purpose for which the AI system has been assessed"
+  },
+  "definition_24": {
+    "id": "definition_24",
+    "title": "CE marking",
+    "text_content": "CE marking means a marking by which a provider indicates that an AI system is in conformity with the requirements set out inChapter III, Section 2 and other applicable Union harmonisation legislation providing for its affixing"
+  },
+  "definition_25": {
+    "id": "definition_25",
+    "title": "post-market monitoring system",
+    "text_content": "post-market monitoring system means all activities carried out by providers of AI systems to collect and review experience gained from the use of AI systems they place on the market or put into service for the purpose of identifying any need to immediately apply any necessary corrective or preventive actions"
+  },
+  "definition_26": {
+    "id": "definition_26",
+    "title": "market surveillance authority",
+    "text_content": "market surveillance authority means the national authority carrying out the activities and taking the measures pursuant to Regulation (EU) 2019/1020"
+  },
+  "definition_27": {
+    "id": "definition_27",
+    "title": "harmonised standard",
+    "text_content": "harmonised standard means a harmonised standard as defined in Article 2(1), point (c), of Regulation (EU) No 1025/2012"
+  },
+  "definition_28": {
+    "id": "definition_28",
+    "title": "common specification",
+    "text_content": "common specification means a set of technical specifications as defined in Article 2, point (4) of Regulation (EU) No 1025/2012, providing means to comply with certain requirements established under this Regulation"
+  },
+  "definition_29": {
+    "id": "definition_29",
+    "title": "training data",
+    "text_content": "training data means data used for training an AI system through fitting its learnable parameters"
+  },
+  "definition_30": {
+    "id": "definition_30",
+    "title": "validation data",
+    "text_content": "validation data means data used for providing an evaluation of the trained AI system and for tuning its non-learnable parameters and its learning process in order, inter alia, to prevent underfitting or overfitting"
+  },
+  "definition_31": {
+    "id": "definition_31",
+    "title": "validation data set",
+    "text_content": "validation data set means a separate data set or part of the training data set, either as a fixed or variable split"
+  },
+  "definition_32": {
+    "id": "definition_32",
+    "title": "testing data",
+    "text_content": "testing data means data used for providing an independent evaluation of the AI system in order to confirm the expected performance of that system before its placing on the market or putting into service"
+  },
+  "definition_33": {
+    "id": "definition_33",
+    "title": "input data",
+    "text_content": "input data means data provided to or directly acquired by an AI system on the basis of which the system produces an output"
+  },
+  "definition_34": {
+    "id": "definition_34",
+    "title": "biometric data",
+    "text_content": "biometric data means personal data resulting from specific technical processing relating to the physical, physiological or behavioural characteristics of a natural person, such as facial images or dactyloscopic data"
+  },
+  "definition_35": {
+    "id": "definition_35",
+    "title": "biometric identification",
+    "text_content": "biometric identification means the automated recognition of physical, physiological, behavioural, or psychological human features for the purpose of establishing the identity of a natural person by comparing biometric data of that individual to biometric data of individuals stored in a database"
+  },
+  "definition_36": {
+    "id": "definition_36",
+    "title": "biometric verification",
+    "text_content": "biometric verification means the automated, one-to-one verification, including authentication, of the identity of natural persons by comparing their biometric data to previously provided biometric data"
+  },
+  "definition_37": {
+    "id": "definition_37",
+    "title": "special categories of personal data",
+    "text_content": "special categories of personal data means the categories of personal data referred to in Article 9(1) of Regulation (EU) 2016/679, Article 10 of Directive (EU) 2016/680 and Article 10(1) of Regulation (EU) 2018/1725"
+  },
+  "definition_38": {
+    "id": "definition_38",
+    "title": "sensitive operational data",
+    "text_content": "sensitive operational data means operational data related to activities of prevention, detection, investigation or prosecution of criminal offences, the disclosure of which could jeopardise the integrity of criminal proceedings"
+  },
+  "definition_39": {
+    "id": "definition_39",
+    "title": "emotion recognition system",
+    "text_content": "emotion recognition system means an AI system for the purpose of identifying or inferring emotions or intentions of natural persons on the basis of their biometric data"
+  },
+  "definition_40": {
+    "id": "definition_40",
+    "title": "biometric categorisation system",
+    "text_content": "biometric categorisation system means an AI system for the purpose of assigning natural persons to specific categories on the basis of their biometric data, unless it is ancillary to another commercial service and strictly necessary for objective technical reasons"
+  },
+  "definition_41": {
+    "id": "definition_41",
+    "title": "remote biometric identification system",
+    "text_content": "remote biometric identification system means an AI system for the purpose of identifying natural persons, without their active involvement, typically at a distance through the comparison of a person’s biometric data with the biometric data contained in a reference database"
+  },
+  "definition_42": {
+    "id": "definition_42",
+    "title": "real-time remote biometric identification system",
+    "text_content": "real-time remote biometric identification system means a remote biometric identification system, whereby the capturing of biometric data, the comparison and the identification all occur without a significant delay, comprising not only instant identification, but also limited short delays in order to avoid circumvention"
+  },
+  "definition_43": {
+    "id": "definition_43",
+    "title": "post remote biometric identification system",
+    "text_content": "post remote biometric identification system means a remote biometric identification system other than a real-time remote biometric identification system"
+  },
+  "definition_44": {
+    "id": "definition_44",
+    "title": "publicly accessible space",
+    "text_content": "publicly accessible space means any publicly or privately owned physical place accessible to an undetermined number of natural persons, regardless of whether certain conditions for access may apply, and regardless of the potential capacity restrictions"
+  },
+  "definition_45": {
+    "id": "definition_45",
+    "title": "law enforcement authority",
+    "text_content": "law enforcement authority means:(a) any public authority competent for the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including the safeguarding against and the prevention of threats to public security; or(b) any other body or entity entrusted by Member State law to exercise public authority and public powers for the purposes of the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including the safeguarding against and the prevention of threats to public security"
+  },
+  "definition_46": {
+    "id": "definition_46",
+    "title": "law enforcement",
+    "text_content": "law enforcement means activities carried out by law enforcement authorities or on their behalf for the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including safeguarding against and preventing threats to public security"
+  },
+  "definition_47": {
+    "id": "definition_47",
+    "title": "AI Office",
+    "text_content": "AI Office means the Commission’s function of contributing to the implementation, monitoring and supervision of AI systems and general-purpose AI models, and AI governance, provided for in Commission Decision of 24 January 2024; references in this Regulation to the AI Office shall be construed as references to the Commission"
+  },
+  "definition_48": {
+    "id": "definition_48",
+    "title": "national competent authority",
+    "text_content": "national competent authority means a notifying authority or a market surveillance authority; as regards AI systems put into service or used by Union institutions, agencies, offices and bodies, references to national competent authorities or market surveillance authorities in this Regulation shall be construed as references to the European Data Protection Supervisor"
+  },
+  "definition_49": {
+    "id": "definition_49",
+    "title": "serious incident",
+    "text_content": "serious incident means an incident or malfunctioning of an AI system that directly or indirectly leads to any of the following:(a) the death of a person, or serious harm to a person’s health;(b) a serious and irreversible disruption of the management or operation of critical infrastructure.(c) the infringement of obligations under Union law intended to protect fundamental rights;(d) serious harm to property or the environment"
+  },
+  "definition_50": {
+    "id": "definition_50",
+    "title": "personal data",
+    "text_content": "personal data means personal data as defined in Article 4, point (1), of Regulation (EU) 2016/679"
+  },
+  "definition_51": {
+    "id": "definition_51",
+    "title": "non-personal data",
+    "text_content": "non-personal data means data other than personal data as defined in Article 4, point (1), of Regulation (EU) 2016/679"
+  },
+  "definition_52": {
+    "id": "definition_52",
+    "title": "profiling",
+    "text_content": "profiling means profiling as defined in Article 4, point (4), of Regulation (EU) 2016/679"
+  },
+  "definition_53": {
+    "id": "definition_53",
+    "title": "real-world testing plan",
+    "text_content": "real-world testing plan means a document that describes the objectives, methodology, geographical, population and temporal scope, monitoring, organisation and conduct of testing in real-world conditions"
+  },
+  "definition_54": {
+    "id": "definition_54",
+    "title": "sandbox plan",
+    "text_content": "sandbox plan means a document agreed between the participating provider and the competent authority describing the objectives, conditions, timeframe, methodology and requirements for the activities carried out within the sandbox"
+  },
+  "definition_55": {
+    "id": "definition_55",
+    "title": "AI regulatory sandbox",
+    "text_content": "AI regulatory sandbox means a controlled framework set up by a competent authority which offers providers or prospective providers of AI systems the possibility to develop, train, validate and test, where appropriate in real-world conditions, an innovative AI system, pursuant to a sandbox plan for a limited time under regulatory supervision"
+  },
+  "definition_56": {
+    "id": "definition_56",
+    "title": "AI literacy",
+    "text_content": "AI literacy means skills, knowledge and understanding that allow providers, deployers and affected persons, taking into account their respective rights and obligations in the context of this Regulation, to make an informed deployment of AI systems, as well as to gain awareness about the opportunities and risks of AI and possible harm it can cause"
+  },
+  "definition_57": {
+    "id": "definition_57",
+    "title": "testing in real-world conditions",
+    "text_content": "testing in real-world conditions means the temporary testing of an AI system for its intended purpose in real-world conditions outside a laboratory or otherwise simulated environment, with a view to gathering reliable and robust data and to assessing and verifying the conformity of the AI system with the requirements of this Regulation and it does not qualify as placing the AI system on the market or putting it into service within the meaning of this Regulation, provided that all the conditions laid down inArticle 57or60are fulfilled"
+  },
+  "definition_58": {
+    "id": "definition_58",
+    "title": "subject",
+    "text_content": "subject for the purpose of real-world testing, means a natural person who participates in testing in real-world conditions"
+  },
+  "definition_59": {
+    "id": "definition_59",
+    "title": "informed consent",
+    "text_content": "informed consent means a subject’s freely given, specific, unambiguous and voluntary expression of his or her willingness to participate in a particular testing in real-world conditions, after having been informed of all aspects of the testing that are relevant to the subject’s decision to participate"
+  },
+  "definition_60": {
+    "id": "definition_60",
+    "title": "deep fake",
+    "text_content": "deep fake means AI-generated or manipulated image, audio or video content that resembles existing persons, objects, places, entities or events and would falsely appear to a person to be authentic or truthful"
+  },
+  "definition_61": {
+    "id": "definition_61",
+    "title": "widespread infringement",
+    "text_content": "widespread infringement means any act or omission contrary to Union law protecting the interest of individuals, which:(a) has harmed or is likely to harm the collective interests of individuals residing in at least two Member States other than the Member State in which:(i) the act or omission originated or took place;(ii) the provider concerned, or, where applicable, its authorised representative is located or established; or(iii) the deployer is established, when the infringement is committed by the deployer;(b) has caused, causes or is likely to cause harm to the collective interests of individuals and has common features, including the same unlawful practice or the same interest being infringed, and is occurring concurrently, committed by the same operator, in at least three Member States"
+  },
+  "definition_62": {
+    "id": "definition_62",
+    "title": "critical infrastructure",
+    "text_content": "critical infrastructure means critical infrastructure as defined in Article 2, point (4), of Directive (EU) 2022/2557"
+  },
+  "definition_63": {
+    "id": "definition_63",
+    "title": "general-purpose AI model",
+    "text_content": "general-purpose AI model means an AI model, including where such an AI model is trained with a large amount of data using self-supervision at scale, that displays significant generality and is capable of competently performing a wide range of distinct tasks regardless of the way the model is placed on the market and that can be integrated into a variety of downstream systems or applications, except AI models that are used for research, development or prototyping activities before they are placed on the market"
+  },
+  "definition_64": {
+    "id": "definition_64",
+    "title": "high-impact capabilities",
+    "text_content": "high-impact capabilities means capabilities that match or exceed the capabilities recorded in the most advanced general-purpose AI models"
+  },
+  "definition_65": {
+    "id": "definition_65",
+    "title": "systemic risk",
+    "text_content": "systemic risk means a risk that is specific to the high-impact capabilities of general-purpose AI models, having a significant impact on the Union market due to their reach, or due to actual or reasonably foreseeable negative effects on public health, safety, public security, fundamental rights, or the society as a whole, that can be propagated at scale across the value chain"
+  },
+  "definition_66": {
+    "id": "definition_66",
+    "title": "general-purpose AI system",
+    "text_content": "general-purpose AI system means an AI system which is based on a general-purpose AI model and which has the capability to serve a variety of purposes, both for direct use as well as for integration in other AI systems"
+  },
+  "definition_67": {
+    "id": "definition_67",
+    "title": "floating-point operation",
+    "text_content": "floating-point operation means any mathematical operation or assignment involving floating-point numbers, which are a subset of the real numbers typically represented on computers by an integer of fixed precision scaled by an integer exponent of a fixed base"
+  },
+  "definition_68": {
+    "id": "definition_68",
+    "title": "downstream provider",
+    "text_content": "downstream provider means a provider of an AI system, including a general-purpose AI system, which integrates an AI model, regardless of whether the AI model is provided by themselves and vertically integrated or provided by another entity based on contractual relations."
+  }
+}
