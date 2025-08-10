@@ -38,8 +38,8 @@ class Article:
         if not all([self.id, self.title, self.text_content, self.chapter_title]):
             raise ValueError(f"Article {self.id} missing required fields")
         # limit article cross-references to 5
-        if len(self.related_article_ids) > 5:
-            self.related_article_ids = self.related_article_ids[:5]
+        # if len(self.related_article_ids) > 5:
+            # self.related_article_ids = self.related_article_ids[:5]
 
 
 @dataclass
@@ -338,7 +338,8 @@ def main():
     scraper = Scraper()
     scraper.execute_scraping()
     scraper.save_to_disc()
-
+    # split scraping logic of entities -> recitals done? -> safe to object & json!! and so on
+    # limit article cross-references to 5
 
 if __name__ == "__main__":
     main()
