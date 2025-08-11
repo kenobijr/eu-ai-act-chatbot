@@ -34,6 +34,16 @@ class DB:
             for entity in self.entities:
                 getattr(self, f"_populate_{entity}")()
 
+    def _setup_db(self) -> PersistentClient:
+        """
+        - creates persistent db client in local repo
+        - if db client already exists, it simply connects to existing db
+        """
+        # define save path for persistent DB & create dirs
+        save_dir = Path(__file__).parent.parent / "data" / "chroma_db"
+        save_dir.mkdir(parents=True, exist_ok=True)
+        return chromadb.PersistentClient(path=save_dir)
+
     def _get_collections(self) -> Dict[str, Collection]:
         """ get existing collections for read-only access """
         collection_dict = {}
@@ -48,16 +58,6 @@ class DB:
             except ValueError:
                 raise ValueError(f"Collection {entity} not found. Run build_vector_db.py first!")
         return collection_dict
-
-    def _setup_db(self) -> PersistentClient:
-        """
-        - creates persistent db client in local repo
-        - if db client already exists, it simply connects to existing db
-        """
-        # define save path for persistent DB & create dirs
-        save_dir = Path(__file__).parent.parent / "data" / "chroma_db"
-        save_dir.mkdir(parents=True, exist_ok=True)
-        return chromadb.PersistentClient(path=save_dir)
 
     def _create_collections(self) -> Dict[str, Collection]:
         """
