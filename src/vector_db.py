@@ -7,9 +7,15 @@ from typing import Dict
 
 
 class DB:
-    def __init__(self, entities: list):
+    def __init__(self, read_only: bool):
+        """
+        - initialize database connection if existing or build it
+        - args:
+            - read_only: if True, connect to existing DB; else create and populate
+        """
+
         # for each entity sep collection (table) is created in db client
-        self.entities = entities
+        self.entities = ["annexes", "articles", "definitions", "recitals"]
         # embedding_function via chroma_db huggingface wrapper -> attached at collection level
         self.embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
@@ -17,13 +23,31 @@ class DB:
         )
         # creates persistent chroma_db instance at local repo
         self.db_client = self._setup_db()
-        # creates collections for each entity without populating it
-        self.collection = self._create_collections()
-        # load raw json data into mem and save as objects
-        self.raw_data = self._load_raw_data()
-        # populate db with raw data; run all sep _populate_... methods
+        # MAJOR SWITCH -> read only or create anew
+        if read_only:
+            # production mode: connect to existing collections
+            self.collection = self._get_collections()
+        else:
+            # build mode: create and populate collections
+            self.collection = self._create_collections()
+            self.raw_data = self._load_raw_data()
+            for entity in self.entities:
+                getattr(self, f"_populate_{entity}")()
+
+    def _get_collections(self) -> Dict[str, Collection]:
+        """ get existing collections for read-only access """
+        collection_dict = {}
         for entity in self.entities:
-            getattr(self, f"_populate_{entity}")()
+            try:
+                collection = self.db_client.get_collection(
+                    name=entity,
+                    embedding_function=self.embedding_function,
+                )
+                collection_dict[entity] = collection
+                print(f"Loaded {entity} collection with {collection.count()} documents")
+            except ValueError:
+                raise ValueError(f"Collection {entity} not found. Run build_vector_db.py first!")
+        return collection_dict
 
     def _setup_db(self) -> PersistentClient:
         """
@@ -63,6 +87,11 @@ class DB:
         input_dir = Path(__file__).parent.parent / "data" / "raw"
         raw_data_dict = {}
         for entity in self.entities:
+            # check if file exists
+            file_path = input_dir / f"{entity}.json"
+            if not file_path.exists():
+                print(f"File at {file_path} could not be found, skipping {entity}")
+                continue
             with open(f"{input_dir}/{entity}.json", mode="r", encoding="utf-8") as f:
                 raw_data_dict[entity] = json.load(f)
                 print(f"Loaded {len(raw_data_dict[entity])} {entity}")
@@ -159,37 +188,3 @@ class DB:
             metadatas=meta,
         )
         print(f"Added {len(self.raw_data["articles"].items())} to article collection.")
-
-
-
-def main():
-    db_entities = ["annexes", "articles", "definitions", "recitals"]
-    db = DB(db_entities)
-    # test definitions query -> "definition_03"
-    results_def = db.collection["definitions"].query(
-        query_texts=["provider"],
-        n_results=1,
-    )
-    print(results_def)
-    # test recitals query -> "recital_010"
-    results_rec = db.collection["recitals"].query(
-        query_texts=["The fundamental right to the protection of personal data is safeguarded in particular by Regulations (EU) 2016/679[11] and (EU) 2018/1725[12]"],
-        n_results=1,
-    )
-    print(results_rec)
-    # test annex query -> "annex_03"
-    results_annex = db.collection["annexes"].query(
-        query_texts=["High-risk AI systems pursuant toArticle 6(2) are the AI systems listed in any"],
-        n_results=1,
-    )
-    print(results_annex)
-    # test article query -> "annex_002"
-    results_article = db.collection["articles"].query(
-        query_texts=["1. This Regulation applies to:(a) providers placing on the market or putting"],
-        n_results=1,
-    )
-    print(results_article)
-
-
-if __name__ == "__main__":
-    main()
