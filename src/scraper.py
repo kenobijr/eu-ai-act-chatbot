@@ -332,14 +332,3 @@ class Scraper:
         with open(metadata_path, "w", encoding="utf-8") as f:
             json.dump(metadata_dict, f, indent=2, ensure_ascii=False)
         print(f"saved metadata to {metadata_path}")
-
-
-def main():
-    scraper = Scraper()
-    scraper.execute_scraping()
-    scraper.save_to_disc()
-    # split scraping logic of entities -> recitals done? -> safe to object & json!! and so on
-    # limit article cross-references to 5
-
-if __name__ == "__main__":
-    main()
