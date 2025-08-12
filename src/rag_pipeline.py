@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 import tiktoken
 from src.vector_db import DB
+from typing import List
 
 load_dotenv()
 
@@ -30,14 +31,16 @@ class RAGPipeline:
     USER_QUERY_SHARE = 0.2
     LLM_RESPONSE_SHARE = 0.25
     RAG_CONTENT_SHARE = 0.55
+    # rag relevance threshold for cosine distance -> take only entried from chromadb smaller than
+    RELEVANCE_THRESHOLD = 0.8
 
     def __init__(self):
         # connect to chromadb in read only mode; if not yet build, run db script before
         self.db = DB(read_only=True)
         # used internally only to check context window limits; tokenising for llm calls done by langchain
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
-        # dynamically updated if tokens were used in steps of the process
-        self.remaining_context = self.TOTAL_EFFECTIVE_CONTEXT
+        # dynamically updated if tokens were cosumed in steps of the rag process
+        self.remaining_tokens = self.TOTAL_EFFECTIVE_CONTEXT
         # max amount tokens for user query;
         self.max_user_query_tokens = self.TOTAL_EFFECTIVE_CONTEXT * self.USER_QUERY_SHARE
         self.entities = ["annexes", "articles", "definitions", "recitals"]
@@ -55,25 +58,30 @@ class RAGPipeline:
         """ calc token amount of user input str; if valid len return True"""
         return self.count_tokens(user_prompt) <= self.max_user_query_tokens and isinstance(user_prompt, str)
 
-    def _update_remaining_context(self, consumed_tokens: int) -> None:
+    def _update_remaining_tokens(self, consumed_tokens: int) -> None:
         """Update remaining context after consuming tokens"""
-        self.remaining_context -= consumed_tokens
+        self.remaining_tokens -= consumed_tokens
 
-    def _get_dynamic_rag_tokens(self) -> int:
+    def _calc_max_rag_tokens(self) -> int:
         """ calculate max RAG tokens from remaining context, preserving LLM/RAG ratio """
         # ratio between LLM_RESPONSE and RAG_CONTENT: 0.25:0.55 = 5:11
         total_ratio = self.LLM_RESPONSE_SHARE + self.RAG_CONTENT_SHARE  # 0.80
         rag_proportion = self.RAG_CONTENT_SHARE / total_ratio  # 0.55/0.80 = 0.6875
-        return int(self.remaining_context * rag_proportion)
+        return int(self.remaining_tokens * rag_proportion)
 
-    def _retrieve_context(self, user_prompt: str) -> None:
+    def _retrieve_context(self, user_prompt: str) -> List[str]:
         """
-        core rag context generation logic while dynamically updating remaining_context len:
+        - compares user prompt against vector_db entries and selects best matches
+        - collects best matches until rag token limit is reached or no further good matches
+        - rag token limit is delivered by special method and updated dynamically
+        - return list of raw text content from collection entries; formatting in sep method
+        core rag context generation logic while:
         - 1. get top 15 nearest entries across all entities
         - 2. always grab top 3 nearest articles -> they are the "central hub" with relationships
-        - 3. fill up top relations (minus the 3 already added articles) over all types beginning from
-        best distance rating until NOT distance < 0.8 anymore OR rag token limit reached
-        -> chromadb return this dict structure:
+        - 3. fill up top relations (minus the 3 already added articles) over all types beginning
+          frombest distance rating until NOT distance < 0.8 anymore OR rag token limit reached
+        -------------------------------------------------------------
+        -> from chromadb you get this dict structure for collection queries:
         {
             'ids': [['doc1', 'doc2', 'doc3', ...]],           # List of lists of strings
             'distances': [[0.1, 0.2, 0.3, ...]],             # List of lists of floats
@@ -82,33 +90,29 @@ class RAGPipeline:
             'embeddings': None  # Unless include_embeddings=True
         }
         """
-        # get max rag tokens dynamically based on remaining context
-        max_rag_tokens = self._get_dynamic_rag_tokens()
+        # set up remaining_rag_tokens variable to track consume within method
+        remaining_rag_tokens = self._calc_max_rag_tokens()
         # query all collections once -> key value pairs for each entity query return
         all_results = {entity: self.db.collection[entity].query(query_texts=[user_prompt], n_results=15) for entity in self.entities}
         # phase 1: always grab top 3 articles (central hub)
         context = []
         used_ids = set()
-        # set up local remaining_tokens variable which is updated within the method
-        remaining_tokens = max_rag_tokens
         # takes the min of 3 or however many articles were returned -> security from index errors
         for i in range(min(3, len(all_results["articles"]["ids"][0]))):
-            article_data = {
-                "content": all_results["articles"]["documents"][0][i],
-                "id": all_results["articles"]["ids"][0][i]
-            }
-            context.append(article_data)
-            used_ids.add(article_data["id"])
-            remaining_tokens -= self.count_tokens(article_data["content"])
-        # update remaining context obj after consuming top 3 articles
-        self._update_remaining_context(max_rag_tokens - remaining_tokens)
+            # grab text content of entry, add to context container & update remaining tokens
+            text_content = all_results["articles"]["documents"][0][i]
+            context.append(text_content)
+            remaining_rag_tokens -= self.count_tokens(text_content)
+            # add id of entry to used_id container to prevent duplicates in phase 2
+            used_ids.add(all_results["articles"]["ids"][0][i])
         # phase 2: fill with best remaining candidates
         candidates = []
         for entity in self.entities:
             results = all_results[entity]
             for i, item_id in enumerate(results["ids"][0]):
                 # apply filtering criteria: no duplicates; cosine distance < 0.8 for relevance
-                if item_id not in used_ids and results["distances"][0][i] < 0.8:
+                if item_id not in used_ids and results["distances"][0][i] < self.RELEVANCE_THRESHOLD:
+                    # extract only content & disctance into list of dicts to loop & filter easy
                     candidates.append({
                         "content": results["documents"][0][i],
                         "distance": results["distances"][0][i]
@@ -117,13 +121,22 @@ class RAGPipeline:
         for candidate in sorted(candidates, key=lambda x: x["distance"]):
             # loop through sorted candidates and add content as tokens for rag context available
             tokens = self.count_tokens(candidate["content"])
-            if tokens <= remaining_tokens:
-                context.append({"content": candidate["content"]})
+            if tokens <= remaining_rag_tokens:
+                context.append(candidate["content"])
                 # update local to method remaining tokens
-                remaining_tokens -= tokens
+                remaining_rag_tokens -= tokens
                 # update instance remaining tokens
-                self._update_remaining_context(tokens)
+                self._update_remaining_tokens(tokens)
         return context
+
+    def _format_rag_context(self, rag_raw: List[str]) -> str:
+        """
+        - takes raw rag context as list of str
+        - processes & formats it for llm call
+        """
+        return "Context:\n" + "\n\n".join(text for text in rag_raw)
+
+
     
     # do llm call with rag enriched context
 
@@ -135,13 +148,14 @@ class RAGPipeline:
         # validate user prompt
         if not self._validate_user_prompt(user_prompt):
             raise ValueError("RAG process aborted: too long user prompt or wrong data type")
-        # update remaining context after consuming user prompt tokens
-        self._update_remaining_context(self.count_tokens(user_prompt))
-        # retrieve raw rag_context
-        rag = self._retrieve_context(user_prompt)
-        print(rag)
-        # format and save to self.rag_context
-        self.rag_context = "Context:\n" + "\n\n".join(item["content"] for item in rag)
+        # update remaining tokens after consuming user prompt tokens
+        self._update_remaining_tokens(self.count_tokens(user_prompt))
+        # retrieve raw rag_context, format it by method & save at obj
+        self.rag_context = self._format_rag_context(self._retrieve_context(user_prompt))
+        # update remaining tokens after consuming formatted rag context tokens
+        self._update_remaining_tokens(self.count_tokens(self.rag_context))
+        
+        
         print(f"RAG context prepared: {self.count_tokens(self.rag_context)} tokens")
         print(self.rag_context)
 
