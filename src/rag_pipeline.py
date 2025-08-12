@@ -42,7 +42,7 @@ class RAGPipeline:
         self.max_user_query_tokens = self.TOTAL_EFFECTIVE_CONTEXT * self.USER_QUERY_SHARE
         self.entities = ["annexes", "articles", "definitions", "recitals"]
         # rag context to be added to the llm call
-        self.rag_context = "Context: \n"
+        self.rag_context = ""
 
     def count_tokens(self, text: str) -> int:
         """
@@ -68,21 +68,30 @@ class RAGPipeline:
 
     def _retrieve_context(self, user_prompt: str) -> None:
         """
-        1. get top 15 nearest entries across all entities
-        2. always grab top 3 nearest articles -> they are the "central hub" with relationships
-        3. fill up top relations (minus the 3 already added articles) over all types beginning from
+        core rag context generation logic while dynamically updating remaining_context len:
+        - 1. get top 15 nearest entries across all entities
+        - 2. always grab top 3 nearest articles -> they are the "central hub" with relationships
+        - 3. fill up top relations (minus the 3 already added articles) over all types beginning from
         best distance rating until NOT distance < 0.8 anymore OR rag token limit reached
+        -> chromadb return this dict structure:
+        {
+            'ids': [['doc1', 'doc2', 'doc3', ...]],           # List of lists of strings
+            'distances': [[0.1, 0.2, 0.3, ...]],             # List of lists of floats
+            'documents': [['document text 1', 'document text 2', ...]],  # List of lists of strings
+            'metadatas': [[{'key': 'value'}, {'key': 'value'}, ...]],    # List of lists of dicts
+            'embeddings': None  # Unless include_embeddings=True
+        }
         """
         # get max rag tokens dynamically based on remaining context
         max_rag_tokens = self._get_dynamic_rag_tokens()
-        # query all collections once
-        all_results = {entity: self.db.collection[entity].query(
-            query_texts=[user_prompt], n_results=15
-        ) for entity in self.entities}
+        # query all collections once -> key value pairs for each entity query return
+        all_results = {entity: self.db.collection[entity].query(query_texts=[user_prompt], n_results=15) for entity in self.entities}
         # phase 1: always grab top 3 articles (central hub)
         context = []
         used_ids = set()
+        # set up local remaining_tokens variable which is updated within the method
         remaining_tokens = max_rag_tokens
+        # takes the min of 3 or however many articles were returned -> security from index errors
         for i in range(min(3, len(all_results["articles"]["ids"][0]))):
             article_data = {
                 "content": all_results["articles"]["documents"][0][i],
@@ -91,27 +100,36 @@ class RAGPipeline:
             context.append(article_data)
             used_ids.add(article_data["id"])
             remaining_tokens -= self.count_tokens(article_data["content"])
-        # update remaining context after consuming top 3 articles
+        # update remaining context obj after consuming top 3 articles
         self._update_remaining_context(max_rag_tokens - remaining_tokens)
         # phase 2: fill with best remaining candidates
         candidates = []
         for entity in self.entities:
             results = all_results[entity]
             for i, item_id in enumerate(results["ids"][0]):
+                # apply filtering criteria: no duplicates; cosine distance < 0.8 for relevance
                 if item_id not in used_ids and results["distances"][0][i] < 0.8:
                     candidates.append({
                         "content": results["documents"][0][i],
                         "distance": results["distances"][0][i]
                     })
-        # sort by distance and fill remaining tokens
+        # sort by distance and fill while remaining tokens & candidates available
         for candidate in sorted(candidates, key=lambda x: x["distance"]):
+            # loop through sorted candidates and add content as tokens for rag context available
             tokens = self.count_tokens(candidate["content"])
             if tokens <= remaining_tokens:
                 context.append({"content": candidate["content"]})
+                # update local to method remaining tokens
                 remaining_tokens -= tokens
+                # update instance remaining tokens
                 self._update_remaining_context(tokens)
-        # format and save to self.rag_context
-        self.rag_context = "Context:\n" + "\n\n".join(item["content"] for item in context)
+        return context
+    
+    # do llm call with rag enriched context
+
+    # reset params to make additional rag / llm call on the same object instance
+
+
 
     def execute_rag(self, user_prompt: str):
         # validate user prompt
@@ -119,9 +137,14 @@ class RAGPipeline:
             raise ValueError("RAG process aborted: too long user prompt or wrong data type")
         # update remaining context after consuming user prompt tokens
         self._update_remaining_context(self.count_tokens(user_prompt))
-        # retrieve and format context
-        self._retrieve_context(user_prompt)
-        #print(f"RAG context prepared: {len(self.rag_context)} characters")
+        # retrieve raw rag_context
+        rag = self._retrieve_context(user_prompt)
+        print(rag)
+        # format and save to self.rag_context
+        self.rag_context = "Context:\n" + "\n\n".join(item["content"] for item in rag)
+        print(f"RAG context prepared: {self.count_tokens(self.rag_context)} tokens")
+        print(self.rag_context)
+
 
 
 def main():
