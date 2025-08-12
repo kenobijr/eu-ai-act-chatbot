@@ -22,8 +22,8 @@ class RAGPipeline:
     TOTAL_ABSOLUTE_CONTEXT = 8192  # max token amount by llama 3 8B
     TOKEN_BUFFER = 0.10  # tiktoken used in app for calc  has ~10% less tokens than llama tokeniser
     # fixed cost
-    SYSTEM_PROMPT = 100  # "You are an expert on EU AI Act..."
-    FORMATTING_OVERHEAD = 100  # "Context:\n", "Question:", separators
+    SYSTEM_PROMPT = 200  # "You are an expert on EU AI Act..."
+    FORMATTING_OVERHEAD = 300  # "Retrieved EU AI Act content...", relevance scores, separators
     # total effective space for user-query, llm-response & rag-context & allocation on init
     # ~7170 tokens -> 1.33 tokens per word -> 5390 words -> 1x DIN A4 page: ~500 words
     TOTAL_EFFECTIVE_CONTEXT = int(
@@ -64,6 +64,7 @@ class RAGPipeline:
 
     def _update_remaining_tokens(self, consumed_tokens: int) -> None:
         """Update remaining context after consuming tokens"""
+        assert self.remaining_tokens - consumed_tokens > 0, "remaining_tokens must be > 0"
         self.remaining_tokens -= consumed_tokens
 
     def _calc_max_rag_tokens(self) -> int:
@@ -132,8 +133,6 @@ class RAGPipeline:
                 context.append(candidate["content"])
                 # update local to method remaining tokens
                 remaining_rag_tokens -= tokens
-                # update instance remaining tokens
-                self._update_remaining_tokens(tokens)
         return context
 
     def _format_rag_context(self, rag_raw: List[str]) -> str:
@@ -143,7 +142,7 @@ class RAGPipeline:
         """
         return "Context:\n" + "\n\n".join(text for text in rag_raw)
 
-    def init_model(self) -> None:
+    def _init_model(self) -> None:
         """
         - init certain langchain model with llm response max_tokens derived from remaining_tokens
         - saved at obj; respective attribute defined at instanciating
@@ -157,11 +156,32 @@ class RAGPipeline:
         )
         self.model = model
 
+    def _query_llm(self, user_prompt: str, rag_enriched: bool = True) -> str:
+        """
+        - if flag rag_enriched with default value True is false, query llm without rag
+        - system_prompt works for both with rag and without rag
+        """
+        system_prompt = """You are an expert on the EU AI Act with access to the official Act's content.
+        When provided with retrieved context, it comes directly from Articles, Recitals, Annexes, and Definitions of the EU AI Act.
+        Always prioritize information from the provided context as it's the authoritative source.
+        If the context doesn't contain sufficient information, or no context is provided, you may supplement with your knowledge but clearly indicate this.
+        Never hallucinate - if you're unsure, say so."""
 
+        # case 1: without rag
+        if not rag_enriched:
+            messages_base = [
+                ("system", system_prompt),
+                ("human", user_prompt)
+            ]
+        # case 2: with rag
+
+        return self.model.invoke(messages_base).content
+
+
+
+
+    
     # do llm call with rag enriched context
-
-    
-    
 
 
     # system_prompt = """You are an expert on the EU AI Act. Answer questions based solely
@@ -196,10 +216,12 @@ class RAGPipeline:
         self._update_remaining_tokens(self.count_tokens(self.rag_context))
         # init langchain model with certain llm response max_tokens
         self._init_model()
+        # create the rag enriched llm prompt
+        llm_response = self._query_llm(user_prompt=user_prompt, rag_enriched=False)
+        print(f"LLM response: {llm_response}")
 
-        
-        print(f"RAG context prepared: {self.count_tokens(self.rag_context)} tokens")
-        print(self.rag_context)
+        #print(f"RAG context prepared: {self.count_tokens(self.rag_context)} tokens")
+        #print(self.rag_context)
 
 
 
