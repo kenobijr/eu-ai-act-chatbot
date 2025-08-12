@@ -16,6 +16,8 @@ class RAGPipeline:
     """
     - 
     """
+    # langchain model
+    LLM = "llama3-8b-8192"
     # total context window
     TOTAL_ABSOLUTE_CONTEXT = 8192  # max token amount by llama 3 8B
     TOKEN_BUFFER = 0.10  # tiktoken used in app for calc  has ~10% less tokens than llama tokeniser
@@ -37,6 +39,8 @@ class RAGPipeline:
     def __init__(self):
         # connect to chromadb in read only mode; if not yet build, run db script before
         self.db = DB(read_only=True)
+        # langchain model will be instanciated after rag context gen to calc llm response max_tokens
+        self.model = None
         # used internally only to check context window limits; tokenising for llm calls done by langchain
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         # dynamically updated if tokens were cosumed in steps of the rag process
@@ -63,8 +67,11 @@ class RAGPipeline:
         self.remaining_tokens -= consumed_tokens
 
     def _calc_max_rag_tokens(self) -> int:
-        """ calculate max RAG tokens from remaining context, preserving LLM/RAG ratio """
-        # ratio between LLM_RESPONSE and RAG_CONTENT: 0.25:0.55 = 5:11
+        """
+        - helper method to calc max token amount for rag context 
+        - after user prompt token consume but before llm response consume
+        - preserves ratio between LLM_RESPONSE and RAG_CONTENT: 0.25:0.55 = 5:11
+        """
         total_ratio = self.LLM_RESPONSE_SHARE + self.RAG_CONTENT_SHARE  # 0.80
         rag_proportion = self.RAG_CONTENT_SHARE / total_ratio  # 0.55/0.80 = 0.6875
         return int(self.remaining_tokens * rag_proportion)
@@ -136,9 +143,42 @@ class RAGPipeline:
         """
         return "Context:\n" + "\n\n".join(text for text in rag_raw)
 
+    def init_model(self) -> None:
+        """
+        - init certain langchain model with llm response max_tokens derived from remaining_tokens
+        - saved at obj; respective attribute defined at instanciating
+        """
+        model = ChatGroq(
+            model=self.LLM,
+            max_retries=2,
+            max_tokens=self.remaining_tokens,
+            temperature=0.7,
+            groq_api_key=groq_api_key,
+        )
+        self.model = model
+
+
+    # do llm call with rag enriched context
 
     
-    # do llm call with rag enriched context
+    
+
+
+    # system_prompt = """You are an expert on the EU AI Act. Answer questions based solely
+    # on your knowledge and context if provided. If your knowledge/context do not contain
+    # the answer, say so clearly."""
+
+    # messages_base = [
+    #     ("system", system_prompt),
+    #     ("human", "Who are you and what's your quest?")
+    # ]
+    # answer_base = llm.invoke(messages_base).content
+
+    # print(answer_base)
+
+
+
+
 
     # reset params to make additional rag / llm call on the same object instance
 
@@ -154,7 +194,9 @@ class RAGPipeline:
         self.rag_context = self._format_rag_context(self._retrieve_context(user_prompt))
         # update remaining tokens after consuming formatted rag context tokens
         self._update_remaining_tokens(self.count_tokens(self.rag_context))
-        
+        # init langchain model with certain llm response max_tokens
+        self._init_model()
+
         
         print(f"RAG context prepared: {self.count_tokens(self.rag_context)} tokens")
         print(self.rag_context)
@@ -170,28 +212,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-    # llm = ChatGroq(
-    #     model="llama3-8b-8192",
-    #     max_retries=2,
-    #     max_tokens=None,
-    #     temperature=0.7,
-    #     groq_api_key=groq_api_key,
-    # )
-
-    # system_prompt = """You are an expert on the EU AI Act. Answer questions based solely
-    # on your knowledge and context if provided. If your knowledge/context do not contain
-    # the answer, say so clearly."""
-
-    # messages_base = [
-    #     ("system", system_prompt),
-    #     ("human", "Who are you and what's your quest?")
-    # ]
-    # answer_base = llm.invoke(messages_base).content
-
-    # print(answer_base)
-
-    #     db_entities = ["annexes", "articles", "definitions", "recitals"]
-    # db = DB(db_entities)
     
     # -----------testcases
     # test definitions query -> "definition_03"
