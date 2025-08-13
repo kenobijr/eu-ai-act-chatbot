@@ -18,3 +18,7 @@ play.ipynb
 config/secrets.json
 *.key
 *.pem
+
+# Gradio
+.gradio/
+flagged/
