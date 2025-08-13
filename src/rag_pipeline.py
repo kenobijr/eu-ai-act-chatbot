@@ -1,9 +1,11 @@
 import os
+import time
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 import tiktoken
 from src.vector_db import DB
 from typing import List, Tuple
+
 
 load_dotenv()
 
@@ -31,8 +33,9 @@ class RAGPipeline:
     )
     # general allocations in relation to total_effective_context
     USER_QUERY_SHARE = 0.2
-    LLM_RESPONSE_SHARE = 0.25
-    RAG_CONTENT_SHARE = 0.55
+    LLM_RESPONSE_SHARE = 0.2
+    RAG_CONTENT_SHARE = 0.6
+    assert USER_QUERY_SHARE + LLM_RESPONSE_SHARE + RAG_CONTENT_SHARE == 1.0, "check percentages!"
     # rag relevance threshold for cosine distance -> take only entried from chromadb smaller than
     RELEVANCE_THRESHOLD = 0.8
 
@@ -48,8 +51,8 @@ class RAGPipeline:
         # max amount tokens for user query;
         self.max_user_query_tokens = self.TOTAL_EFFECTIVE_CONTEXT * self.USER_QUERY_SHARE
         self.entities = ["annexes", "articles", "definitions", "recitals"]
-        # rag context to be added to the llm call
-        self.rag_context = ""
+        # structured rag context
+        self.rag_context = []
 
     def count_tokens(self, text: str) -> int:
         """
@@ -215,29 +218,39 @@ class RAGPipeline:
                 ("system", system_prompt),
                 ("human", f"""Retrieved EU AI Act content with relevance scores:
 
-                {self.rag_context}
+                {self._format_rag_context(self.rag_context)}
 
                 Question: {user_prompt}""")
             ]
 
-        print(self.count_tokens(messages_base[0][1]))
-        print(self.count_tokens(messages_base[1][1]))
+        print(self.rag_context)
+        print(f"System prompt token len: {self.count_tokens(messages_base[0][1])}")
+        print(f"Formatted RAG context + user prompt token len{self.count_tokens(messages_base[1][1])}")
         # return llm message for both cases
         return self.model.invoke(messages_base).content
 
-    # reset params to make additional rag / llm call on the same object instance
+    def _reset_for_next_query(self) -> None:
+        """ set rag_pipeline back as much as necessry to enable further query """
+        self.remaining_tokens = self.TOTAL_EFFECTIVE_CONTEXT
+        self.rag_context = []
+        self.model = None
 
-
-    def execute_rag(self, user_prompt: str):
+    def process_query(self, user_prompt: str, first_query: bool = True):
+        """
+        - central method to process the user_prompt until generating llm response
+        - triggers state reset for further user queries depending on flag first_query
+        """
+        if not first_query:
+            self._reset_for_next_query()
         # validate user prompt
         if not self._validate_user_prompt(user_prompt):
             raise ValueError("RAG process aborted: too long user prompt or wrong data type")
         # update remaining tokens after consuming user prompt tokens
         self._update_remaining_tokens(self.count_tokens(user_prompt))
-        # retrieve raw rag_context, format it by method & save at obj
-        self.rag_context = self._format_rag_context(self._retrieve_context(user_prompt))
-        # update remaining tokens after consuming formatted rag context tokens
-        self._update_remaining_tokens(self.count_tokens(self.rag_context))
+        # retrieve raw rag_context save at obj
+        self.rag_context = self._retrieve_context(user_prompt)
+        # update remaining tokens after consuming formatted rag context
+        self._update_remaining_tokens(self.count_tokens(self._format_rag_context(self.rag_context)))
         # init langchain model with certain llm response max_tokens
         self._init_model()
         # create the rag enriched llm prompt
@@ -245,10 +258,12 @@ class RAGPipeline:
         print(f"LLM response: {llm_response}")
 
 
+
 def main():
     app = RAGPipeline()
-    app.execute_rag("What have EU-member countries have to report to the EU about AI highlevel?")
-    #print(app.rag_context)
+    app.process_query(user_prompt="What have EU-member countries have to report to the EU about AI highlevel?", first_query=True)
+    time.sleep(2)
+    app.process_query(user_prompt="I run an Art AI Startup based in the US. Does the EU AI Act effect me in any way?", first_query=False)
 
 
 if __name__ == "__main__":
