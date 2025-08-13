@@ -257,6 +257,7 @@ The user query starts with "Question: ".
         # create the rag enriched llm prompt
         llm_response = self._query_llm(user_prompt=user_prompt, rag_enriched=rag_enriched)
         print(f"LLM response: {llm_response}")
+        return llm_response
 
 
 def main():
