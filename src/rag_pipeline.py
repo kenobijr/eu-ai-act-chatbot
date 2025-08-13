@@ -37,14 +37,14 @@ class RAGPipeline:
     RAG_CONTENT_SHARE = 0.6
     assert USER_QUERY_SHARE + LLM_RESPONSE_SHARE + RAG_CONTENT_SHARE == 1.0, "check percentages!"
     # rag relevance threshold for cosine distance -> take only entried from chromadb smaller than
-    RELEVANCE_THRESHOLD = 0.8
+    REL_THRESHOLD = 0.8
 
     def __init__(self):
         # connect to chromadb in read only mode; if not yet build, run db script before
         self.db = DB(read_only=True)
         # langchain model will be instanciated after rag context gen to calc llm response max_tokens
         self.model = None
-        # used internally only to check context window limits; tokenising for llm calls done by langchain
+        # used internally to check context window limits; tokenising for llm calls done by langchain
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         # dynamically updated if tokens were cosumed in steps of the rag process
         self.remaining_tokens = self.TOTAL_EFFECTIVE_CONTEXT
@@ -63,7 +63,9 @@ class RAGPipeline:
 
     def _validate_user_prompt(self, user_prompt: str) -> bool:
         """ calc token amount of user input str; if valid len return True"""
-        return self.count_tokens(user_prompt) <= self.max_user_query_tokens and isinstance(user_prompt, str)
+        assert self.count_tokens(user_prompt) <= self.max_user_query_tokens, "Too long user prompt."
+        assert isinstance(user_prompt, str), "Invalid user prompt data type."
+        return True
 
     def _update_remaining_tokens(self, consumed_tokens: int) -> None:
         """Update remaining context after consuming tokens"""
@@ -105,7 +107,11 @@ class RAGPipeline:
         # set up remaining_rag_tokens variable to track consume within method
         remaining_rag_tokens = self._calc_max_rag_tokens()
         # query all collections once -> key value pairs for each entity query return
-        all_results = {entity: self.db.collection[entity].query(query_texts=[user_prompt], n_results=15) for entity in self.entities}
+        all_results = {
+            entity:
+            self.db.collection[entity].query(query_texts=[user_prompt], n_results=15)
+            for entity in self.entities
+        }
         # phase 1: always grab top 3 articles (central hub)
         context = []
         used_ids = set()
@@ -124,7 +130,7 @@ class RAGPipeline:
             results = all_results[entity]
             for i, item_id in enumerate(results["ids"][0]):
                 # apply filtering criteria: no duplicates; cosine distance < 0.8 for relevance
-                if item_id not in used_ids and results["distances"][0][i] < self.RELEVANCE_THRESHOLD:
+                if item_id not in used_ids and results["distances"][0][i] < self.REL_THRESHOLD:
                     # extract only content & disctance into list of dicts to loop & filter easy
                     candidates.append({
                         "content": results["documents"][0][i],
@@ -166,7 +172,7 @@ class RAGPipeline:
         """
         # Cap max_tokens to ensure total request stays under Groq's 6000 TPM limit
         # Total request = input tokens + max_tokens, so max_tokens should be conservative
-        #safe_max_tokens = min(self.remaining_tokens, 1000)  # Cap at 1000 tokens for response
+        # safe_max_tokens = min(self.remaining_tokens, 1000)  # Cap at 1000 tokens for response
         model = ChatGroq(
             model=self.LLM,
             max_retries=2,
@@ -181,31 +187,29 @@ class RAGPipeline:
         - if flag rag_enriched with default value True is false, query llm without rag
         - system_prompt works for both with rag and without rag
         """
-        system_prompt = """You are an expert on the EU AI Act with access to official Act documentation.
-        When provided, the retrieved context comes directly from Articles, Recitals, Annexes, and Definitions
-        of the EU AI Act which are stored in some VectorDB. This provided material is the 100% legit original content,
-        but it can be more or less related to the User prompt depending on the embedding model and matching algorithm.
-        The top 3 nearest Articles afte cosine distance are always contained. Additionally, the next nearest n elements
-        across all categories / types are added - if they are over the minimum relevance threshold - until RAG token limit is reached.
-        This context, if provided, starts with "Retrieved EU AI Act content with relevance scores: " and can contain:
-        - Articles: Core legal binding rules and requirements
-        - Annexes: Technical specifications and detailed lists (e.g., high-risk AI systems)
-        - Definitions: Official terms from Article 3 of the Act
-        - Recitals: Background context and rationale (numbered paragraphs from the preamble)
-        Each section has a relevance score:
-        - 90-100%: Directly answers your question
-        - 70-89%: Contains related important information
-        - 50-69%: Provides useful context
-        - Below 50%: Background information
-        Focus on high-relevance sections first, but consider all provided context for a complete answer.
-        If the context doesn't contain sufficient information and / or is unrelevant or 
-        was not provided at all, you may supplement with your knowledge but indicate this transparently.
-        If your knowledge/context does not contain the answer, say so clearly - never make up information!
-        The User prompt starts with "Question: "
-        """
+        system_prompt = """You are an expert on the EU AI Act, drawing from official documentation including Articles, Recitals, Annexes, and Definitions. Your role is to provide clear, synthesized answers as a legal advisor would—integrating relevant context to explain concepts holistically, not just listing matches.
+
+When provided, retrieved context from the Act (starting with "Retrieved EU AI Act content with relevance scores:") is official and prioritized. It includes top-matched sections based on similarity, with scores indicating fit: 90-100% (direct answer), 70-89% (key related info), 50-69% (useful context), below 50% (background only—do not infer directly from these; use for completeness only).
+
+Key Rules:
+- Base answers on high-relevance (70%+) context first. For lower/insufficient context or none provided, supplement transparently with your knowledge (e.g., "Drawing from the Act's general provisions..."), but only if it directly addresses the query. If nothing suffices, state: "The available information does not cover this; consult the full Act or a lawyer."
+- Synthesize: Blend context and knowledge into a cohesive explanation. Avoid negative inferences from absences (e.g., don't assume 'not mentioned' means 'does not exist').
+- Distinguish roles (e.g., providers, deployers, member states, NCAs) clearly to avoid conflation.
+- Avoid introductory phrases like ‘Based on the provided content’ unless necessary for clarity.
+- Never repeat or echo the context format/phrase in your response. Do not discuss retrieval mechanics (e.g., embeddings, scores) unless asked.
+- Never fabricate information—cite specific sections (e.g., "Article 49 requires...").
+- Response Structure:
+  1. Direct Answer: Concise summary of the key point(s).
+  2. Explanation: Step-by-step reasoning, with citations.
+  3. Limitations: Note jurisdiction (EU-wide, but member states implement), that this is not advice, and suggest professional consultation.
+- Tone: Professional, accessible—define terms, avoid jargon overload.
+
+The user query starts with "Question: ".
+        """  # noqa: E501
+        
+        # validation for missing rag context
         if rag_enriched and not self.rag_context:
             raise ValueError("RAG enriched mode requires rag_context to be set")
-
         # case 1: without rag
         if not rag_enriched:
             messages_base = [
@@ -223,9 +227,6 @@ class RAGPipeline:
                 Question: {user_prompt}""")
             ]
 
-        print(self.rag_context)
-        print(f"System prompt token len: {self.count_tokens(messages_base[0][1])}")
-        print(f"Formatted RAG context + user prompt token len{self.count_tokens(messages_base[1][1])}")
         # return llm message for both cases
         return self.model.invoke(messages_base).content
 
@@ -235,7 +236,7 @@ class RAGPipeline:
         self.rag_context = []
         self.model = None
 
-    def process_query(self, user_prompt: str, first_query: bool = True):
+    def process_query(self, user_prompt: str, first_query: bool = True, rag_enriched: bool = True):
         """
         - central method to process the user_prompt until generating llm response
         - triggers state reset for further user queries depending on flag first_query
@@ -254,16 +255,16 @@ class RAGPipeline:
         # init langchain model with certain llm response max_tokens
         self._init_model()
         # create the rag enriched llm prompt
-        llm_response = self._query_llm(user_prompt=user_prompt, rag_enriched=True)
+        llm_response = self._query_llm(user_prompt=user_prompt, rag_enriched=rag_enriched)
         print(f"LLM response: {llm_response}")
-
 
 
 def main():
     app = RAGPipeline()
-    app.process_query(user_prompt="What have EU-member countries have to report to the EU about AI highlevel?", first_query=True)
-    time.sleep(2)
-    app.process_query(user_prompt="I run an Art AI Startup based in the US. Does the EU AI Act effect me in any way?", first_query=False)
+    prompt = "What have EU-member countries have to report to the EU about AI highlevel?"
+    app.process_query(user_prompt=prompt, first_query=True, rag_enriched=False)
+    #time.sleep(2)
+    #app.process_query(user_prompt="I run an Art AI Startup based in the US. Does the EU AI Act effect me in any way?", first_query=False)
 
 
 if __name__ == "__main__":
