@@ -1,17 +1,12 @@
-requirements.md
-.venv/
-.claudeignore
-.clauderules
-.claude/
-Claude.md
+# os & system
+**/.DS_Store
+
+# python
 __pycache__/
 *.pyc
-.env
-.DS_Store
-*.log
-/cache/
-data/chroma_db
-play.ipynb
+.venv/
+
+# environment & config
 .env
 .env.local
 .env.*.local
@@ -19,6 +14,18 @@ config/secrets.json
 *.key
 *.pem
 
-# Gradio
+# logs & cache
+*.log
+/cache/
+/data/chroma_db/
+
+# claude ai
+.claudeignore
+.clauderules
+.claude/
+Claude.md
+requirements.md
+
+# gradio
 .gradio/
 flagged/

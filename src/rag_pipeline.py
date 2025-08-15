@@ -6,12 +6,13 @@ import tiktoken
 from src.vector_db import DB
 from typing import List, Tuple
 
-
+# load env variables from .env file
 load_dotenv()
 
+# get huggingface token
 groq_api_key = os.getenv('GROQ_API_KEY')
 if not groq_api_key:
-    raise ValueError("GROQ_API_KEY environment variable is required")
+    raise ValueError("GROQ_API_KEY not found in .env file.")
 
 
 class RAGPipeline:

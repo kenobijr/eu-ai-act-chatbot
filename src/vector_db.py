@@ -105,7 +105,7 @@ class DB:
         ids, docs, meta = [], [], []
         for def_id, def_data in self.raw_data["definitions"].items():
             ids.append(def_id)
-            doc = f"Definition: {def_data["title"]}\n{def_data["text_content"]}"
+            doc = f"Definition: {def_data['title']}\n{def_data['text_content']}"
             docs.append(doc)
             meta.append({
                 "type": "definition",
@@ -117,14 +117,14 @@ class DB:
             documents=docs,
             metadatas=meta,
         )
-        print(f"Added {len(self.raw_data["definitions"].items())} to definition collection.")
+        print(f"Added {len(self.raw_data['definitions'].items())} to definition collection.")
 
     def _populate_recitals(self) -> None:
         """ add 180 recitals to collection; no metadata available for them """
         ids, docs, meta = [], [], []
         for rec_id, rec_data in self.raw_data["recitals"].items():
             ids.append(rec_id)
-            doc = f"Recital {rec_id.split('_')[1]}\n{rec_data["text_content"]}"
+            doc = f"Recital {rec_id.split('_')[1]}\n{rec_data['text_content']}"
             docs.append(doc)
             meta.append({
                 "type": "recital",
@@ -135,7 +135,7 @@ class DB:
             documents=docs,
             metadatas=meta,
         )
-        print(f"Added {len(self.raw_data["recitals"].items())} to recital collection.")
+        print(f"Added {len(self.raw_data['recitals'].items())} to recital collection.")
 
     def _populate_annexes(self) -> None:
         """
@@ -144,7 +144,7 @@ class DB:
         ids, docs, meta = [], [], []
         for annex_id, annex_data in self.raw_data["annexes"].items():
             ids.append(annex_id)
-            doc = f"Annex: {annex_data["title"]}\n{annex_data["text_content"]}"
+            doc = f"Annex: {annex_data['title']}\n{annex_data['text_content']}"
             docs.append(doc)
             meta.append({
                 "type": "annex",
@@ -156,7 +156,7 @@ class DB:
             documents=docs,
             metadatas=meta,
         )
-        print(f"Added {len(self.raw_data["annexes"].items())} to annex collection.")
+        print(f"Added {len(self.raw_data['annexes'].items())} to annex collection.")
 
     def _populate_articles(self) -> None:
         """
@@ -187,4 +187,4 @@ class DB:
             documents=docs,
             metadatas=meta,
         )
-        print(f"Added {len(self.raw_data["articles"].items())} to article collection.")
+        print(f"Added {len(self.raw_data['articles'].items())} to article collection.")
