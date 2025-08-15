@@ -5,7 +5,7 @@
 import os
 if not os.path.exists("data/chroma_db"):
     print("First run - downloading ChromaDB...")
-    os.system("huggingface-cli download kenobijr/eu-ai-act-chroma-db --repo-type=dataset --local-dir=data/chroma_db")
+    os.system("huggingface-cli download kenobijr/eu-ai-act-chromadb --repo-type=dataset --local-dir=data")
 
 import gradio as gr
 from src.rag_pipeline import RAGPipeline
@@ -28,6 +28,9 @@ def process_query(user_input):
     """
     if not user_input:
         return "Enter a question."
+
+    if rag is None:
+        return "Error: RAG pipeline failed to initialize. Please check the logs and restart the application."
 
     try:
         response = rag.process_query(
