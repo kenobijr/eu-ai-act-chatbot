@@ -1,3 +1,12 @@
+"""
+- when app deployed as docker container on hf spaces, download chromadb from hf datasets
+- happens first time when space is accessed by some user after container build
+"""
+import os
+if not os.path.exists("data/chroma_db"):
+    print("First run - downloading ChromaDB...")
+    os.system("huggingface-cli download kenobijr/eu-ai-act-chroma-db --repo-type=dataset --local-dir=data/chroma_db")
+
 import gradio as gr
 from src.rag_pipeline import RAGPipeline
 
@@ -38,6 +47,5 @@ demo = gr.Interface(
     outputs=gr.Textbox(label="Response", lines=10),
     title="EU AI Act Advisor"
 )
-
 if __name__ == "__main__":
     demo.launch(server_name="0.0.0.0", server_port=7860)

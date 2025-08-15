@@ -1,0 +1,57 @@
+# version control
+.git
+.gitignore
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.venv/
+venv/
+env/
+
+# claude
+.claude/
+.claudeignore
+.clauderules
+Claude.md
+
+# gradio
+.gradio
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# documentation / files
+*.md
+docs/
+assets/
+requirements.md
+
+# tests
+tests/
+test/
+*_test.py
+pytest.ini
+
+# local config/secrets
+.env
+
+# build/setup scripts
+build_vector_db.py
+start_scraping.py
+upload_vector_db.py
+src/scraper.py
+
+# data -> raw not needed; chroma_db source files downloaded at first runtime
+data/
