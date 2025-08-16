@@ -231,19 +231,18 @@ The user query starts with "Question: ".
         # return llm message for both cases
         return self.model.invoke(messages_base).content
 
-    def _reset_for_next_query(self) -> None:
+    def _reset_for_fresh_state(self) -> None:
         """ set rag_pipeline back as much as necessry to enable further query """
         self.remaining_tokens = self.TOTAL_EFFECTIVE_CONTEXT
         self.rag_context = []
         self.model = None
 
-    def process_query(self, user_prompt: str, first_query: bool = True, rag_enriched: bool = True):
+    def process_query(self, user_prompt: str, rag_enriched: bool = True):
         """
         - central method to process the user_prompt until generating llm response
-        - triggers state reset for further user queries depending on flag first_query
+        - always reset for fresh state at start
         """
-        if not first_query:
-            self._reset_for_next_query()
+        self._reset_for_fresh_state()
         # validate user prompt
         if not self._validate_user_prompt(user_prompt):
             raise ValueError("RAG process aborted: too long user prompt or wrong data type")
@@ -264,9 +263,7 @@ The user query starts with "Question: ".
 def main():
     app = RAGPipeline()
     prompt = "What have EU-member countries have to report to the EU about AI highlevel?"
-    app.process_query(user_prompt=prompt, first_query=True, rag_enriched=False)
-    #time.sleep(2)
-    #app.process_query(user_prompt="I run an Art AI Startup based in the US. Does the EU AI Act effect me in any way?", first_query=False)
+    app.process_query(user_prompt=prompt, rag_enriched=False)
 
 
 if __name__ == "__main__":
