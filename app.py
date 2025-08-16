@@ -35,7 +35,6 @@ def process_query(user_input):
     try:
         response = rag.process_query(
             user_prompt=user_input,
-            first_query=True,
             rag_enriched=True,
         )
         return response
@@ -46,23 +45,24 @@ def process_query(user_input):
 # gradio interface with custom blocks for enter key support
 with gr.Blocks(title="EU AI Act Bot") as demo:
     gr.Markdown("# EU AI Act Bot")
-    
+
     with gr.Row():
         with gr.Column():
             user_input = gr.Textbox(label="Ask one question about the EU AI Act and receive one response by the Bot. Reset for new question", lines=3, placeholder="Type in your question here. It may contain a maximum of x chars.")
             with gr.Row():
-                clear_btn = gr.Button("Clear", variant="secondary")
+                reset_btn = gr.Button("Reset", variant="secondary")  # Changed from Clear
                 submit_btn = gr.Button("Submit", variant="primary")
-        
+
         with gr.Column():
             response_output = gr.Textbox(label="Response", lines=10, interactive=False)
             flag_btn = gr.Button("Flag", variant="secondary")
-    
+
     # submit on button click or enter key
     submit_btn.click(process_query, inputs=user_input, outputs=response_output)
     user_input.submit(process_query, inputs=user_input, outputs=response_output)
-    
-    # clear functionality
-    clear_btn.click(lambda: "", outputs=user_input)
+
+    # reset functionality: clear both input and output
+    reset_btn.click(lambda: ("", ""), outputs=[user_input, response_output])
+
 if __name__ == "__main__":
     demo.launch(server_name="0.0.0.0", server_port=7860)
