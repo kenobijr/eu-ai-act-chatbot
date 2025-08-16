@@ -24,7 +24,7 @@ def process_query(user_input):
     """
     - process user query through rag pipeline
     - function arguments are bind to gr inputs=.... components
-    - function return values are bind to gr outputs=... components 
+    - function return values are bind to gr outputs=... components
     """
     if not user_input:
         return "Enter a question."
@@ -48,7 +48,7 @@ demo = gr.Interface(
     fn=process_query,
     inputs=gr.Textbox(label="Question about EU AI Act", lines=3),
     outputs=gr.Textbox(label="Response", lines=10),
-    title="EU AI Act Advisor"
+    title="EU AI Act Bot"
 )
 if __name__ == "__main__":
     demo.launch(server_name="0.0.0.0", server_port=7860)
