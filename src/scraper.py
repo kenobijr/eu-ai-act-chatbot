@@ -136,7 +136,11 @@ class Scraper:
             soup = BeautifulSoup(response.content, "html.parser")
             # fetch text content; assign none if empty / non existing to print error
             text_elem = soup.select_one("#aia-explorer-content .et_pb_post_content")
-            text_content = str(text_elem.get_text(strip=True)) if text_elem else None
+            # scrape text with sep = " "; otherwise no space around inline elements "underArticle"
+            text_content = text_elem.get_text(separator=' ') if text_elem else None
+            # clean up excess whitespace, linebreaks, ...
+            if text_content:
+                text_content = ' '.join(text_content.split())
             # validate + create with dataclass & central helper validation method
             new_recital = self.validate_and_create(
                 Recital,
@@ -164,7 +168,10 @@ class Scraper:
             content_div = soup.select_one("#aia-explorer-content .et_pb_post_content")
             for span in content_div.select("span.aia-recital-ref"):
                 span.decompose()
-            text_content = str(content_div.get_text(strip=True)) if content_div else None
+            # scrape text with sep = " "; otherwise no space around inline elements "underArticle"
+            text_content = content_div.get_text(separator=' ') if content_div else None
+            if text_content:
+                text_content = ' '.join(text_content.split())
             # validate + create with dataclass & central helper validation method
             new_annex = self.validate_and_create(
                 Annex,
@@ -223,9 +230,10 @@ class Scraper:
             text_div = soup.select_one("#aia-explorer-content .et_pb_post_content")
             for span in text_div.select("span.aia-recital-ref"):
                 span.decompose()
-            text_content = str(text_div.get_text(strip=True)) if text_div else None
-            # remove "Related: Recital X" metadata from text
+            # scrape text with sep = " "; otherwise no space around inline elements "underArticle"   
+            text_content = text_div.get_text(separator=' ') if text_div else None
             if text_content:
+                text_content = ' '.join(text_content.split())
                 text_content = re.sub(r'Related:\s*Recital\s*\d+', '', text_content).strip()
             # special handling for article 3 - extract definitions!!
             if i == 3:
@@ -265,9 +273,11 @@ class Scraper:
         text_div = soup.select_one("#aia-explorer-content .et_pb_post_content")
         for span in text_div.select("span.aia-recital-ref"):
             span.decompose()
-        text_content = str(text_div.get_text(strip=True)) if text_div else None
+        # scrape text with sep = " "; otherwise no space around inline elements "underArticle"   
+        text_content = text_div.get_text(separator=' ') if text_div else None
         # remove "Related: Recital X" metadata from text
         if text_content:
+            text_content = ' '.join(text_content.split())
             text_content = re.sub(r'Related:\s*Recital\s*\d+', '', text_content).strip()
         # \u2018 = left curly quote '
         # \u2019 = right curly quote '

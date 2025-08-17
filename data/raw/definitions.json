@@ -97,7 +97,7 @@
   "definition_20": {
     "id": "definition_20",
     "title": "conformity assessment",
-    "text_content": "conformity assessment means the process of demonstrating whether the requirements set out inChapter III, Section 2 relating to a high-risk AI system have been fulfilled"
+    "text_content": "conformity assessment means the process of demonstrating whether the requirements set out in Chapter III , Section 2 relating to a high-risk AI system have been fulfilled"
   },
   "definition_21": {
     "id": "definition_21",
@@ -112,12 +112,12 @@
   "definition_23": {
     "id": "definition_23",
     "title": "substantial modification",
-    "text_content": "substantial modification means a change to an AI system after its placing on the market or putting into service which is not foreseen or planned in the initial conformity assessment carried out by the provider and as a result of which the compliance of the AI system with the requirements set out inChapter III, Section 2 is affected or results in a modification to the intended purpose for which the AI system has been assessed"
+    "text_content": "substantial modification means a change to an AI system after its placing on the market or putting into service which is not foreseen or planned in the initial conformity assessment carried out by the provider and as a result of which the compliance of the AI system with the requirements set out in Chapter III , Section 2 is affected or results in a modification to the intended purpose for which the AI system has been assessed"
   },
   "definition_24": {
     "id": "definition_24",
     "title": "CE marking",
-    "text_content": "CE marking means a marking by which a provider indicates that an AI system is in conformity with the requirements set out inChapter III, Section 2 and other applicable Union harmonisation legislation providing for its affixing"
+    "text_content": "CE marking means a marking by which a provider indicates that an AI system is in conformity with the requirements set out in Chapter III , Section 2 and other applicable Union harmonisation legislation providing for its affixing"
   },
   "definition_25": {
     "id": "definition_25",
@@ -222,7 +222,7 @@
   "definition_45": {
     "id": "definition_45",
     "title": "law enforcement authority",
-    "text_content": "law enforcement authority means:(a) any public authority competent for the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including the safeguarding against and the prevention of threats to public security; or(b) any other body or entity entrusted by Member State law to exercise public authority and public powers for the purposes of the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including the safeguarding against and the prevention of threats to public security"
+    "text_content": "law enforcement authority means: (a) any public authority competent for the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including the safeguarding against and the prevention of threats to public security; or (b) any other body or entity entrusted by Member State law to exercise public authority and public powers for the purposes of the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including the safeguarding against and the prevention of threats to public security"
   },
   "definition_46": {
     "id": "definition_46",
@@ -242,7 +242,7 @@
   "definition_49": {
     "id": "definition_49",
     "title": "serious incident",
-    "text_content": "serious incident means an incident or malfunctioning of an AI system that directly or indirectly leads to any of the following:(a) the death of a person, or serious harm to a person’s health;(b) a serious and irreversible disruption of the management or operation of critical infrastructure.(c) the infringement of obligations under Union law intended to protect fundamental rights;(d) serious harm to property or the environment"
+    "text_content": "serious incident means an incident or malfunctioning of an AI system that directly or indirectly leads to any of the following: (a) the death of a person, or serious harm to a person’s health; (b) a serious and irreversible disruption of the management or operation of critical infrastructure. (c) the infringement of obligations under Union law intended to protect fundamental rights; (d) serious harm to property or the environment"
   },
   "definition_50": {
     "id": "definition_50",
@@ -282,7 +282,7 @@
   "definition_57": {
     "id": "definition_57",
     "title": "testing in real-world conditions",
-    "text_content": "testing in real-world conditions means the temporary testing of an AI system for its intended purpose in real-world conditions outside a laboratory or otherwise simulated environment, with a view to gathering reliable and robust data and to assessing and verifying the conformity of the AI system with the requirements of this Regulation and it does not qualify as placing the AI system on the market or putting it into service within the meaning of this Regulation, provided that all the conditions laid down inArticle 57or60are fulfilled"
+    "text_content": "testing in real-world conditions means the temporary testing of an AI system for its intended purpose in real-world conditions outside a laboratory or otherwise simulated environment, with a view to gathering reliable and robust data and to assessing and verifying the conformity of the AI system with the requirements of this Regulation and it does not qualify as placing the AI system on the market or putting it into service within the meaning of this Regulation, provided that all the conditions laid down in Article 57 or 60 are fulfilled"
   },
   "definition_58": {
     "id": "definition_58",
@@ -302,7 +302,7 @@
   "definition_61": {
     "id": "definition_61",
     "title": "widespread infringement",
-    "text_content": "widespread infringement means any act or omission contrary to Union law protecting the interest of individuals, which:(a) has harmed or is likely to harm the collective interests of individuals residing in at least two Member States other than the Member State in which:(i) the act or omission originated or took place;(ii) the provider concerned, or, where applicable, its authorised representative is located or established; or(iii) the deployer is established, when the infringement is committed by the deployer;(b) has caused, causes or is likely to cause harm to the collective interests of individuals and has common features, including the same unlawful practice or the same interest being infringed, and is occurring concurrently, committed by the same operator, in at least three Member States"
+    "text_content": "widespread infringement means any act or omission contrary to Union law protecting the interest of individuals, which: (a) has harmed or is likely to harm the collective interests of individuals residing in at least two Member States other than the Member State in which: (i) the act or omission originated or took place; (ii) the provider concerned, or, where applicable, its authorised representative is located or established; or (iii) the deployer is established, when the infringement is committed by the deployer; (b) has caused, causes or is likely to cause harm to the collective interests of individuals and has common features, including the same unlawful practice or the same interest being infringed, and is occurring concurrently, committed by the same operator, in at least three Member States"
   },
   "definition_62": {
     "id": "definition_62",
