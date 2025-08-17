@@ -1,10 +1,10 @@
 import os
-import time
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 import tiktoken
 from src.vector_db import DB
 from typing import List, Tuple
+from dataclasses import dataclass
 
 # load env variables from .env file
 load_dotenv()
@@ -15,32 +15,80 @@ if not groq_api_key:
     raise ValueError("GROQ_API_KEY not found in .env file.")
 
 
+@dataclass
+class RAGConfig:
+    """
+    - class to steer all relevant RAGPipeline parameters central
+    - provides also systemmessages for cases non-rag & rag-enriched
+    """
+    # langchain model
+    llm: str = "llama3-8b-8192"
+    # context window and token management
+    total_absolute_context: int = 6000
+    token_buffer: float = 0.10
+    system_prompt_tokens: int = 550
+    formatting_overhead: int = 50
+    # allocation ratios
+    user_query_share: float = 0.2
+    llm_response_share: float = 0.2
+    rag_content_share: float = 0.6
+    # rag relevance threshold for cosine distance
+    rel_threshold: float = 0.8
+    # system prompts
+    system_prompt_rag_disabled: str = """You are a legal expert providing accurate, helpful information about the EU AI Act based on your parametric knowledge. Your role is to provide clear, synthesized answers as a legal advisor would, integrating relevant context and knowledge to explain concepts holistically.
+
+Key Rules:
+- Provide comprehensive answers based on your parametric knowledge of the EU AI Act. If your parametric knowledge doesn't suffice for the specific query, state: "I don't have sufficient information about this specific aspect; consult the full Act or a legal professional."
+- Synthesize and blend parametric knowledge into a cohesive explanation. Avoid negative inferences from absences (e.g., don't assume 'not mentioned' means 'does not exist').
+- Distinguish roles (e.g., providers, deployers, member states, NCAs) clearly to avoid conflation.
+- Never fabricate information. When referencing specific provisions, only cite article / section numbers you're confident about. If uncertain, describe the concept without specific citations.
+- Response Structure (use internally, do not label sections):
+  1. Start with a concise summary answering the key point(s) directly
+  2. Follow with step-by-step reasoning (with citations if available)
+  3. Limitations: Note jurisdiction (EU-wide, but member states implement), that this is not advice, and suggest professional consultation.
+- Tone: Professional, accessible—define terms, avoid jargon overload.
+
+The user query starts with "Question: "."""  # noqa: E501
+    system_prompt_rag_enabled: str = """You are a legal expert providing accurate, helpful information about the EU AI Act based on your parametric knowledge. Your role is to provide clear, synthesized answers as a legal advisor would, integrating relevant context and parametric knowledge to explain concepts holistically.
+
+Key Rules:
+- Provide comprehensive answers based on your parametric knowledge of the EU AI Act. If your parametric knowledge doesn't suffice for the specific query, state: "I don't have sufficient information about this specific aspect; consult the full Act or a legal professional."
+- Synthesize and blend parametric knowledge into a cohesive explanation. Avoid negative inferences from absences (e.g., don't assume 'not mentioned' means 'does not exist').
+- Distinguish roles (e.g., providers, deployers, member states, NCAs) clearly to avoid conflation.
+- Never fabricate information. When referencing specific provisions, only cite article / section numbers you're confident about. If uncertain, describe the concept without specific citations.
+- Response Structure (use internally, do not label sections):
+  1. Start with a concise summary answering the key point(s) directly
+  2. Follow with step-by-step reasoning (with citations if available)
+  3. Limitations: Note jurisdiction (EU-wide, but member states implement), that this is not advice, and suggest professional consultation.
+- Tone: Professional, accessible—define terms, avoid jargon overload.
+
+In some prompts additional Content from the official documentation of the EU AI Act including Articles, Recitals, Annexes, and Definitions is provided (starting with "Retrieved EU AI Act content with relevance scores:"). When provided, it is authentic and must be prioritized. It includes top-matched sections based on similarity, with scores indicating fit: 90-100% (direct answer), 70-89% (key related info), 50-69% (useful context), below 50% (background only—do not infer directly from these; use for completeness only).
+
+Additional Official Documentation Rules - ONLY RELEVANT IF THIS CONTENT IS PROVIDED:
+- Base answers on high-relevance (70%+) context first. For lower/insufficient context, use your parametric knowledge transparently to supplement gaps. If nothing suffices, state: "I don't have sufficient information about this specific aspect; consult the full Act or a legal professional."
+- Synthesize and blend provided context and parametric knowledge into a cohesive explanation.
+- Never repeat or echo the context format/phrase in your response. Do not discuss retrieval mechanics (e.g., embeddings, scores) unless asked.
+
+The user query starts with "Question: "."""  # noqa: E501
+
+
 class RAGPipeline:
     """
     - total context window len llama 3 8B = 8192 tokens
     - BUT: groq tokens per minute (TPM): Limit 6000
     - ~7170 tokens -> 1.33 tokens per word -> 5390 words -> 1x DIN A4 page: ~500 words
     """
-    # langchain model
-    LLM = "llama3-8b-8192"
-    # basic param to so set all downstream ratios / token limits work on
-    TOTAL_ABSOLUTE_CONTEXT = 6000
-    TOKEN_BUFFER = 0.10  # tiktoken used in app for calc  has ~10% less tokens than llama tokeniser
-    # fixed cost
-    SYSTEM_PROMPT = 350
-    FORMATTING_OVERHEAD = 50
-    TOTAL_EFFECTIVE_CONTEXT = int(
-        TOTAL_ABSOLUTE_CONTEXT * (1 - TOKEN_BUFFER) - SYSTEM_PROMPT - FORMATTING_OVERHEAD
-    )
-    # general allocations in relation to total_effective_context
-    USER_QUERY_SHARE = 0.2
-    LLM_RESPONSE_SHARE = 0.2
-    RAG_CONTENT_SHARE = 0.6
-    assert USER_QUERY_SHARE + LLM_RESPONSE_SHARE + RAG_CONTENT_SHARE == 1.0, "check percentages!"
-    # rag relevance threshold for cosine distance -> take only entried from chromadb smaller than
-    REL_THRESHOLD = 0.8
 
-    def __init__(self):
+    def __init__(self, config: RAGConfig):
+        # draw params from config dataclass
+        self.config = config
+        # validate config ratios
+        assert (config.user_query_share + config.llm_response_share + config.rag_content_share == 1.0), "check percentages!"
+        # calculate total effective context from config
+        self.total_effective_context = int(
+            config.total_absolute_context * (1 - config.token_buffer) - 
+            config.system_prompt_tokens - config.formatting_overhead
+        )
         # connect to chromadb in read only mode; if not yet build, run db script before
         self.db = DB(read_only=True)
         # langchain model will be instanciated after rag context gen to calc llm response max_tokens
@@ -48,9 +96,9 @@ class RAGPipeline:
         # used internally to check context window limits; tokenising for llm calls done by langchain
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         # dynamically updated if tokens were cosumed in steps of the rag process
-        self.remaining_tokens = self.TOTAL_EFFECTIVE_CONTEXT
+        self.remaining_tokens = self.total_effective_context
         # max amount tokens for user query;
-        self.max_user_query_tokens = self.TOTAL_EFFECTIVE_CONTEXT * self.USER_QUERY_SHARE
+        self.max_user_query_tokens = self.total_effective_context * config.user_query_share
         self.entities = ["annexes", "articles", "definitions", "recitals"]
         # structured rag context
         self.rag_context = []
@@ -79,8 +127,8 @@ class RAGPipeline:
         - after user prompt token consume but before llm response consume
         - preserves ratio between LLM_RESPONSE and RAG_CONTENT: 0.25:0.55 = 5:11
         """
-        total_ratio = self.LLM_RESPONSE_SHARE + self.RAG_CONTENT_SHARE  # 0.80
-        rag_proportion = self.RAG_CONTENT_SHARE / total_ratio  # 0.55/0.80 = 0.6875
+        total_ratio = self.config.llm_response_share + self.config.rag_content_share  # 0.80
+        rag_proportion = self.config.rag_content_share / total_ratio  # 0.55/0.80 = 0.6875
         return int(self.remaining_tokens * rag_proportion)
 
     def _retrieve_context(self, user_prompt: str) -> List[Tuple[str, float]]:
@@ -131,7 +179,7 @@ class RAGPipeline:
             results = all_results[entity]
             for i, item_id in enumerate(results["ids"][0]):
                 # apply filtering criteria: no duplicates; cosine distance < 0.8 for relevance
-                if item_id not in used_ids and results["distances"][0][i] < self.REL_THRESHOLD:
+                if item_id not in used_ids and results["distances"][0][i] < self.config.rel_threshold:
                     # extract only content & disctance into list of dicts to loop & filter easy
                     candidates.append({
                         "content": results["documents"][0][i],
@@ -175,7 +223,7 @@ class RAGPipeline:
         # Total request = input tokens + max_tokens, so max_tokens should be conservative
         # safe_max_tokens = min(self.remaining_tokens, 1000)  # Cap at 1000 tokens for response
         model = ChatGroq(
-            model=self.LLM,
+            model=self.config.llm,
             max_retries=2,
             max_tokens=self.remaining_tokens,
             temperature=0.7,
@@ -186,41 +234,22 @@ class RAGPipeline:
     def _query_llm(self, user_prompt: str, rag_enriched: bool = True) -> str:
         """
         - if flag rag_enriched with default value True is false, query llm without rag
-        - system_prompt works for both with rag and without rag
+        - system_prompt selected from config based on rag_enriched flag
         """
-        system_prompt = """You are an expert on the EU AI Act, drawing from official documentation including Articles, Recitals, Annexes, and Definitions. Your role is to provide clear, synthesized answers as a legal advisor would—integrating relevant context to explain concepts holistically, not just listing matches.
 
-When provided, retrieved context from the Act (starting with "Retrieved EU AI Act content with relevance scores:") is official and prioritized. It includes top-matched sections based on similarity, with scores indicating fit: 90-100% (direct answer), 70-89% (key related info), 50-69% (useful context), below 50% (background only—do not infer directly from these; use for completeness only).
-
-Key Rules:
-- Base answers on high-relevance (70%+) context first. For lower/insufficient context or none provided, supplement transparently with your knowledge (e.g., "Drawing from the Act's general provisions..."), but only if it directly addresses the query. If nothing suffices, state: "The available information does not cover this; consult the full Act or a lawyer."
-- Synthesize: Blend context and knowledge into a cohesive explanation. Avoid negative inferences from absences (e.g., don't assume 'not mentioned' means 'does not exist').
-- Distinguish roles (e.g., providers, deployers, member states, NCAs) clearly to avoid conflation.
-- Avoid introductory phrases like ‘Based on the provided content’ unless necessary for clarity.
-- Never repeat or echo the context format/phrase in your response. Do not discuss retrieval mechanics (e.g., embeddings, scores) unless asked.
-- Never fabricate information—cite specific sections (e.g., "Article 49 requires...").
-- Response Structure:
-  1. Direct Answer: Concise summary of the key point(s).
-  2. Explanation: Step-by-step reasoning, with citations.
-  3. Limitations: Note jurisdiction (EU-wide, but member states implement), that this is not advice, and suggest professional consultation.
-- Tone: Professional, accessible—define terms, avoid jargon overload.
-
-The user query starts with "Question: ".
-        """  # noqa: E501
-        
         # validation for missing rag context
         if rag_enriched and not self.rag_context:
             raise ValueError("RAG enriched mode requires rag_context to be set")
         # case 1: without rag
         if not rag_enriched:
             messages_base = [
-                ("system", system_prompt),
+                ("system", self.config.system_prompt_rag_disabled),
                 ("human", user_prompt)
             ]
         # case 2: with rag
         else:
             messages_base = [
-                ("system", system_prompt),
+                ("system", self.config.system_prompt_rag_enabled),
                 ("human", f"""Retrieved EU AI Act content with relevance scores:
 
                 {self._format_rag_context(self.rag_context)}
@@ -233,7 +262,7 @@ The user query starts with "Question: ".
 
     def _reset_for_fresh_state(self) -> None:
         """ set rag_pipeline back as much as necessry to enable further query """
-        self.remaining_tokens = self.TOTAL_EFFECTIVE_CONTEXT
+        self.remaining_tokens = self.total_effective_context
         self.rag_context = []
         self.model = None
 
@@ -256,14 +285,17 @@ The user query starts with "Question: ".
         self._init_model()
         # create the rag enriched llm prompt
         llm_response = self._query_llm(user_prompt=user_prompt, rag_enriched=rag_enriched)
-        print(f"LLM response: {llm_response}")
+        
+        # testing print delete for production
+        print(f"LLM response: \n{llm_response}")
         return llm_response
 
 
 def main():
-    app = RAGPipeline()
-    prompt = "What have EU-member countries have to report to the EU about AI highlevel?"
-    app.process_query(user_prompt=prompt, rag_enriched=False)
+    config = RAGConfig()
+    app = RAGPipeline(config)
+    prompt = "How do the requirements for AI regulatory sandboxes relate to innovation support for SMEs?"
+    app.process_query(user_prompt=prompt, rag_enriched=True)
 
 
 if __name__ == "__main__":
