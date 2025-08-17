@@ -79,15 +79,15 @@ class RAGPipeline:
     - ~7170 tokens -> 1.33 tokens per word -> 5390 words -> 1x DIN A4 page: ~500 words
     """
 
-    def __init__(self, config: RAGConfig):
-        # draw params from config dataclass
-        self.config = config
+    def __init__(self):
+        # init config with params / systemmessages saved in dataclass
+        self.config = RAGConfig()
         # validate config ratios
-        assert (config.user_query_share + config.llm_response_share + config.rag_content_share == 1.0), "check percentages!"
+        assert (self.config.user_query_share + self.config.llm_response_share + self.config.rag_content_share == 1.0), "check percentages!"
         # calculate total effective context from config
         self.total_effective_context = int(
-            config.total_absolute_context * (1 - config.token_buffer) - 
-            config.system_prompt_tokens - config.formatting_overhead
+            self.config.total_absolute_context * (1 - self.config.token_buffer) -
+            self.config.system_prompt_tokens - self.config.formatting_overhead
         )
         # connect to chromadb in read only mode; if not yet build, run db script before
         self.db = DB(read_only=True)
@@ -98,7 +98,7 @@ class RAGPipeline:
         # dynamically updated if tokens were cosumed in steps of the rag process
         self.remaining_tokens = self.total_effective_context
         # max amount tokens for user query;
-        self.max_user_query_tokens = self.total_effective_context * config.user_query_share
+        self.max_user_query_tokens = self.total_effective_context * self.config.user_query_share
         self.entities = ["annexes", "articles", "definitions", "recitals"]
         # structured rag context
         self.rag_context = []
@@ -292,8 +292,7 @@ class RAGPipeline:
 
 
 def main():
-    config = RAGConfig()
-    app = RAGPipeline(config)
+    app = RAGPipeline()
     prompt = "How do the requirements for AI regulatory sandboxes relate to innovation support for SMEs?"
     app.process_query(user_prompt=prompt, rag_enriched=True)
 
