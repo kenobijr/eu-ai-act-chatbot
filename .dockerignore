@@ -40,8 +40,6 @@ requirements.md
 
 # tests
 tests/
-test/
-*_test.py
 pytest.ini
 
 # local config/secrets
