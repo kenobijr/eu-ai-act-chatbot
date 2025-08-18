@@ -212,20 +212,17 @@ class Scraper:
             # relationships
             relations = {}
             for entity in ["annex", "article", "recital"]:
-                # catch annex relationships as list of <a href; filter duplicates with set
+                # catch relationships as unique urls from <a href tags
                 # form: <a href="https://artificialintelligenceact.eu/annex/1">Annex I</a>
-                url_tags = set(soup.select(f"#aia-explorer-content .et_pb_post_content a[href*='/{entity}/']"))
-                # extract urls from <a tags
-                urls = [a["href"] for a in url_tags]
-                # extracts resource digits from urls
-                digits = self.extract_url_digits(url_container=urls, phrase=entity)
-                # construct id's and save into dict for each entity
-                if entity == "article":
-                    relations[entity] = [f"{entity}_{i:03d}" for i in digits]
-                elif entity == "annex":
-                    relations[entity] = [f"{entity}_{i:02d}" for i in digits]
-                else:  # recital
-                    relations[entity] = [f"{entity}_{i:03d}" for i in digits]
+                url_tags = soup.select(f"#aia-explorer-content .et_pb_post_content a[href*='/{entity}/']")
+                # extract unique urls from <a tags
+                unique_urls = list(set(a["href"] for a in url_tags))
+                # extract resource digits from urls
+                digits = self.extract_url_digits(url_container=unique_urls, phrase=entity)
+                # construct unique id's with proper padding
+                padding = "03d" if entity in ["article", "recital"] else "02d"
+                # each article may not have multiple relationships to same identical entity
+                relations[entity] = list(set(f"{entity}_{i:{padding}}" for i in digits))
             # get text after removing in text span relationships
             text_div = soup.select_one("#aia-explorer-content .et_pb_post_content")
             for span in text_div.select("span.aia-recital-ref"):
