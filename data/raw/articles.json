@@ -18,26 +18,26 @@
     "section_title": null,
     "entry_date": "2 February 2025",
     "related_recital_ids": [
-      "recital_010",
       "recital_011",
-      "recital_021",
-      "recital_022",
+      "recital_010",
       "recital_024",
-      "recital_025"
+      "recital_025",
+      "recital_022",
+      "recital_021"
     ],
     "related_annex_ids": [
       "annex_01"
     ],
     "related_article_ids": [
-      "article_005",
-      "article_006",
+      "article_112",
       "article_010",
-      "article_050",
-      "article_057",
-      "article_059",
-      "article_102",
       "article_109",
-      "article_112"
+      "article_006",
+      "article_059",
+      "article_057",
+      "article_005",
+      "article_102",
+      "article_050"
     ]
   },
   "article_003": {
@@ -48,20 +48,20 @@
     "section_title": null,
     "entry_date": "2 February 2025",
     "related_recital_ids": [
-      "recital_012",
-      "recital_013",
-      "recital_014",
-      "recital_015",
-      "recital_016",
-      "recital_017",
-      "recital_018",
-      "recital_019",
       "recital_097",
+      "recital_100",
+      "recital_018",
+      "recital_128",
+      "recital_012",
+      "recital_015",
+      "recital_110",
+      "recital_017",
+      "recital_014",
       "recital_098",
       "recital_099",
-      "recital_100",
-      "recital_110",
-      "recital_128"
+      "recital_019",
+      "recital_016",
+      "recital_013"
     ],
     "related_annex_ids": [],
     "related_article_ids": [
@@ -88,29 +88,29 @@
     "section_title": null,
     "entry_date": "2 February 2025",
     "related_recital_ids": [
-      "recital_029",
-      "recital_030",
-      "recital_031",
-      "recital_032",
-      "recital_033",
-      "recital_034",
-      "recital_035",
       "recital_036",
       "recital_037",
-      "recital_038",
-      "recital_039",
-      "recital_040",
+      "recital_035",
+      "recital_034",
+      "recital_043",
+      "recital_044",
       "recital_041",
       "recital_042",
-      "recital_043",
-      "recital_044"
+      "recital_031",
+      "recital_029",
+      "recital_040",
+      "recital_030",
+      "recital_032",
+      "recital_033",
+      "recital_039",
+      "recital_038"
     ],
     "related_annex_ids": [
       "annex_02"
     ],
     "related_article_ids": [
-      "article_027",
-      "article_049"
+      "article_049",
+      "article_027"
     ]
   },
   "article_006": {
@@ -121,32 +121,32 @@
     "section_title": "Section 1: Classification of AI Systems as High-Risk",
     "entry_date": "2 August 2026 (2 August 2027 for Point 1)",
     "related_recital_ids": [
-      "recital_047",
+      "recital_063",
       "recital_048",
+      "recital_056",
+      "recital_052",
+      "recital_062",
+      "recital_060",
+      "recital_057",
+      "recital_061",
       "recital_050",
       "recital_051",
-      "recital_052",
       "recital_053",
-      "recital_054",
-      "recital_055",
-      "recital_056",
-      "recital_057",
-      "recital_058",
       "recital_059",
-      "recital_060",
-      "recital_061",
-      "recital_062",
-      "recital_063"
+      "recital_055",
+      "recital_054",
+      "recital_047",
+      "recital_058"
     ],
     "related_annex_ids": [
-      "annex_01",
-      "annex_03"
+      "annex_03",
+      "annex_01"
     ],
     "related_article_ids": [
-      "article_007",
+      "article_097",
       "article_049",
-      "article_096",
-      "article_097"
+      "article_007",
+      "article_096"
     ]
   },
   "article_007": {
@@ -190,8 +190,8 @@
     "related_annex_ids": [],
     "related_article_ids": [
       "article_013",
-      "article_060",
-      "article_072"
+      "article_072",
+      "article_060"
     ]
   },
   "article_010": {
@@ -214,8 +214,8 @@
     "entry_date": "2 August 2026",
     "related_recital_ids": [],
     "related_annex_ids": [
-      "annex_01",
-      "annex_04"
+      "annex_04",
+      "annex_01"
     ],
     "related_article_ids": [
       "article_097"
@@ -233,10 +233,10 @@
       "annex_03"
     ],
     "related_article_ids": [
-      "article_014",
-      "article_026",
       "article_072",
-      "article_079"
+      "article_014",
+      "article_079",
+      "article_026"
     ]
   },
   "article_013": {
@@ -249,10 +249,10 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_009",
-      "article_012",
+      "article_015",
       "article_014",
-      "article_015"
+      "article_009",
+      "article_012"
     ]
   },
   "article_014": {
@@ -291,14 +291,14 @@
     ],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_017",
       "article_018",
       "article_019",
-      "article_020",
       "article_043",
-      "article_047",
       "article_048",
-      "article_049"
+      "article_049",
+      "article_017",
+      "article_020",
+      "article_047"
     ]
   },
   "article_017": {
@@ -311,9 +311,9 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_009",
       "article_040",
       "article_072",
+      "article_009",
       "article_073"
     ]
   },
@@ -327,9 +327,9 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_011",
+      "article_047",
       "article_017",
-      "article_047"
+      "article_011"
     ]
   },
   "article_019": {
@@ -385,11 +385,11 @@
       "annex_08"
     ],
     "related_article_ids": [
-      "article_011",
-      "article_012",
-      "article_047",
       "article_049",
-      "article_074"
+      "article_074",
+      "article_011",
+      "article_047",
+      "article_012"
     ]
   },
   "article_023": {
@@ -404,9 +404,9 @@
       "annex_04"
     ],
     "related_article_ids": [
-      "article_011",
-      "article_022",
       "article_043",
+      "article_022",
+      "article_011",
       "article_047",
       "article_079"
     ]
@@ -421,10 +421,10 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_016",
-      "article_023",
       "article_047",
-      "article_079"
+      "article_023",
+      "article_079",
+      "article_016"
     ]
   },
   "article_025": {
@@ -435,13 +435,13 @@
     "section_title": "Section 3: Obligations of Providers and Deployers of High-Risk AI Systems and Other Parties",
     "entry_date": "2 August 2026",
     "related_recital_ids": [
-      "recital_084",
-      "recital_085",
-      "recital_086",
-      "recital_087",
       "recital_088",
-      "recital_089",
-      "recital_090"
+      "recital_090",
+      "recital_085",
+      "recital_087",
+      "recital_084",
+      "recital_086",
+      "recital_089"
     ],
     "related_annex_ids": [
       "annex_01"
@@ -460,20 +460,20 @@
     "entry_date": "2 August 2026",
     "related_recital_ids": [
       "recital_092",
-      "recital_094",
-      "recital_095"
+      "recital_095",
+      "recital_094"
     ],
     "related_annex_ids": [
       "annex_03"
     ],
     "related_article_ids": [
-      "article_013",
-      "article_049",
-      "article_050",
-      "article_071",
       "article_072",
+      "article_049",
+      "article_071",
+      "article_079",
+      "article_013",
       "article_073",
-      "article_079"
+      "article_050"
     ]
   },
   "article_027": {
@@ -488,8 +488,8 @@
       "annex_03"
     ],
     "related_article_ids": [
-      "article_006",
       "article_013",
+      "article_006",
       "article_046"
     ]
   },
@@ -543,8 +543,8 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_038",
-      "article_078"
+      "article_078",
+      "article_038"
     ]
   },
   "article_032": {
@@ -583,8 +583,8 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_028",
-      "article_043"
+      "article_043",
+      "article_028"
     ]
   },
   "article_035": {
@@ -608,9 +608,8 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
+      "article_030",
       "article_029",
-      "article_030",
-      "article_030",
       "article_031"
     ]
   },
@@ -624,9 +623,9 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_031",
+      "article_098",
       "article_078",
-      "article_098"
+      "article_031"
     ]
   },
   "article_038": {
@@ -676,8 +675,8 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_067",
-      "article_098"
+      "article_098",
+      "article_067"
     ]
   },
   "article_042": {
@@ -690,8 +689,8 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_010",
-      "article_015"
+      "article_015",
+      "article_010"
     ]
   },
   "article_043": {
@@ -703,20 +702,18 @@
     "entry_date": "2 August 2026",
     "related_recital_ids": [],
     "related_annex_ids": [
-      "annex_01",
-      "annex_03",
       "annex_04",
-      "annex_06",
-      "annex_06",
       "annex_07",
-      "annex_07"
+      "annex_03",
+      "annex_06",
+      "annex_01"
     ],
     "related_article_ids": [
-      "article_031",
+      "article_097",
       "article_040",
-      "article_041",
       "article_074",
-      "article_097"
+      "article_041",
+      "article_031"
     ]
   },
   "article_044": {
@@ -728,9 +725,9 @@
     "entry_date": "2 August 2026",
     "related_recital_ids": [],
     "related_annex_ids": [
-      "annex_01",
+      "annex_07",
       "annex_03",
-      "annex_07"
+      "annex_01"
     ],
     "related_article_ids": []
   },
@@ -801,8 +798,8 @@
     "entry_date": "2 August 2026",
     "related_recital_ids": [],
     "related_annex_ids": [
-      "annex_03",
       "annex_08",
+      "annex_03",
       "annex_09"
     ],
     "related_article_ids": [
@@ -857,9 +854,9 @@
       "annex_13"
     ],
     "related_article_ids": [
+      "article_097",
       "article_051",
-      "article_090",
-      "article_097"
+      "article_090"
     ]
   },
   "article_053": {
@@ -872,14 +869,12 @@
     "related_recital_ids": [],
     "related_annex_ids": [
       "annex_11",
-      "annex_11",
-      "annex_12",
       "annex_12"
     ],
     "related_article_ids": [
+      "article_097",
       "article_056",
-      "article_078",
-      "article_097"
+      "article_078"
     ]
   },
   "article_054": {
@@ -894,8 +889,8 @@
       "annex_11"
     ],
     "related_article_ids": [
-      "article_053",
-      "article_055"
+      "article_055",
+      "article_053"
     ]
   },
   "article_055": {
@@ -908,10 +903,10 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_053",
-      "article_054",
       "article_056",
-      "article_078"
+      "article_078",
+      "article_053",
+      "article_054"
     ]
   },
   "article_056": {
@@ -924,9 +919,8 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_053",
-      "article_053",
       "article_055",
+      "article_053",
       "article_098"
     ]
   },
@@ -980,19 +974,19 @@
     "entry_date": "2 August 2026",
     "related_recital_ids": [],
     "related_annex_ids": [
-      "annex_01",
       "annex_03",
+      "annex_01",
       "annex_09"
     ],
     "related_article_ids": [
+      "article_049",
+      "article_075",
+      "article_071",
+      "article_098",
       "article_005",
       "article_013",
-      "article_049",
       "article_061",
-      "article_071",
-      "article_073",
-      "article_075",
-      "article_098"
+      "article_073"
     ]
   },
   "article_061": {
@@ -1031,16 +1025,16 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_009",
-      "article_010",
-      "article_011",
-      "article_012",
-      "article_013",
-      "article_014",
-      "article_015",
-      "article_017",
       "article_072",
-      "article_073"
+      "article_014",
+      "article_009",
+      "article_017",
+      "article_015",
+      "article_011",
+      "article_073",
+      "article_013",
+      "article_012",
+      "article_010"
     ]
   },
   "article_064": {
@@ -1064,8 +1058,8 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_066",
-      "article_067"
+      "article_067",
+      "article_066"
     ]
   },
   "article_066": {
@@ -1077,22 +1071,22 @@
     "entry_date": "2 August 2025",
     "related_recital_ids": [],
     "related_annex_ids": [
-      "annex_01",
-      "annex_03"
+      "annex_03",
+      "annex_01"
     ],
     "related_article_ids": [
-      "article_005",
-      "article_007",
       "article_040",
-      "article_041",
-      "article_046",
-      "article_057",
-      "article_059",
+      "article_112",
       "article_060",
-      "article_071",
-      "article_073",
       "article_074",
-      "article_112"
+      "article_046",
+      "article_059",
+      "article_071",
+      "article_057",
+      "article_005",
+      "article_073",
+      "article_041",
+      "article_007"
     ]
   },
   "article_067": {
@@ -1116,10 +1110,10 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_074",
-      "article_081",
       "article_090",
-      "article_098"
+      "article_081",
+      "article_098",
+      "article_074"
     ]
   },
   "article_069": {
@@ -1132,8 +1126,8 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_068",
-      "article_084"
+      "article_084",
+      "article_068"
     ]
   },
   "article_070": {
@@ -1161,10 +1155,8 @@
       "annex_08"
     ],
     "related_article_ids": [
+      "article_049",
       "article_006",
-      "article_049",
-      "article_049",
-      "article_060",
       "article_060"
     ]
   },
@@ -1177,9 +1169,9 @@
     "entry_date": "2 August 2026",
     "related_recital_ids": [],
     "related_annex_ids": [
-      "annex_01",
+      "annex_04",
       "annex_03",
-      "annex_04"
+      "annex_01"
     ],
     "related_article_ids": [
       "article_098"
@@ -1210,14 +1202,14 @@
     "entry_date": "2 August 2026",
     "related_recital_ids": [],
     "related_annex_ids": [
-      "annex_01",
-      "annex_03"
+      "annex_03",
+      "annex_01"
     ],
     "related_article_ids": [
-      "article_002",
+      "article_083",
       "article_078",
       "article_079",
-      "article_083"
+      "article_002"
     ]
   },
   "article_075": {
@@ -1244,9 +1236,8 @@
     "related_annex_ids": [],
     "related_article_ids": [
       "article_058",
-      "article_060",
-      "article_060",
-      "article_061"
+      "article_061",
+      "article_060"
     ]
   },
   "article_077": {
@@ -1273,8 +1264,8 @@
     "entry_date": "2 August 2025",
     "related_recital_ids": [],
     "related_annex_ids": [
-      "annex_03",
-      "annex_04"
+      "annex_04",
+      "annex_03"
     ],
     "related_article_ids": [
       "article_074"
@@ -1290,11 +1281,11 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_005",
       "article_040",
+      "article_077",
+      "article_005",
       "article_041",
-      "article_050",
-      "article_077"
+      "article_050"
     ]
   },
   "article_080": {
@@ -1307,10 +1298,10 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_006",
-      "article_071",
       "article_079",
-      "article_099"
+      "article_006",
+      "article_099",
+      "article_071"
     ]
   },
   "article_081": {
@@ -1323,10 +1314,10 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_005",
       "article_040",
+      "article_079",
       "article_041",
-      "article_079"
+      "article_005"
     ]
   },
   "article_082": {
@@ -1339,8 +1330,8 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_077",
-      "article_079"
+      "article_079",
+      "article_077"
     ]
   },
   "article_083": {
@@ -1416,8 +1407,8 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_075",
-      "article_094"
+      "article_094",
+      "article_075"
     ]
   },
   "article_089": {
@@ -1441,9 +1432,9 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
+      "article_094",
       "article_051",
-      "article_091",
-      "article_094"
+      "article_091"
     ]
   },
   "article_091": {
@@ -1456,10 +1447,10 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_053",
       "article_055",
-      "article_068",
-      "article_101"
+      "article_053",
+      "article_101",
+      "article_068"
     ]
   },
   "article_092": {
@@ -1472,11 +1463,11 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_068",
-      "article_090",
+      "article_101",
       "article_091",
       "article_098",
-      "article_101"
+      "article_090",
+      "article_068"
     ]
   },
   "article_093": {
@@ -1489,9 +1480,9 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
+      "article_092",
       "article_053",
-      "article_054",
-      "article_092"
+      "article_054"
     ]
   },
   "article_094": {
@@ -1528,12 +1519,12 @@
       "annex_01"
     ],
     "related_article_ids": [
-      "article_003",
-      "article_005",
-      "article_008",
-      "article_015",
-      "article_025",
       "article_040",
+      "article_025",
+      "article_015",
+      "article_003",
+      "article_008",
+      "article_005",
       "article_041",
       "article_050"
     ]
@@ -1548,14 +1539,14 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_006",
-      "article_007",
-      "article_011",
       "article_043",
-      "article_047",
       "article_051",
       "article_052",
-      "article_053"
+      "article_053",
+      "article_006",
+      "article_011",
+      "article_047",
+      "article_007"
     ]
   },
   "article_098": {
@@ -1579,18 +1570,17 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_005",
-      "article_005",
-      "article_016",
       "article_022",
-      "article_023",
+      "article_096",
       "article_024",
-      "article_026",
       "article_031",
+      "article_016",
+      "article_023",
+      "article_005",
       "article_033",
       "article_034",
       "article_050",
-      "article_096"
+      "article_026"
     ]
   },
   "article_100": {
@@ -1603,7 +1593,6 @@
     "related_recital_ids": [],
     "related_annex_ids": [],
     "related_article_ids": [
-      "article_005",
       "article_005"
     ]
   },
@@ -1618,10 +1607,10 @@
     "related_annex_ids": [],
     "related_article_ids": [
       "article_056",
-      "article_091",
-      "article_092",
       "article_093",
-      "article_098"
+      "article_091",
+      "article_098",
+      "article_092"
     ]
   },
   "article_102": {
@@ -1735,8 +1724,8 @@
       "annex_10"
     ],
     "related_article_ids": [
-      "article_005",
-      "article_113"
+      "article_113",
+      "article_005"
     ]
   },
   "article_112": {
@@ -1748,14 +1737,14 @@
     "entry_date": "2 August 2026",
     "related_recital_ids": [],
     "related_annex_ids": [
-      "annex_01",
-      "annex_03"
+      "annex_03",
+      "annex_01"
     ],
     "related_article_ids": [
-      "article_005",
-      "article_050",
       "article_097",
-      "article_099"
+      "article_099",
+      "article_005",
+      "article_050"
     ]
   },
   "article_113": {
@@ -1769,8 +1758,8 @@
     "related_annex_ids": [],
     "related_article_ids": [
       "article_006",
-      "article_078",
-      "article_101"
+      "article_101",
+      "article_078"
     ]
   }
 }
