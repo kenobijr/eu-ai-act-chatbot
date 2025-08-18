@@ -18,14 +18,33 @@ if not groq_api_key:
 class TokenManager:
     """
     - contains all logic related to the token budged for llm prompts
-    - instanciated by RAGPipeline with RAGConfig
     - calculate initial budget and report to RAGPipeline / FE
     - update budget after consume; inform about current budget
     - inform RAGPipeline about token amount available for llm
     """
     def __init__(self, config: RAGConfig):
         self.config = config
-        pass
+        # save tokenizer at obj to enable fast calls
+        self.tokenizer = tiktoken.get_encoding("cl100k_base")
+        # calc total effective context from config
+        self.initial_available_tokens = self._calc_initial_tokens()
+
+    def _calc_initial_tokens(self) -> int:
+        """
+        calc effective initial token budget by:
+        1. scale total available tokens down by token buffer ratio (different tokenizers)
+        2. subtract fixed token amounts reserved for systemmessage and formatting
+        """
+        return int(
+            self.config.total_available_tokens * (1 - self.config.token_buffer) -
+            self.config.system_prompt_tokens - self.config.formatting_overhead_tokens
+        )
+
+    def calc_tokens_from_words(self, text: str) -> int:
+        """ get amount of tokens using tiktokenizer saved at obj """
+        return len(self.tokenizer.encode(text))
+
+
 
 
 class RAGPipeline:
@@ -36,19 +55,16 @@ class RAGPipeline:
     """
 
     def __init__(self):
-        # init config with params / systemmessages saved in dataclass
+        # init config with default params / systemmessages saved in dataclass
         self.config = RAGConfig()
+        # init tokenmanager with passing the config
+        self.tm = TokenManager(self.config)
         # calculate total effective context from config
-        self.total_effective_context = int(
-            self.config.total_absolute_context * (1 - self.config.token_buffer) -
-            self.config.system_prompt_tokens - self.config.formatting_overhead
-        )
+        self.total_effective_context = self.tm.initial_available_tokens
         # connect to chromadb in read only mode; if not yet build, run db script before
         self.db = DB(read_only=True)
         # langchain model will be instanciated after rag context gen to calc llm response max_tokens
         self.model = None
-        # used internally to check context window limits; tokenising for llm calls done by langchain
-        self.tokenizer = tiktoken.get_encoding("cl100k_base")
         # dynamically updated if tokens were cosumed in steps of the rag process
         self.remaining_tokens = self.total_effective_context
         # max amount tokens for user query;
@@ -57,16 +73,9 @@ class RAGPipeline:
         # structured rag context
         self.rag_context = []
 
-    def count_tokens(self, text: str) -> int:
-        """
-        - get amount of tokens using tiktokenizer
-        - buffer regarding distinct tokenizer of llama are calced into class globals
-        """
-        return len(self.tokenizer.encode(text))
-
     def _validate_user_prompt(self, user_prompt: str) -> bool:
         """ calc token amount of user input str; if valid len return True"""
-        assert self.count_tokens(user_prompt) <= self.max_user_query_tokens, "Too long user prompt."
+        assert self.tm.calc_tokens_from_words(user_prompt) <= self.max_user_query_tokens, "Too long user prompt."
         assert isinstance(user_prompt, str), "Invalid user prompt data type."
         return True
 
@@ -134,7 +143,7 @@ class RAGPipeline:
                 all_results["articles"]["distances"][0][i],
                 # all_results["articles"]
             ))
-            remaining_rag_tokens -= self.count_tokens(text_content)
+            remaining_rag_tokens -= self.tm.calc_tokens_from_words(text_content)
             # add id of entry to used_id container to prevent duplicates in phase 2
             used_ids.add(all_results["articles"]["ids"][0][i])
         # phase 2: fill with best remaining candidates
@@ -152,7 +161,7 @@ class RAGPipeline:
         # sort by distance and fill while remaining tokens & candidates available
         for candidate in sorted(candidates, key=lambda x: x["distance"]):
             # loop through sorted candidates and add content as tokens for rag context available
-            tokens = self.count_tokens(candidate["content"])
+            tokens = self.tm.calc_tokens_from_words(candidate["content"])
             if tokens <= remaining_rag_tokens:
                 context.append((candidate["content"], candidate["distance"]))
                 remaining_rag_tokens -= tokens
@@ -240,11 +249,11 @@ class RAGPipeline:
         if not self._validate_user_prompt(user_prompt):
             raise ValueError("RAG process aborted: too long user prompt or wrong data type")
         # update remaining tokens after consuming user prompt tokens
-        self._update_remaining_tokens(self.count_tokens(user_prompt))
+        self._update_remaining_tokens(self.tm.calc_tokens_from_words(user_prompt))
         # retrieve raw rag_context save at obj
         self.rag_context = self._retrieve_context(user_prompt)
         # update remaining tokens after consuming formatted rag context
-        self._update_remaining_tokens(self.count_tokens(self._format_rag_context(self.rag_context)))
+        self._update_remaining_tokens(self.tm.calc_tokens_from_words(self._format_rag_context(self.rag_context)))
         # init langchain model with certain llm response max_tokens
         self._init_model()
         # create the rag enriched llm prompt
