@@ -52,4 +52,5 @@ upload_vector_db.py
 src/scraper.py
 
 # data -> raw not needed; chroma_db source files downloaded at first runtime
-data/
+data/raw/
+data/chroma_db/
