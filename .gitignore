@@ -17,6 +17,8 @@ config/secrets.json
 # logs & cache
 *.log
 /cache/
+
+# data
 /data/chroma_db/
 
 # claude ai

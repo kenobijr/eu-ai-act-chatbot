@@ -4,7 +4,7 @@ from langchain_groq import ChatGroq
 import tiktoken
 from src.vector_db import DB
 from typing import List, Tuple
-from dataclasses import dataclass
+from src.config import RAGConfig
 
 # load env variables from .env file
 load_dotenv()
@@ -13,63 +13,6 @@ load_dotenv()
 groq_api_key = os.getenv('GROQ_API_KEY')
 if not groq_api_key:
     raise ValueError("GROQ_API_KEY not found in .env file.")
-
-
-@dataclass
-class RAGConfig:
-    """
-    - class to steer all relevant RAGPipeline parameters central
-    - provides also systemmessages for cases non-rag & rag-enriched
-    """
-    # langchain model
-    llm: str = "llama3-8b-8192"
-    # context window and token management
-    total_absolute_context: int = 6000
-    token_buffer: float = 0.10
-    system_prompt_tokens: int = 550
-    formatting_overhead: int = 50
-    # allocation ratios
-    user_query_share: float = 0.2
-    llm_response_share: float = 0.2
-    rag_content_share: float = 0.6
-    # rag relevance threshold for cosine distance
-    rel_threshold: float = 0.8
-    # system prompts
-    system_prompt_rag_disabled: str = """You are a legal expert providing accurate, helpful information about the EU AI Act based on your parametric knowledge. Your role is to provide clear, synthesized answers as a legal advisor would, integrating relevant context and knowledge to explain concepts holistically.
-
-Key Rules:
-- Provide comprehensive answers based on your parametric knowledge of the EU AI Act. If your parametric knowledge doesn't suffice for the specific query, state: "I don't have sufficient information about this specific aspect; consult the full Act or a legal professional."
-- Synthesize and blend parametric knowledge into a cohesive explanation. Avoid negative inferences from absences (e.g., don't assume 'not mentioned' means 'does not exist').
-- Distinguish roles (e.g., providers, deployers, member states, NCAs) clearly to avoid conflation.
-- Never fabricate information. When referencing specific provisions, only cite article / section numbers you're confident about. If uncertain, describe the concept without specific citations.
-- Response Structure (use internally, do not label sections):
-  1. Start with a concise summary answering the key point(s) directly
-  2. Follow with step-by-step reasoning (with citations if available)
-  3. Limitations: Note jurisdiction (EU-wide, but member states implement), that this is not advice, and suggest professional consultation.
-- Tone: Professional, accessible—define terms, avoid jargon overload.
-
-The user query starts with "Question: "."""  # noqa: E501
-    system_prompt_rag_enabled: str = """You are a legal expert providing accurate, helpful information about the EU AI Act based on your parametric knowledge. Your role is to provide clear, synthesized answers as a legal advisor would, integrating relevant context and parametric knowledge to explain concepts holistically.
-
-Key Rules:
-- Provide comprehensive answers based on your parametric knowledge of the EU AI Act. If your parametric knowledge doesn't suffice for the specific query, state: "I don't have sufficient information about this specific aspect; consult the full Act or a legal professional."
-- Synthesize and blend parametric knowledge into a cohesive explanation. Avoid negative inferences from absences (e.g., don't assume 'not mentioned' means 'does not exist').
-- Distinguish roles (e.g., providers, deployers, member states, NCAs) clearly to avoid conflation.
-- Never fabricate information. When referencing specific provisions, only cite article / section numbers you're confident about. If uncertain, describe the concept without specific citations.
-- Response Structure (use internally, do not label sections):
-  1. Start with a concise summary answering the key point(s) directly
-  2. Follow with step-by-step reasoning (with citations if available)
-  3. Limitations: Note jurisdiction (EU-wide, but member states implement), that this is not advice, and suggest professional consultation.
-- Tone: Professional, accessible—define terms, avoid jargon overload.
-
-In some prompts additional Content from the official documentation of the EU AI Act including Articles, Recitals, Annexes, and Definitions is provided (starting with "Retrieved EU AI Act content with relevance scores:"). When provided, it is authentic and must be prioritized. It includes top-matched sections based on similarity, with scores indicating fit: 90-100% (direct answer), 70-89% (key related info), 50-69% (useful context), below 50% (background only—do not infer directly from these; use for completeness only).
-
-Additional Official Documentation Rules - ONLY RELEVANT IF THIS CONTENT IS PROVIDED:
-- Base answers on high-relevance (70%+) context first. For lower/insufficient context, use your parametric knowledge transparently to supplement gaps. If nothing suffices, state: "I don't have sufficient information about this specific aspect; consult the full Act or a legal professional."
-- Synthesize and blend provided context and parametric knowledge into a cohesive explanation.
-- Never repeat or echo the context format/phrase in your response. Do not discuss retrieval mechanics (e.g., embeddings, scores) unless asked.
-
-The user query starts with "Question: "."""  # noqa: E501
 
 
 class RAGPipeline:
@@ -140,9 +83,10 @@ class RAGPipeline:
         - return list of tuples with text content & cos distance for each collection entry
         core rag context generation logic while:
         - 1. get top 15 nearest entries across all entities
-        - 2. always grab top 3 nearest articles -> they are the "central hub" with relationships
-        - 3. fill up top relations (minus the 3 already added articles) over all types beginning
-          frombest distance rating until NOT distance < 0.8 anymore OR rag token limit reached
+        - 2. always grab top 3 nearest articles as "central hub" + their relationships
+        - 3. apply relationship boosts to all candidates based on connections to top 3 articles
+        - 4. fill up top relations (minus the 3 already added articles) over all types beginning
+          from best distance rating until NOT distance < 0.8 anymore OR rag token limit reached
         -------------------------------------------------------------
         -> from chromadb you get this dict structure for collection queries:
         {
@@ -158,18 +102,27 @@ class RAGPipeline:
         # query all collections once -> key value pairs for each entity query return
         all_results = {
             entity:
-            self.db.collection[entity].query(query_texts=[user_prompt], n_results=15)
+            self.db.collection[entity].query(
+                query_texts=[user_prompt],
+                n_results=15,
+                #include=["documents", "distances", "metadatas", "ids"],  # include metadata
+            )
             for entity in self.entities
         }
-        # phase 1: always grab top 3 articles (central hub)
+        # phase 1: always grab top 3 articles (central hub) + collect their relationships
         context = []
         used_ids = set()
         # takes the min of 3 or however many articles were returned -> security from index errors
         for i in range(min(3, len(all_results["articles"]["ids"][0]))):
-            # grab text content of entry, add to context container
+            # grab text
             text_content = all_results["articles"]["documents"][0][i]
+            # meta = all_results["articles"]["metadatas"][0][i]
             # construct tuple with text content + distance and append to context container
-            context.append((text_content, all_results["articles"]["distances"][0][i]))
+            context.append((
+                text_content,
+                all_results["articles"]["distances"][0][i],
+                # all_results["articles"]
+            ))
             remaining_rag_tokens -= self.count_tokens(text_content)
             # add id of entry to used_id container to prevent duplicates in phase 2
             used_ids.add(all_results["articles"]["ids"][0][i])
@@ -287,6 +240,7 @@ class RAGPipeline:
         llm_response = self._query_llm(user_prompt=user_prompt, rag_enriched=rag_enriched)
         
         # testing print delete for production
+        print(f"RAG_FORMATTED: \n{self._format_rag_context(self.rag_context)}")
         print(f"LLM response: \n{llm_response}")
         return llm_response
 
