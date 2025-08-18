@@ -15,6 +15,19 @@ if not groq_api_key:
     raise ValueError("GROQ_API_KEY not found in .env file.")
 
 
+class TokenManager:
+    """
+    - contains all logic related to the token budged for llm prompts
+    - instanciated by RAGPipeline with RAGConfig
+    - calculate initial budget and report to RAGPipeline / FE
+    - update budget after consume; inform about current budget
+    - inform RAGPipeline about token amount available for llm
+    """
+    def __init__(self, config: RAGConfig):
+        self.config = config
+        pass
+
+
 class RAGPipeline:
     """
     - total context window len llama 3 8B = 8192 tokens
@@ -25,8 +38,6 @@ class RAGPipeline:
     def __init__(self):
         # init config with params / systemmessages saved in dataclass
         self.config = RAGConfig()
-        # validate config ratios
-        assert (self.config.user_query_share + self.config.llm_response_share + self.config.rag_content_share == 1.0), "check percentages!"
         # calculate total effective context from config
         self.total_effective_context = int(
             self.config.total_absolute_context * (1 - self.config.token_buffer) -
@@ -196,13 +207,13 @@ class RAGPipeline:
         # case 1: without rag
         if not rag_enriched:
             messages_base = [
-                ("system", self.config.system_prompt_rag_disabled),
+                ("system", self.config.system_message_rag_disabled),
                 ("human", user_prompt)
             ]
         # case 2: with rag
         else:
             messages_base = [
-                ("system", self.config.system_prompt_rag_enabled),
+                ("system", self.config.system_message_rag_enabled),
                 ("human", f"""Retrieved EU AI Act content with relevance scores:
 
                 {self._format_rag_context(self.rag_context)}
