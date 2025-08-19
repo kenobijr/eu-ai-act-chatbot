@@ -25,5 +25,3 @@ def test_load_system_messages_base(tmp_path):
     # test
     result = _load_system_messages(str(yaml_file))
     assert result == data
-
-
