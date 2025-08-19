@@ -1,29 +1,34 @@
 import chromadb
 from chromadb import PersistentClient, Collection
 from chromadb.utils import embedding_functions
+from src.config import DBConfig
 from pathlib import Path
 import json
 from typing import Dict
 
 
 class DB:
-    def __init__(self, read_only: bool):
+    def __init__(self, config=None, read_only=True):
         """
+        - !!! ADD FACTORY CLASS METHOD !!!
+        - raw data loading file names? use from saved scraper / scraper script?
+        
+        
         - initialize database connection if existing or build it
         - args:
             - read_only: if True, connect to existing DB; else create and populate
         """
-
-        # for each entity sep collection (table) is created in db client
-        self.entities = ["annexes", "articles", "definitions", "recitals"]
+        self.config = config if config is not None else DBConfig()
+        # creates persistent chroma_db instance at local repo
+        self.db_client = self.create_or_connect_db()
         # embedding_function via chroma_db huggingface wrapper -> attached at collection level
         self.embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name="sentence-transformers/all-MiniLM-L6-v2",
-            device="cpu",
+            model_name=self.config.embedding_function,
+            device=self.config.embedding_device,
         )
-        # creates persistent chroma_db instance at local repo
-        self.db_client = self._setup_db()
-        # MAJOR SWITCH -> read only or create anew
+        # for each entity sep collection (table) is created in db client
+        self.entities = self.config.entities
+        # MAJOR SWITCH -> read only or create anew 
         if read_only:
             # production mode: connect to existing collections
             self.collection = self._get_collections()
@@ -34,13 +39,13 @@ class DB:
             for entity in self.entities:
                 getattr(self, f"_populate_{entity}")()
 
-    def _setup_db(self) -> PersistentClient:
+    def create_or_connect_db(self) -> PersistentClient:
         """
         - creates persistent db client in local repo
         - if db client already exists, it simply connects to existing db
         """
         # define save path for persistent DB & create dirs
-        save_dir = Path(__file__).parent.parent / "data" / "chroma_db"
+        save_dir = self.config.save_dir
         save_dir.mkdir(parents=True, exist_ok=True)
         return chromadb.PersistentClient(path=save_dir)
 
@@ -72,7 +77,7 @@ class DB:
                 embedding_function=self.embedding_function,
                 configuration={
                     "hnsw": {
-                        "space": "cosine"
+                        "space": self.config.measurement_unit
                     }
                 },
             )
@@ -84,15 +89,15 @@ class DB:
         - load json at specified path at each entity and save as dict at object
         - processing of entity dicts done in sep methods due to distinct structures
         """
-        input_dir = Path(__file__).parent.parent / "data" / "raw"
+        input_dir = self.config.data_dir
         raw_data_dict = {}
         for entity in self.entities:
             # check if file exists
-            file_path = input_dir / f"{entity}.json"
+            file_path = input_dir / f"{entity}{self.config.file_extension}"
             if not file_path.exists():
                 print(f"File at {file_path} could not be found, skipping {entity}")
                 continue
-            with open(f"{input_dir}/{entity}.json", mode="r", encoding="utf-8") as f:
+            with open(file_path, mode="r", encoding="utf-8") as f:
                 raw_data_dict[entity] = json.load(f)
                 print(f"Loaded {len(raw_data_dict[entity])} {entity}")
         return raw_data_dict
