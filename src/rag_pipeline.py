@@ -77,39 +77,26 @@ class TokenManager:
         self.remaining_tokens = self._calc_initial_tokens()
 
 
-class RAGPipeline:
+class RAGEngine:
     """
-    - total context window len llama 3 8B = 8192 tokens
-    - BUT: groq tokens per minute (TPM): Limit 6000
-    - ~7170 tokens -> 1.33 tokens per word -> 5390 words -> 1x DIN A4 page: ~500 words
+    - core rag logic receiving user prompt and token budget, returning final rag context as str
+    - only this class inits & queries the vectorDB
     """
-
-    def __init__(self):
-        # init config with default params / systemmessages saved in dataclass
-        self.config = RAGConfig()
-        # init tokenmanager with passing the config
-        self.tm = TokenManager(self.config)
+    def __init__(self, config: RAGConfig, tm: TokenManager):
+        #self.user_prompt = user_prompt
+        self.config = config
+        self.tm = tm
         # connect to chromadb in read only mode; if not yet build, run db script before
         self.db = DB(read_only=True)
-        # langchain model will be instanciated after rag context gen to calc llm response max_tokens
-        self.model = None
         self.entities = ["annexes", "articles", "definitions", "recitals"]
-        self.rag_context = []
+        self.token_budget = None
 
-    def user_query_len(self) -> int:
-        """
-        - tell the app / fe how many chars for user query derived from token manager
-        - must be converted from tokens into chars: (4-5 chars/token, ~1 token/word)
-        """
-        return int(self.tm.user_query_tokens * 4)
+    def execute(self, user_prompt: str) -> str:
+        # calc token budget for rag context at runtime
+        self.token_budget = self.tm.rag_context_tokens
+        return self._generate_rag_context(user_prompt)
 
-    def _validate_user_prompt(self, user_prompt: str) -> bool:
-        """ calc token amount of user input str; if valid len return True"""
-        assert self.tm.get_token_amount(user_prompt) <= self.tm.user_query_tokens, "Too long user prompt."
-        assert isinstance(user_prompt, str), "Invalid user prompt data type."
-        return True
-
-    def _retrieve_context(self, user_prompt: str, token_budget: int) -> List[Tuple[str, float]]:
+    def _generate_rag_context(self, user_prompt: str) -> List[Tuple[str, float]]:
         """
         - compares user prompt against vector_db entries and selects best matches
         - collects best matches until rag token limit is reached or no further good matches
@@ -154,10 +141,15 @@ class RAGPipeline:
                 all_results["articles"]["distances"][0][i],
                 # all_results["articles"]
             ))
-            token_budget -= self.tm.get_token_amount(text_content)
+            # safety clause? or even before appending?
+            self.token_budget -= self.tm.get_token_amount(text_content)
             # add id of entry to used_id container to prevent duplicates in phase 2
             used_ids.add(all_results["articles"]["ids"][0][i])
-        # phase 2: fill with best remaining candidates
+
+        # phase 2: fill with best remaining candidates across all entities
+        # step 1:
+        # - filter for used id's of step 1 & relevance threshold
+        # - extract only certain data from each entry: content & distance
         candidates = []
         for entity in self.entities:
             results = all_results[entity]
@@ -169,24 +161,18 @@ class RAGPipeline:
                         "content": results["documents"][0][i],
                         "distance": results["distances"][0][i]
                     })
-        # sort by distance and fill while remaining tokens & candidates available
+        # step 2: sort by distance and fill while remaining tokens & candidates available
         for candidate in sorted(candidates, key=lambda x: x["distance"]):
             # loop through sorted candidates and add content as tokens for rag context available
             tokens = self.tm.get_token_amount(candidate["content"])
-            if tokens <= token_budget:
+            if tokens <= self.token_budget:
                 context.append((candidate["content"], candidate["distance"]))
-                token_budget -= tokens
-        return context
+                self.token_budget -= tokens
 
-    def _distance_to_relevance(self, distance: float) -> str:
-        """
-        - measurement for the quality / relevance of rag content is provided to llm
-        - convert cosine distance from float to relevance percentage that LLM understands easier
-        """
-        relevance = (1 - distance) * 100
-        return f"{relevance:.0f}%"
+        return self._format_rag_context(context)
 
-    def _format_rag_context(self, rag_raw: List[Tuple[str, float]]) -> str:
+    @staticmethod
+    def _format_rag_context(rag_raw: List[Tuple[str, float]]) -> str:
         """
         - takes (text_content, distance) tuples fo rag retrieved collection entries as input
         - processes & formats them into final str format to make the llm call with
@@ -194,9 +180,52 @@ class RAGPipeline:
         """
         formatted_chunks = []
         for text, distance in rag_raw:
-            relevance = self._distance_to_relevance(distance)
+            relevance = RAGEngine._distance_to_relevance(distance)
             formatted_chunks.append(f"[Relevance: {relevance}]\n{text}")
         return "\n\n---\n\n".join(formatted_chunks)
+
+    @staticmethod
+    def _distance_to_relevance(distance: float) -> str:
+        """
+        - measurement for the quality / relevance of rag content is provided to llm
+        - convert cosine distance from float to relevance percentage that LLM understands easier
+        """
+        relevance = (1 - distance) * 100
+        return f"{relevance:.0f}%"
+
+
+class RAGPipeline:
+    """
+    - total context window len llama 3 8B = 8192 tokens
+    - ~7170 tokens -> 1.33 tokens per word -> 5390 words -> 1x DIN A4 page: ~500 words
+    - BUT: groq tokens per minute (TPM): Limit 6000
+    """
+
+    def __init__(self):
+        # init config with default params / systemmessages saved in dataclass
+        self.config = RAGConfig()
+        # init tokenmanager with passing the config
+        self.tm = TokenManager(self.config)
+        # init rag engine with references to config & tokenmanager
+        self.rag_engine = RAGEngine(self.config, self.tm)
+        # rag context created by RAGEngine after user query is processed
+        self.rag_context = []
+        # langchain model will be instanciated after rag context gen to calc llm response max_tokens
+        self.model = None
+
+
+    def user_query_len(self) -> int:
+        """
+        - tell the app / fe how many chars for user query derived from token manager
+        - must be converted from tokens into chars: (4-5 chars/token, ~1 token/word)
+        """
+        return int(self.tm.user_query_tokens * 4)
+
+    def _validate_user_prompt(self, user_prompt: str) -> bool:
+        """ calc token amount of user input str; if valid len return True"""
+        assert self.tm.get_token_amount(user_prompt) <= self.tm.user_query_tokens, "Too long user prompt."
+        assert isinstance(user_prompt, str), "Invalid user prompt data type."
+        return True
 
     def _init_model(self, token_budget: int) -> None:
         """ init langchain model with token budget """
@@ -228,7 +257,7 @@ class RAGPipeline:
             messages_base = [
                 ("system", self.config.system_message_rag_enabled),
                 ("human", f"""Retrieved EU AI Act content with relevance scores:
-                {self._format_rag_context(self.rag_context)}
+                {self.rag_context}
                 Question: {user_prompt}""")
             ]
         # return llm message for both cases
@@ -252,23 +281,23 @@ class RAGPipeline:
         # reduce consumed tokens by user prompt
         self.tm.reduce_remaining_tokens(user_prompt)
         # retrieve raw rag_context save at obj
-        self.rag_context = self._retrieve_context(user_prompt=user_prompt, token_budget=self.tm.rag_context_tokens)
+        self.rag_context = self.rag_engine.execute(user_prompt=user_prompt)
         # reduce consumed tokens by rag context
-        self.tm.reduce_remaining_tokens(self._format_rag_context(self.rag_context))
+        self.tm.reduce_remaining_tokens(self.rag_context)
         # init langchain model providing remaining tokens to specify max_tokens llm response
         self._init_model(token_budget=self.tm.remaining_tokens)
         # create the rag enriched llm prompt
         llm_response = self._query_llm(user_prompt=user_prompt, rag_enriched=rag_enriched)
         
         # testing print delete for production
-        print(f"RAG_FORMATTED: \n{self._format_rag_context(self.rag_context)}")
+        print(f"RAG_FORMATTED: \n{self.rag_context}")
         print(f"LLM response: \n{llm_response}")
         return llm_response
 
 
 def main():
     app = RAGPipeline()
-    prompt = "My AI startup incorporated in France tracks if certain fabric workers are underperformers, do I face any regulation?"
+    prompt = "My AI startup incorporated in France tracks by facial recognition if certain fabric workers are underperformers, do I face any regulation?"
     app.process_query(user_prompt=prompt, rag_enriched=True)
 
 
