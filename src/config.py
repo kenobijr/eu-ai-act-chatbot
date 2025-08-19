@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import yaml
 from pathlib import Path
 
@@ -65,3 +65,26 @@ class RAGConfig:
             + self.rag_content_share
             == 1.0
         ), "token share percentages percentages don't add up to 100%, check config."
+
+
+@dataclass
+class DBConfig:
+    """
+    - embedding functions parameters work on:
+        - from chromadb.utils import embedding_functions
+        - embedding_functions.SentenceTransformerEmbeddingFunction
+    """
+    # normal list not allowed in data class due to mutability
+    entities: list[str] = field(
+        default_factory=lambda: ["annexes", "articles", "definitions", "recitals"]
+    )
+    # embedding
+    embedding_function = "sentence-transformers/all-MiniLM-L6-v2"
+    embedding_device = "cpu"
+    # unit to measure distance between entity in high dim space
+    measurement_unit = "cosine"
+    # raw data loading - relative to project root
+    data_dir: Path = Path(__file__).parent.parent / "data" / "raw"
+    file_extension: str = ".json"
+    # data saving
+    save_dir: Path = Path(__file__).parent.parent / "data" / "chroma_db"
