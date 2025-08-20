@@ -30,11 +30,8 @@ _MESSAGES = _load_system_messages(file_path="data/system_messages.yml")
 class RAGConfig:
     """
     - class to steer all relevant RAGPipeline parameters central
-    - while llama 3 8B context window is 8192 tokens, qroq api tpm of 6k is used as start point
-    - tiktoken "cl100k_base" is used to calc the token budget, to keep the app lightweight
-    - llama 3's tokenizer produces 5-15% more tokens compared to tiktoken
-    - to compensate, total token amount is reduced by buffer of 12%
     - provides also systemmessages for cases non-rag & rag-enriched
+    - includes token management parameters for TokenManager class
     """
     # langchain model
     llm: str = "llama3-8b-8192"
