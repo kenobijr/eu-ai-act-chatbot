@@ -94,6 +94,8 @@ class RAGEngine:
         self.remaining_rag_tokens = None
         # collect id's of entities added to rag context to prevent duplicates
         self.used_ids = set()
+        # collect metadata from top 3 articles and direct matches to apply relationship boost on
+        self.articles_relationships = []
         self.rag_context = []
 
     def execute(self, user_prompt: str) -> str:
@@ -128,7 +130,7 @@ class RAGEngine:
             # check for invalid number ranges
             if num < 1 or num > config["max_num"]:
                 continue
-            padded_num = f"{num:0{config['pad_digits']}d}"
+            padded_num = f"{num:0{config["pad_digits"]}d}"
             entity_id = f"{config['id_prefix']}{padded_num}"
             if entity_id not in seen_ids:
                 candidates.append((entity_id, config["collection"]))
@@ -139,15 +141,19 @@ class RAGEngine:
         for entity_id, collection_name in candidates:
             collection = self.db.collections[collection_name]
             result = collection.get(ids=[entity_id])
-            if not result['documents']:
+            if not result["documents"]:
                 print(f"Warning: ID {entity_id} not found in {collection_name}")
                 continue
-            text_content = result['documents'][0]
+            text_content = result["documents"][0]
             tokens = self.tm.get_token_amount(text_content)
             if tokens <= self.remaining_rag_tokens:
+                # add text content with distance 0.0 as "perfect match" signal
                 self.rag_context.append((text_content, 0.0))
                 self.remaining_rag_tokens -= tokens
                 self.used_ids.add(entity_id)
+                # if entity is article: add metadata to article relationships to boost them
+                if collection_name == "article":
+                    self.articles_relationships.append(result["metadatas"][0])
 
     def _generate_rag_context(self, user_prompt: str) -> List[Tuple[str, float]]:
         """
@@ -173,7 +179,7 @@ class RAGEngine:
         # RAG CONTEXT BASE: always add top 3 articles (independend of distance)
         # - id, text & distance are appended at class objs as part of final return payload
         # - references of top 3 articles to other entities are saved locally
-        top_articles_metadata = []
+        #top_articles_metadata = []
         for i in range(min(3, len(nearest_entries["articles"]["ids"][0]))):
             # fetch all needed data
             article_id = nearest_entries["articles"]["ids"][0][i]
@@ -188,10 +194,10 @@ class RAGEngine:
             self.rag_context.append((text_content, distance))
             self.remaining_rag_tokens -= self.tm.get_token_amount(text_content)
             self.used_ids.add(article_id)
-            top_articles_metadata.append(metadata)
+            self.articles_relationships.append(metadata)
 
         # convert references to other entitites from json str into combined set across entity types
-        related_id_sets = self._get_related_id_sets(top_articles_metadata)
+        related_id_sets = self._get_related_id_sets()
 
         # check and filter nearest entities for relevance -> populate candidates list
         # - if nearest entities are in top 3 articles references, apply relationship boost!
@@ -221,14 +227,14 @@ class RAGEngine:
                     self.rag_context.append((candidate["content"], candidate["distance"]))
                     self.remaining_rag_tokens -= tokens
 
-    def _get_related_id_sets(self, top_articles_metadata: list) -> set:
+    def _get_related_id_sets(self) -> set:
         """
         - extract relationship ids from articles metadata into combined set across all entity types
         - read out from json str; there are no relationships to definiton entity
         """
         related_ids = set()
         rel_entities = ["articles", "recitals", "annexes"]
-        for metadata in top_articles_metadata:
+        for metadata in self.articles_relationships:
             for entity in rel_entities:
                 related_ids.update(json.loads(metadata.get(f"related_{entity}", "[]")))
         return related_ids
@@ -250,6 +256,7 @@ class RAGEngine:
     def _reset_state(self) -> None:
         """ resets all components of RAGEngine to enable further user queries"""
         self.used_ids = set()
+        self.articles_relationships = []
         self.rag_context = []
 
 
