@@ -1,48 +1,58 @@
+"""
+- module can be accessed in read or build mode via classmethods
+- the classmethods are wrappers which pass the read_only flag further
+- db is build / accessed with settings saved in DBConfig
+- related scripts:
+    - build_vector_db.py to execute db build
+    - upload_vector_db.py to upload build db to hf datasets
+"""
+
+
 import chromadb
 from chromadb import PersistentClient, Collection
 from chromadb.utils import embedding_functions
 from src.config import DBConfig
-from pathlib import Path
 import json
 from typing import Dict
 
 
 class DB:
-    def __init__(self, config=None, read_only=True):
-        """
-        - !!! ADD FACTORY CLASS METHOD !!!
-        - raw data loading file names? use from saved scraper / scraper script?
-        
-        
-        - initialize database connection if existing or build it
-        - args:
-            - read_only: if True, connect to existing DB; else create and populate
-        """
+
+    @classmethod
+    def build_mode(cls):
+        """ wrapper to build the db using source .json files  """
+        return cls(config=None, read_only=False)
+
+    @classmethod
+    def read_mode(cls):
+        """ wrapper to access db in read only mode"""
+        return cls(config=None, read_only=True)
+
+    def __init__(self, config: DBConfig = None, read_only: bool = True):
+        # ----- shared code needed in read and build mode
         self.config = config if config is not None else DBConfig()
-        # creates persistent chroma_db instance at local repo
-        self.db_client = self.create_or_connect_db()
+        # collection entities derived from config
+        self.entities = self.config.entities
+        # connects to or creates persistent chroma_db instance
+        self.db_client = self._db_create_or_connect()
         # embedding_function via chroma_db huggingface wrapper -> attached at collection level
         self.embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name=self.config.embedding_function,
             device=self.config.embedding_device,
         )
-        # for each entity sep collection (table) is created in db client
-        self.entities = self.config.entities
-        # MAJOR SWITCH -> read only or create anew 
+        # ----- specific code depending on chosen mode
+        # read mode: connect to existing collections
         if read_only:
-            # production mode: connect to existing collections
-            self.collection = self._get_collections()
+            self.collections = self._get_collections()
+        # build mode: create and populate collections
         else:
-            # build mode: create and populate collections
-            self.collection = self._create_collections()
-            self.raw_data = self._load_raw_data()
-            for entity in self.entities:
-                getattr(self, f"_populate_{entity}")()
+            self._build_db()
 
-    def create_or_connect_db(self) -> PersistentClient:
+    def _db_create_or_connect(self) -> PersistentClient:
         """
-        - creates persistent db client in local repo
-        - if db client already exists, it simply connects to existing db
+        - connects to persistent db client in local repo
+        - creates db directory if it doesn't exist (for both read/write modes)
+        - chromadb automatically handles existing vs new DB
         """
         # define save path for persistent DB & create dirs
         save_dir = self.config.save_dir
@@ -59,10 +69,22 @@ class DB:
                     embedding_function=self.embedding_function,
                 )
                 collection_dict[entity] = collection
-                print(f"Loaded {entity} collection with {collection.count()} documents")
             except ValueError:
                 raise ValueError(f"Collection {entity} not found. Run build_vector_db.py first!")
         return collection_dict
+
+    def _build_db(self) -> None:
+        """
+        - steering all methods to build db and saving build states
+        - builds on top of db client which was created already at this point
+        """
+        # create raw collections for each entity
+        self.collections = self._create_collections()
+        # load .json source files for each entity into ram
+        self.raw_data = self._load_raw_data()
+        # save raw data into collections for each entity by executing all _populate_... methods
+        for entity in self.entities:
+            getattr(self, f"_populate_{entity}")()
 
     def _create_collections(self) -> Dict[str, Collection]:
         """
@@ -89,14 +111,13 @@ class DB:
         - load json at specified path at each entity and save as dict at object
         - processing of entity dicts done in sep methods due to distinct structures
         """
-        input_dir = self.config.data_dir
         raw_data_dict = {}
+        data_dir = self.config.data_dir
         for entity in self.entities:
             # check if file exists
-            file_path = input_dir / f"{entity}{self.config.file_extension}"
+            file_path = data_dir / f"{entity}{self.config.file_extension}"
             if not file_path.exists():
-                print(f"File at {file_path} could not be found, skipping {entity}")
-                continue
+                raise FileNotFoundError(f"Loading raw data failed. Missing file at {file_path}.")
             with open(file_path, mode="r", encoding="utf-8") as f:
                 raw_data_dict[entity] = json.load(f)
                 print(f"Loaded {len(raw_data_dict[entity])} {entity}")
@@ -117,7 +138,7 @@ class DB:
                 "term": def_data["title"],
             })
         # add processed entries with upsert: adds if new, updates if exists
-        self.collection["definitions"].upsert(
+        self.collections["definitions"].upsert(
             ids=ids,
             documents=docs,
             metadatas=meta,
@@ -135,7 +156,7 @@ class DB:
                 "type": "recital",
             })
         # add processed entries with upsert: adds if new, updates if exists
-        self.collection["recitals"].upsert(
+        self.collections["recitals"].upsert(
             ids=ids,
             documents=docs,
             metadatas=meta,
@@ -156,7 +177,7 @@ class DB:
                 "term": annex_data["title"],
             })
         # add processed entries with upsert: adds if new, updates if exists
-        self.collection["annexes"].upsert(
+        self.collections["annexes"].upsert(
             ids=ids,
             documents=docs,
             metadatas=meta,
@@ -170,9 +191,9 @@ class DB:
         ids, docs, meta = [], [], []
         for art_id, art_data in self.raw_data["articles"].items():
             ids.append(art_id)
-            section_title = art_data["section_title"] if art_data["section_title"] is not None else ""
+            sect_title = art_data["section_title"] if art_data["section_title"] is not None else ""
             doc = f"""Article: {art_data["title"]}
-            Part of {art_data["chapter_title"]} {section_title}
+            Part of {art_data["chapter_title"]} {sect_title}
             Date of entry into force: {art_data["entry_date"]}
             {art_data["text_content"]}"""
             docs.append(doc)
@@ -187,7 +208,7 @@ class DB:
                 "related_annexes": json.dumps(art_data.get("related_annex_ids", []))
             })
         # add processed entries with upsert: adds if new, updates if exists
-        self.collection["articles"].upsert(
+        self.collections["articles"].upsert(
             ids=ids,
             documents=docs,
             metadatas=meta,
