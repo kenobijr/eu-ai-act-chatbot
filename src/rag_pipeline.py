@@ -1,4 +1,5 @@
 import os
+import re
 import json
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
@@ -98,9 +99,55 @@ class RAGEngine:
     def execute(self, user_prompt: str) -> str:
         # calc token budget for rag context at runtime
         self.remaining_rag_tokens = self.tm.rag_context_tokens
+        # find direct matches
+        self._find_direct_matches(user_prompt)
         self._generate_rag_context(user_prompt)
         # format before returning
         return self._format_rag_context(self.rag_context)
+
+    def _find_direct_matches(self, user_prompt: str) -> None:
+        """
+        - scans user prompt for direct references to articles, annexes, or recitals
+        - supports case-insensitive whole-word matches like "Article 5", "annex 12", "Recital 18"
+        - collects up to 3 unique valid matches in left-to-right order
+        - queries DB for exact IDs, adds to rag_context with distance 0.0 if tokens allow
+        - updates used_ids and remaining_rag_tokens
+        """
+        # search configs with ranges and padding per entity
+        search_configs = self.config.search_configs
+        # regex to find matches: whole words, case-insensitive
+        pattern = r'\b(article|recital|annex)\s+(\d+)\b'
+        matches = re.findall(pattern, user_prompt, re.IGNORECASE)
+        # collect up to 3 unique candidates; if more than 3, take first 3 from left to right
+        candidates = []
+        seen_ids = set()
+        for entity_type, num_str in matches:
+            entity_type = entity_type.lower()
+            num = int(num_str)
+            config = search_configs[entity_type]
+            # check for invalid number ranges
+            if num < 1 or num > config["max_num"]:
+                continue
+            padded_num = f"{num:0{config['pad_digits']}d}"
+            entity_id = f"{config['id_prefix']}{padded_num}"
+            if entity_id not in seen_ids:
+                candidates.append((entity_id, config["collection"]))
+                seen_ids.add(entity_id)
+            if len(candidates) >= 3:
+                break
+        # query and add valid matches
+        for entity_id, collection_name in candidates:
+            collection = self.db.collections[collection_name]
+            result = collection.get(ids=[entity_id])
+            if not result['documents']:
+                print(f"Warning: ID {entity_id} not found in {collection_name}")
+                continue
+            text_content = result['documents'][0]
+            tokens = self.tm.get_token_amount(text_content)
+            if tokens <= self.remaining_rag_tokens:
+                self.rag_context.append((text_content, 0.0))
+                self.remaining_rag_tokens -= tokens
+                self.used_ids.add(entity_id)
 
     def _generate_rag_context(self, user_prompt: str) -> List[Tuple[str, float]]:
         """
@@ -315,7 +362,7 @@ class RAGPipeline:
 def main():
     app = RAGPipeline()
     print(f"MAX USER QUERY CHARS: {app.user_query_len}")
-    prompt = "How does the EU AI Act protect copyrights of content creators?"
+    prompt = "How do Annex 5 and Article 78 of the EU AI Act relate?"
     print(f"USER PROMPT: \n {prompt}")
     print(f"LLM RESPONSE: \n{app.process_query(user_prompt=prompt, rag_enriched=True)}")
 
