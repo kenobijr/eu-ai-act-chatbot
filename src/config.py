@@ -47,12 +47,13 @@ class RAGConfig:
     user_query_share: float = 0.2
     llm_response_share: float = 0.2
     rag_content_share: float = 0.6
-    # rag relevance threshold for cosine distance
-    rel_threshold: float = 0.8
-    # relationship boost factors (multiplication)
-    related_article_boost: float = 0.75
-    related_recital_boost: float = 0.85
-    related_annex_boost: float = 0.80
+    # rag engine
+    nearest_articles: int = 30  # total number 113
+    nearest_annexes: int = 5  # total number 13
+    nearest_recitals: int = 15  # total number 180
+    nearest_definitions: int = 15  # total number 68
+    rel_threshold: float = 0.8  # rag relevance threshold for cosine distance
+    relationship_boost: float = 0.5  # relationship boost factor (multiplication)
     # system prompts
     system_message_rag_disabled: str = _MESSAGES["system_message_rag_disabled"]
     system_message_rag_enabled: str = _MESSAGES["system_message_rag_enabled"]
