@@ -7,7 +7,6 @@
 """
 
 
-import chromadb
 from chromadb import PersistentClient, Collection
 from chromadb.utils import embedding_functions
 from src.config import DBConfig
@@ -18,11 +17,11 @@ from typing import Dict
 class DB:
 
     @classmethod
-    def build_mode(cls):
+    def build_mode(cls, config=None):
         return cls(config=None, read_only=False)
 
     @classmethod
-    def read_mode(cls):
+    def read_mode(cls, config=None):
         return cls(config=None, read_only=True)
 
     def __init__(self, config: DBConfig = None, read_only: bool = True):
@@ -46,7 +45,7 @@ class DB:
         """ connects to persistent db client or creates new one """
         save_dir = self.config.save_dir
         save_dir.mkdir(parents=True, exist_ok=True)
-        return chromadb.PersistentClient(path=save_dir)
+        return PersistentClient(path=save_dir)
 
     def _get_collections(self) -> Dict[str, Collection]:
         """ get existing collections for read-only access """

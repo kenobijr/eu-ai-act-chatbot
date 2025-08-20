@@ -1,19 +1,10 @@
 import pytest
-from src.config import RAGConfig
+from src.config import RAGConfig, DBConfig
 from src.rag_pipeline import TokenManager, RAGEngine, RAGPipeline
+from dataclasses import field
+from pathlib import Path
 
 
-# @pytest.fixture
-# def rag_pipe(rag_cfg, tk_man, rag_eng):
-#     return RAGPipeline(config=rag_cfg, tm=tk_man, rag_engine=rag_eng)
-
-
-# @pytest.fixture
-# def rag_eng(tk_man, rag_cfg):
-#     return RAGEngine(
-#         config=rag_cfg,
-#         tm=tk_man,
-#     )
 
 
 @pytest.fixture
@@ -32,3 +23,114 @@ def rag_cfg():
 def user_prompt():
     return "How do the requirements for AI regulatory sandboxes \
             relate to innovation support for SMEs?"
+
+
+@pytest.fixture
+def db_cfg(tmp_path):
+    """database config fixture for testing"""
+    return DBConfig(
+        entities=["annexes", "articles", "definitions", "recitals"],
+        data_dir=tmp_path / "data" / "raw",
+        file_extension=".json",
+        save_dir=tmp_path / "data" / "chroma_db"
+    )
+
+
+@pytest.fixture
+def mock_entity_jsons(tmp_path):
+    """create mock json data for all entities for testing"""
+    save_dir = tmp_path / "data" / "raw"
+    save_dir.mkdir(parents=True, exist_ok=True)
+    # mock data for each entity with 3 entries each
+    mock_data = {
+        "annexes": {
+            "annex_01": {
+                "id": "annex_01",
+                "title": "Test Annex I: Harmonisation Legislation",
+                "text_content": "Mock content for annex 1 about harmonisation legislation"
+            },
+            "annex_02": {
+                "id": "annex_02", 
+                "title": "Test Annex II: Criminal Offences",
+                "text_content": "Mock content for annex 2 about criminal offences"
+            },
+            "annex_03": {
+                "id": "annex_03",
+                "title": "Test Annex III: High-Risk AI Systems", 
+                "text_content": "Mock content for annex 3 about high-risk AI systems"
+            }
+        },
+        "articles": {
+            "article_001": {
+                "id": "article_001",
+                "title": "Test Article 1: Subject Matter",
+                "text_content": "Mock content for article 1 about subject matter",
+                "chapter_title": "Chapter I: General Provisions",
+                "section_title": None,
+                "entry_date": "2 February 2025",
+                "related_recital_ids": ["recital_001"],
+                "related_annex_ids": ["annex_01"],
+                "related_article_ids": ["article_002"]
+            },
+            "article_002": {
+                "id": "article_002",
+                "title": "Test Article 2: Scope",
+                "text_content": "Mock content for article 2 about scope",
+                "chapter_title": "Chapter I: General Provisions", 
+                "section_title": None,
+                "entry_date": "2 February 2025",
+                "related_recital_ids": ["recital_002"],
+                "related_annex_ids": ["annex_02"],
+                "related_article_ids": ["article_001", "article_003"]
+            },
+            "article_003": {
+                "id": "article_003",
+                "title": "Test Article 3: Definitions",
+                "text_content": "Mock content for article 3 about definitions",
+                "chapter_title": "Chapter I: General Provisions",
+                "section_title": None, 
+                "entry_date": "2 February 2025",
+                "related_recital_ids": ["recital_003"],
+                "related_annex_ids": [],
+                "related_article_ids": ["article_002"]
+            }
+        },
+        "definitions": {
+            "definition_01": {
+                "id": "definition_01",
+                "term": "AI system",
+                "text_content": "Mock definition for AI system"
+            },
+            "definition_02": {
+                "id": "definition_02", 
+                "term": "risk",
+                "text_content": "Mock definition for risk"
+            },
+            "definition_03": {
+                "id": "definition_03",
+                "term": "provider", 
+                "text_content": "Mock definition for provider"
+            }
+        },
+        "recitals": {
+            "recital_001": {
+                "id": "recital_001",
+                "text_content": "Mock recital 1 about regulation purpose"
+            },
+            "recital_002": {
+                "id": "recital_002",
+                "text_content": "Mock recital 2 about union values"
+            },
+            "recital_003": {
+                "id": "recital_003", 
+                "text_content": "Mock recital 3 about AI system deployment"
+            }
+        }
+    }
+    # save json files
+    import json
+    for entity_type, entities in mock_data.items():
+        file_path = save_dir / f"{entity_type}.json"
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(entities, f, indent=2, ensure_ascii=False)
+    return save_dir
