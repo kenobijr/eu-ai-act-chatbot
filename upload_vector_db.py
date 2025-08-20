@@ -1,12 +1,13 @@
+"""
+- vector_db source files are uploaded into huggingface dataset
+- they are downloaded to huggingface space when app is run first time after container build
+"""
+
 from huggingface_hub import HfApi
 from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-"""
-- vector_db source files are uploaded into huggingface dataset
-- they are downloaded to huggingface space when app is run first time after container build
-"""
 
 # load env variables from .env file
 load_dotenv()

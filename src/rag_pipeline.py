@@ -88,7 +88,7 @@ class RAGEngine:
         self.config = config
         self.tm = tm
         # connect to chromadb in read only mode; if not yet build, run db script before
-        self.db = DB(read_only=True)
+        self.db = DB.read_mode()
         self.entities = self.db.entities
         self.remaining_rag_tokens = None
         # collect id's of entities added to rag context to prevent duplicates
@@ -116,7 +116,7 @@ class RAGEngine:
         """
         # query db for nearest entities (different amounts depending on entity type: -> config)
         nearest_entries = {
-            entity: self.db.collection[entity].query(
+            entity: self.db.collections[entity].query(
                 query_texts=[user_prompt],
                 n_results=getattr(self.config, f"nearest_{entity}"),
             )
