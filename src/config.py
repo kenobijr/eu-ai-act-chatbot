@@ -54,6 +54,13 @@ class RAGConfig:
     nearest_definitions: int = 15  # total number 68
     rel_threshold: float = 0.8  # rag relevance threshold for cosine distance
     relationship_boost: float = 0.5  # relationship boost factor (multiplication)
+    # direct search
+    max_direct_matches: int = 3  # maximum number of direct entity matches to extract from user prompt
+    search_configs: dict = field(default_factory=lambda: {
+        "article": {"collection": "articles", "max_num": 113, "pad_digits": 3, "id_prefix": "article_"},
+        "recital": {"collection": "recitals", "max_num": 180, "pad_digits": 3, "id_prefix": "recital_"},
+        "annex": {"collection": "annexes", "max_num": 13, "pad_digits": 2, "id_prefix": "annex_"},
+    })
     # system prompts
     system_message_rag_disabled: str = _MESSAGES["system_message_rag_disabled"]
     system_message_rag_enabled: str = _MESSAGES["system_message_rag_enabled"]
