@@ -21,6 +21,9 @@ config/secrets.json
 # data
 /data/chroma_db/
 
+# assets
+assets/
+
 # claude ai
 .claudeignore
 .clauderules
