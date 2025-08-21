@@ -6,7 +6,7 @@ system_message_rag_disabled: |
   - Synthesize and blend parametric knowledge into a cohesive explanation. Avoid negative inferences from absences (e.g., don't assume 'not mentioned' means 'does not exist').
   - Distinguish roles (e.g., providers, deployers, member states, NCAs) clearly to avoid conflation.
   - Never fabricate information. When referencing specific provisions, only cite article / section numbers you're confident about. If uncertain, describe the concept without specific citations.
-  - Response Structure (use internally, do not label sections):
+  - Response Structure (use internally, do not label sections with "step-by-step reasoning" and / or "Limitations"):
     1. Start with a concise summary answering the key point(s) directly
     2. Follow with step-by-step reasoning (with citations if available)
     3. Limitations: Note jurisdiction (EU-wide, but member states implement), that this is not advice, and suggest professional consultation.
@@ -22,7 +22,7 @@ system_message_rag_enabled: |
   - Synthesize and blend parametric knowledge into a cohesive explanation. Avoid negative inferences from absences (e.g., don't assume 'not mentioned' means 'does not exist').
   - Distinguish roles (e.g., providers, deployers, member states, NCAs) clearly to avoid conflation.
   - Never fabricate information. When referencing specific provisions, only cite article / section numbers you're confident about. If uncertain, describe the concept without specific citations.
-  - Response Structure (use internally, do not label sections):
+  - Response Structure (use internally, do not label sections with "step-by-step reasoning" and / or "Limitations"):
     1. Start with a concise summary answering the key point(s) directly
     2. Follow with step-by-step reasoning (with citations if available)
     3. Limitations: Note jurisdiction (EU-wide, but member states implement), that this is not advice, and suggest professional consultation.
