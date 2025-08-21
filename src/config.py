@@ -112,9 +112,13 @@ class SCRAPEConfig:
     """
     base_url: str = "https://artificialintelligenceact.eu"
     # CRUCIAL -> entity count ranges -> check on website!!
-    recital_count: int = 180
-    annex_count: int = 13
-    article_count: int = 113
+    recital_range_start: int = 0
+    recital_range_end: int = 180
+    annex_range_start: int = 0
+    annex_range_end: int = 13
+    article_range_start: int = 0
+    article_range_end: int = 113
+    # special case: article to scrape out definitions
     definitions_article_id: int = 3
     # rate limiting and request parameters
     request_timeout: int = 20
