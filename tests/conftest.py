@@ -1,8 +1,7 @@
 import pytest
 from src.config import RAGConfig, DBConfig
 from src.rag_pipeline import TokenManager, RAGEngine, RAGPipeline
-from dataclasses import field
-from pathlib import Path
+from src.vector_db import DB
 
 
 
@@ -26,20 +25,32 @@ def user_prompt():
 
 
 @pytest.fixture
-def db_cfg(tmp_path):
-    """database config fixture for testing"""
+def mock_db(mock_entity_jsons, mock_db_cfg):
+    """ mock DB to test DB read mode """
+    return DB.build_mode(config=mock_db_cfg)
+
+
+@pytest.fixture
+def shared_tmp_path(tmp_path):
+    """ shared path for mock db config & mock jsons for DB build mode"""
+    return tmp_path
+
+
+@pytest.fixture
+def mock_db_cfg(shared_tmp_path):
+    """database config fixture for testing DB build mode"""
     return DBConfig(
         entities=["annexes", "articles", "definitions", "recitals"],
-        data_dir=tmp_path / "data" / "raw",
+        data_dir=shared_tmp_path / "data" / "raw",
         file_extension=".json",
-        save_dir=tmp_path / "data" / "chroma_db"
+        save_dir=shared_tmp_path / "data" / "chroma_db"
     )
 
 
 @pytest.fixture
-def mock_entity_jsons(tmp_path):
-    """create mock json data for all entities for testing"""
-    save_dir = tmp_path / "data" / "raw"
+def mock_entity_jsons(shared_tmp_path):
+    """create mock json data for all entities for DB build mode"""
+    save_dir = shared_tmp_path / "data" / "raw"
     save_dir.mkdir(parents=True, exist_ok=True)
     # mock data for each entity with 3 entries each
     mock_data = {
@@ -66,7 +77,7 @@ def mock_entity_jsons(tmp_path):
                 "title": "Test Article 1: Subject Matter",
                 "text_content": "Mock content for article 1 about subject matter",
                 "chapter_title": "Chapter I: General Provisions",
-                "section_title": None,
+                "section_title": "hehehe",
                 "entry_date": "2 February 2025",
                 "related_recital_ids": ["recital_001"],
                 "related_annex_ids": ["annex_01"],
@@ -98,17 +109,17 @@ def mock_entity_jsons(tmp_path):
         "definitions": {
             "definition_01": {
                 "id": "definition_01",
-                "term": "AI system",
+                "title": "AI system",
                 "text_content": "Mock definition for AI system"
             },
             "definition_02": {
-                "id": "definition_02", 
-                "term": "risk",
+                "id": "definition_02",
+                "title": "risk",
                 "text_content": "Mock definition for risk"
             },
             "definition_03": {
                 "id": "definition_03",
-                "term": "provider", 
+                "title": "provider",
                 "text_content": "Mock definition for provider"
             }
         },
