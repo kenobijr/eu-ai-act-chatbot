@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 import yaml
 from pathlib import Path
+from typing import List, Optional, Dict
+from datetime import datetime
 
 
 def _load_system_messages(file_path: str):
@@ -52,11 +54,17 @@ class RAGConfig:
     rel_threshold: float = 0.8  # rag relevance threshold for cosine distance
     relationship_boost: float = 0.5  # relationship boost factor (multiplication)
     # direct search
-    max_direct_matches: int = 3  # maximum number of direct entity matches to extract from user prompt
+    max_direct_matches: int = 3  # maximum number of direct entity matches to extract from prompt
     search_configs: dict = field(default_factory=lambda: {
-        "article": {"collection": "articles", "max_num": 113, "pad_digits": 3, "id_prefix": "article_"},
-        "recital": {"collection": "recitals", "max_num": 180, "pad_digits": 3, "id_prefix": "recital_"},
-        "annex": {"collection": "annexes", "max_num": 13, "pad_digits": 2, "id_prefix": "annex_"},
+        "article": {
+            "collection": "articles", "max_num": 113, "pad_digits": 3, "id_prefix": "article_"
+        },
+        "recital": {
+            "collection": "recitals", "max_num": 180, "pad_digits": 3, "id_prefix": "recital_"
+        },
+        "annex": {
+            "collection": "annexes", "max_num": 13, "pad_digits": 2, "id_prefix": "annex_"
+        },
     })
     # system prompts
     system_message_rag_disabled: str = _MESSAGES["system_message_rag_disabled"]
@@ -93,3 +101,84 @@ class DBConfig:
     file_extension: str = ".json"
     # data saving
     save_dir: Path = Path(__file__).parent.parent / "data" / "chroma_db"
+
+
+@dataclass
+class SCRAPEConfig:
+    """
+    - all parameters related to scraping - most important entity counts
+    - rate limit calls and rate limit period must be set at _make_requests decorator directly
+    - css selectors in the code at the specific entities
+    """
+    base_url: str = "https://artificialintelligenceact.eu"
+    # CRUCIAL -> entity count ranges -> check on website!!
+    recital_count: int = 180
+    annex_count: int = 13
+    article_count: int = 113
+    definitions_article_id: int = 3
+    # rate limiting and request parameters
+    request_timeout: int = 20
+    random_delay_min: float = 0.01
+    random_delay_max: float = 0.2
+    user_agent: str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+    # data / output
+    output_dir: Path = field(
+        default_factory=lambda: Path(__file__).parent.parent / "data" / "raw"
+    )
+    file_extension: str = ".json"
+
+
+@dataclass
+class Recital:
+    id: str
+    text_content: str
+
+    def __post_init__(self):
+        if not self.id or not self.text_content:
+            raise ValueError(f"Recital {self.id} requires id and text_content")
+
+
+@dataclass
+class Article:
+    id: str
+    title: str
+    text_content: str
+    chapter_title: str
+    section_title: Optional[str] = None
+    entry_date: Optional[str] = None
+    related_recital_ids: List[str] = field(default_factory=list)
+    related_annex_ids: List[str] = field(default_factory=list)
+    related_article_ids: List[str] = field(default_factory=list)
+
+    def __post_init__(self):
+        if not all([self.id, self.title, self.text_content, self.chapter_title]):
+            raise ValueError(f"Article {self.id} missing required fields")
+
+
+@dataclass
+class Annex:
+    id: str
+    title: str
+    text_content: str
+
+    def __post_init__(self):
+        if not all([self.id, self.title, self.text_content]):
+            raise ValueError(f"Annex {self.id} missing required fields")
+
+
+@dataclass
+class Definition:
+    id: str
+    title: str
+    text_content: str
+
+    def __post_init__(self):
+        if not all([self.id, self.title, self.text_content]):
+            raise ValueError(f"Definition {self.id} missing required fields")
+
+
+@dataclass
+class ScrapeMeta:
+    scraped_date: datetime
+    source_url: str
+    entity_counts: Dict[str, int] = field(default_factory=dict)

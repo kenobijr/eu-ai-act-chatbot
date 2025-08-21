@@ -1,4 +1,5 @@
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict
+from src.config import SCRAPEConfig, Recital, Article, Annex, Definition, ScrapeMeta
 import requests
 import json
 import re
@@ -6,82 +7,22 @@ import time
 import random
 from pathlib import Path
 from bs4 import BeautifulSoup
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
 from ratelimit import limits, sleep_and_retry
 
 
-# data Models as dataclasses with validation
-@dataclass
-class Recital:
-    id: str
-    text_content: str
-
-    def __post_init__(self):
-        if not self.id or not self.text_content:
-            raise ValueError(f"Recital {self.id} requires id and text_content")
-
-
-@dataclass
-class Article:
-    id: str
-    title: str
-    text_content: str
-    chapter_title: str
-    section_title: Optional[str] = None
-    entry_date: Optional[str] = None
-    related_recital_ids: List[str] = field(default_factory=list)
-    related_annex_ids: List[str] = field(default_factory=list)
-    related_article_ids: List[str] = field(default_factory=list)
-
-    def __post_init__(self):
-        if not all([self.id, self.title, self.text_content, self.chapter_title]):
-            raise ValueError(f"Article {self.id} missing required fields")
-        # limit article cross-references to 5
-        # if len(self.related_article_ids) > 5:
-            # self.related_article_ids = self.related_article_ids[:5]
-
-
-@dataclass
-class Annex:
-    id: str
-    title: str
-    text_content: str
-
-    def __post_init__(self):
-        if not all([self.id, self.title, self.text_content]):
-            raise ValueError(f"Annex {self.id} missing required fields")
-
-
-@dataclass
-class Definition:
-    id: str
-    title: str
-    text_content: str
-
-    def __post_init__(self):
-        if not all([self.id, self.title, self.text_content]):
-            raise ValueError(f"Definition {self.id} missing required fields")
-
-
-@dataclass
-class ScrapeMeta:
-    scraped_date: datetime
-    source_url: str
-    entity_counts: Dict[str, int] = field(default_factory=dict)
-
-
 class Scraper:
-    def __init__(self):
-        self.base_url = "https://artificialintelligenceact.eu"
+    def __init__(self, config=None):
+        self.config = config if config is not None else SCRAPEConfig()
         # create session enabling tcp connection pooling, cookies over multiple requests
         self.session = requests.Session()
         # set http request header user agent to real browser instead of python-requests/2.x.x
         self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+            "User-Agent": self.config.user_agent
         })
         # save the scraped entites as objects before serialising
-        self.prey = {}
+        self.entity = {}
         # save scrape metadata
         self.metadata = None
 
@@ -90,11 +31,11 @@ class Scraper:
     def _make_request(self, target_url: str):
         """ wrapper for requests against target-url adding rate-limiting and error handling """
         try:
-            response = self.session.get(target_url, timeout=20)
+            response = self.session.get(target_url, timeout=self.config.request_timeout)
             # convert http error status codes into exceptions
             response.raise_for_status()
             # add random delay between 10ms and 200ms
-            time.sleep(random.uniform(0.01, 0.2))
+            time.sleep(random.uniform(self.config.random_delay_min, self.config.random_delay_max))
         except requests.RequestException as e:
             # crash the app with passing through the http error with url and exception type
             raise requests.RequestException(f"request failed for {target_url} with {e}")
@@ -127,7 +68,7 @@ class Scraper:
         - recitals consist of raw text without headline, external refs or internal relations
         - relationships from articles & annexes to recitals will be saved oneway in these entities
         """
-        content_urls = [f"{self.base_url}/{path_segment}/{i+1}/" for i in range(range_start, range_end)]
+        content_urls = [f"{self.config.base_url}/{path_segment}/{i+1}/" for i in range(range_start, range_end)]
         recital_dict = {}
         print(f"scraping {len(content_urls)} recitals...")
         for i, url in enumerate(content_urls, start=1):
@@ -154,7 +95,7 @@ class Scraper:
         return recital_dict
 
     def _scrape_annex(self, path_segment: str, range_start: int, range_end: int) -> Dict[str, Annex]:
-        content_urls = [f"{self.base_url}/{path_segment}/{i+1}/" for i in range(range_start, range_end)]
+        content_urls = [f"{self.config.base_url}/{path_segment}/{i+1}/" for i in range(range_start, range_end)]
         annex_dict = {}
         print(f"scraping {len(content_urls)} annexes...")
         for i, url in enumerate(content_urls, start=1):
@@ -191,7 +132,7 @@ class Scraper:
           - extract definitions into sep entities
           - keep text content within article 3 itsself minimal to avoid duplication
         """
-        content_urls = [f"{self.base_url}/{path_segment}/{i+1}/" for i in range(range_start, range_end)]
+        content_urls = [f"{self.config.base_url}/{path_segment}/{i+1}/" for i in range(range_start, range_end)]
         article_dict = {}
         print(f"scraping {len(content_urls)} articles...")
         for i, url in enumerate(content_urls, start=1):
@@ -260,7 +201,7 @@ class Scraper:
         - extract definition from text of article 3
         - text is delivered as str stripped off all html tags, spans, urls
         """
-        url = f"{self.base_url}/{path_segment}/{article_id}/"
+        url = f"{self.config.base_url}/{path_segment}/{article_id}/"
         definition_dict = {}
         print("scraping definitions...")
         response = self._make_request(url)
@@ -302,29 +243,29 @@ class Scraper:
         - track stats and save them to scrape_metadata
         """
         # init scraping meta_data obj
-        self.metadata = ScrapeMeta(scraped_date=datetime.now(), source_url=self.base_url)
+        self.metadata = ScrapeMeta(scraped_date=datetime.now(), source_url=self.config.base_url)
         print(f"...started scraping at {datetime.now()}")
         # scrape recitals: p only with no relations within text
-        self.prey["recitals"] = self._scrape_recital(path_segment="recital", range_start=0, range_end=180)
-        self.metadata.entity_counts["recitals"] = len(self.prey["recitals"])
+        self.entity["recitals"] = self._scrape_recital(path_segment="recital", range_start=0, range_end=self.config.recital_count)
+        self.metadata.entity_counts["recitals"] = len(self.entity["recitals"])
         # scrape annexes: h, p with 0-n relations to articles & recitals within text
-        self.prey["annexes"] = self._scrape_annex(path_segment="annex", range_start=0, range_end=13)
-        self.metadata.entity_counts["annexes"] = len(self.prey["annexes"])
+        self.entity["annexes"] = self._scrape_annex(path_segment="annex", range_start=0, range_end=self.config.annex_count)
+        self.metadata.entity_counts["annexes"] = len(self.entity["annexes"])
         # scrape articles as "central hub": content & all releavnt relationships
-        self.prey["articles"] = self._scrape_article(path_segment="article", range_start=0, range_end=113)
-        self.metadata.entity_counts["articles"] = len(self.prey["articles"])
+        self.entity["articles"] = self._scrape_article(path_segment="article", range_start=0, range_end=self.config.article_count)
+        self.metadata.entity_counts["articles"] = len(self.entity["articles"])
         # special case: scrape definitons from article 3 as sep entitiy
-        self.prey["definitions"] = self._scrape_definition(path_segment="article", article_id=3)
-        self.metadata.entity_counts["definitions"] = len(self.prey["definitions"])
+        self.entity["definitions"] = self._scrape_definition(path_segment="article", article_id=self.config.definitions_article_id)
+        self.metadata.entity_counts["definitions"] = len(self.entity["definitions"])
         print(f"...ended scraping at {datetime.now()} scraped {self.metadata.entity_counts}")
 
     def save_to_disc(self) -> None:
         """ take the scraped data and serialize it to json"""
-        save_dir = Path(__file__).parent.parent / "data" / "raw"
+        save_dir = self.config.output_dir
         save_dir.mkdir(parents=True, exist_ok=True)
         # save each entity type separately
-        for entity_type, entities_dict in self.prey.items():
-            file_path = save_dir / f"{entity_type}.json"
+        for entity_type, entities_dict in self.entity.items():
+            file_path = save_dir / f"{entity_type}{self.config.file_extension}"
             # convert dataclass instances to dict using asdict
             data_to_save = {entity_id: asdict(entity) for entity_id, entity in entities_dict.items()}
             # serialise to json
