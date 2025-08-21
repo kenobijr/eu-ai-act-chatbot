@@ -18,11 +18,15 @@ class DB:
 
     @classmethod
     def build_mode(cls, config=None):
-        return cls(config=None, read_only=False)
+        if config is not None:
+            assert isinstance(config, DBConfig), "Invalid DBConfig file"
+        return cls(config=config, read_only=False)
 
     @classmethod
     def read_mode(cls, config=None):
-        return cls(config=None, read_only=True)
+        if config is not None:
+            assert isinstance(config, DBConfig), "Invalid DBConfig file"
+        return cls(config=config, read_only=True)
 
     def __init__(self, config: DBConfig = None, read_only: bool = True):
         # ----- shared code needed in read and build mode
@@ -111,13 +115,13 @@ class DB:
             ids.append(item_id)
             # build document with entity-specific formatting
             if entity == "definitions":
-                doc = f"Definition: {item_data['title']}\n{item_data['text_content']}"
+                doc = f"Definition: {item_data["title"]}\n{item_data["text_content"]}"
                 meta_item = {"type": "definition", "term": item_data["title"]}
             elif entity == "recitals":
-                doc = f"Recital {item_id.split('_')[1]}\n{item_data['text_content']}"
+                doc = f"Recital {item_id.split("_")[1]}\n{item_data["text_content"]}"
                 meta_item = {"type": "recital"}
             elif entity == "annexes":
-                doc = f"Annex: {item_data['title']}\n{item_data['text_content']}"
+                doc = f"Annex: {item_data["title"]}\n{item_data["text_content"]}"
                 meta_item = {"type": "annex", "term": item_data["title"]}
             else:  # articles
                 sect_title = item_data.get("section_title", "")
@@ -131,6 +135,7 @@ class DB:
                     "type": "article",
                     "term": item_data["title"],
                     "chapter": item_data["chapter_title"],
+                    # SECTION TITLE???
                     "entry_date": item_data["entry_date"],
                     "related_articles": json.dumps(item_data.get("related_article_ids", [])),
                     "related_recitals": json.dumps(item_data.get("related_recital_ids", [])),
