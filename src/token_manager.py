@@ -1,19 +1,23 @@
+"""
+- contains all logic related to the token budged for llm prompts
+- tiktoken cl100k_base used for calculations, saved at obj at init
+- calculate initial budget and report to RAGPipeline / FE
+- update budget after consume; inform about current budget
+- getters for user query and rag tokens and llm response
+"""
+
 from src.config import RAGConfig
 import tiktoken
 
+
 class TokenManager:
-    """
-    - contains all logic related to the token budged for llm prompts
-    - tiktoken cl100k_base used for calculations, saved at obj at init
-    - calculate initial budget and report to RAGPipeline / FE
-    - update budget after consume; inform about current budget
-    - getters for user query and rag tokens; for llm response self.remaining_tokens is returned
-    """
+
     def __init__(self, config: RAGConfig):
         self.config = config
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         # state of available tokens during RAG process; init via _calc_initial_tokens helper
         self.remaining_tokens = self._calc_initial_tokens()
+        # token budget for rag creation operation; init by RAGEngine
         self.rag_ops_tokens = None
 
     def _calc_initial_tokens(self) -> int:
@@ -29,7 +33,7 @@ class TokenManager:
 
     @property
     def user_query_tokens(self) -> int:
-        """ getter to deliver token budget for user query """
+        """ deliver token budget for user query """
         return int(self.remaining_tokens * self.config.user_query_share)
 
     @property
@@ -45,23 +49,17 @@ class TokenManager:
         return self.remaining_tokens
 
     def get_token_amount(self, text: str) -> int:
-        """
-        - helper method receiving text and returning token amoutn for it
-        - uses tiktokenizer initialised at obj
-        """
+        """ receive str and return token amoumt with tiktokenizer """
         return len(self.tokenizer.encode(text))
 
     def reduce_remaining_tokens(self, text: str) -> None:
-        """
-        - calc amount tokens for delivered text and subtract at remaining tokens obj
-        - happens after user query and rag context creation
-        """
+        """ calc amount tokens for delivered str and subtract at remaining tokens obj """
         consumed_tokens = self.get_token_amount(text)
         if self.remaining_tokens - consumed_tokens <= 0:
             raise ValueError(f"To few tokens: need {consumed_tokens}, have {self.remaining_tokens}")
         self.remaining_tokens -= consumed_tokens
 
     def reset_state(self) -> None:
-        """ resets remaining tokens to start state enabling multiple user queries in one session """
+        """ resets state to enable multiple user queries in one session """
         self.remaining_tokens = self._calc_initial_tokens()
         self.rag_ops_tokens = None
