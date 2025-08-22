@@ -1,8 +1,11 @@
 """
 - scrape the core entitites articles, annexes and recitals: https://artificialintelligenceact.eu/
 - add 1 additional entity "definitions" during scraping from article 3
+- articles as "central hub":
+    - one-way relationships to annexes, recitals and other articles
+    - no bi-directional relationships
 - save json for each entity
-- configure scraping parameters in SCRAPEConfig
+- scraping parameters & dataclasses for each entity in SCRAPEConfig
 """
 
 from dataclasses import asdict

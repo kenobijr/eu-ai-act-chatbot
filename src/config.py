@@ -133,17 +133,12 @@ class SCRAPEConfig:
 
 
 @dataclass
-class Recital:
-    id: str
-    text_content: str
-
-    def __post_init__(self):
-        if not self.id or not self.text_content:
-            raise ValueError(f"Recital {self.id} requires id and text_content")
-
-
-@dataclass
 class Article:
+    """
+    - core legal binding rules together with annexes
+    - central hub for relationships (one-way from articles to other entities)
+
+    """
     id: str
     title: str
     text_content: str
@@ -161,6 +156,10 @@ class Article:
 
 @dataclass
 class Annex:
+    """
+    - detailed technical information, lists, classifications
+    - crucial for practitioners (e.g., high-risk AI use cases)
+    """
     id: str
     title: str
     text_content: str
@@ -171,7 +170,25 @@ class Annex:
 
 
 @dataclass
+class Recital:
+    """
+    - part of preamble/introduction, no legal binding directives
+    - articles with directives are derived from these
+    """
+    id: str
+    text_content: str
+
+    def __post_init__(self):
+        if not self.id or not self.text_content:
+            raise ValueError(f"Recital {self.id} requires id and text_content")
+
+
+@dataclass
 class Definition:
+    """
+    - extract 68 definitions from Article 3 as separate entity
+    - enable granular retrieval of relevant definitions
+    """
     id: str
     title: str
     text_content: str
@@ -183,6 +200,7 @@ class Definition:
 
 @dataclass
 class ScrapeMeta:
+    """ scrape meta .json is created at scraping process """
     scraped_date: datetime
     source_url: str
     entity_counts: Dict[str, int] = field(default_factory=dict)
