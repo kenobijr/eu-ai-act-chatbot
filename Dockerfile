@@ -14,8 +14,8 @@ RUN useradd -m -u 1000 user
 WORKDIR /app
 
 # copy and install requirements as root
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements_runtime.txt .
+RUN pip install --no-cache-dir -r requirements_runtime.txt
 
 # pre-download the embedding model to avoid runtime downloads
 RUN python -c "from sentence_transformers import SentenceTransformer; \
