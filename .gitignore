@@ -34,3 +34,6 @@ requirements.md
 # gradio
 .gradio/
 flagged/
+
+# evaluation assets groundtruth pdfs -> rejected by hf!
+assets/evaluation/groundtruth_papers/*.pdf
