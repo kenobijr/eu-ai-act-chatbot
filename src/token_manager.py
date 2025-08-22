@@ -14,6 +14,7 @@ class TokenManager:
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         # state of available tokens during RAG process; init via _calc_initial_tokens helper
         self.remaining_tokens = self._calc_initial_tokens()
+        self.rag_ops_tokens = None
 
     def _calc_initial_tokens(self) -> int:
         """
@@ -33,13 +34,15 @@ class TokenManager:
 
     @property
     def rag_context_tokens(self) -> int:
-        """
-        - getter to deliver token budget for rag context
-        - preserves ratio between rag & llm response share
-        """
+        """ deliver rag context token budget -> preserve ratio between rag & llm response share """
         total_ratio = self.config.llm_response_share + self.config.rag_content_share
         rag_proportion = self.config.rag_content_share / total_ratio
         return int(self.remaining_tokens * rag_proportion)
+
+    @property
+    def llm_response_tokens(self) -> int:
+        """ deliver llm response tokens -> eqals self.remaining tokens in this state """
+        return self.remaining_tokens
 
     def get_token_amount(self, text: str) -> int:
         """
@@ -61,3 +64,4 @@ class TokenManager:
     def reset_state(self) -> None:
         """ resets remaining tokens to start state enabling multiple user queries in one session """
         self.remaining_tokens = self._calc_initial_tokens()
+        self.rag_ops_tokens = None
