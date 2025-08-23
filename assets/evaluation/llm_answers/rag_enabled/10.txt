@@ -1,0 +1,17 @@
+Question: "How do conformity assessments determine whether AI systems pose 'acceptable' risks to fundamental rights under the EU AI Act, and who makes these determinations?"
+RAG Enriched: True
+
+LLM Response:
+"Conformity assessments play a crucial role in determining whether AI systems pose "acceptable" risks to fundamental rights under the EU AI Act. These assessments are designed to ensure that high-risk AI systems meet the requirements set out in the Regulation, including those related to data governance, cybersecurity, and transparency.
+
+Article 47 of the EU AI Act requires providers to draw up a written EU declaration of conformity for each high-risk AI system, which must identify the system and state that it meets the requirements set out in Section 2 of Chapter III. This declaration must also contain the information set out in Annex V, including the name and address of the provider, a statement that the system is in conformity with the Regulation, and references to any relevant harmonised standards used.
+
+The EU declaration of conformity is a critical component of the conformity assessment process, as it provides a written assurance that the high-risk AI system meets the required standards. Article 42 of the Regulation provides for a presumption of conformity for high-risk AI systems that have been trained and tested on data reflecting the specific geographical, behavioural, contextual or functional setting within which the system is intended to be used. This presumption can be challenged by national competent authorities, who may require additional information or testing to ensure that the system meets the required standards.
+
+The conformity assessment process is overseen by national competent authorities, which are responsible for ensuring that high-risk AI systems meet the requirements set out in the Regulation. These authorities may carry out evaluations of AI systems, including testing and monitoring, to determine whether they pose acceptable risks to fundamental rights. Additionally, the Regulation provides for the possibility of certification by notified bodies, which can issue certificates stating that a high-risk AI system meets the required standards.
+
+In terms of who makes the determinations about "acceptable" risks, the EU AI Act places the responsibility on national competent authorities, which are responsible for ensuring that high-risk AI systems meet the required standards. These authorities may consult with other stakeholders, including industry experts and civil society organizations, to ensure that their determinations are informed by a broad range of perspectives.
+
+It is worth noting that the EU AI Act provides for a complaints mechanism, which allows individuals and organizations to report concerns about AI systems to national competent authorities. These authorities are required to investigate complaints and take appropriate action to address any issues that are identified.
+
+In summary, conformity assessments play a critical role in determining whether AI systems pose "acceptable" risks to fundamental rights under the EU AI Act. These assessments are designed to ensure that high-risk AI systems meet the required standards, and are overseen by national competent authorities, which are responsible for ensuring that these systems do not pose unacceptable risks to fundamental rights."

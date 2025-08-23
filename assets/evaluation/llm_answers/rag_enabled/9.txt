@@ -1,0 +1,15 @@
+Question: "What challenges arise from the EU AI Act's expansion from traditional safety risks to fundamental rights risks and systemic risks, and how does this affect the delineation of AI harms?"
+RAG Enriched: True
+
+LLM Response:
+"The EU AI Act expands the scope of high-risk AI systems beyond traditional safety risks to also include risks to fundamental rights and systemic risks. This expansion may raise several challenges, including:
+
+1. Complexity in identifying and assessing AI system risks: With the introduction of new risks, AI system developers and deployers must navigate a more complex landscape, requiring them to identify and assess a broader range of risks. This may lead to difficulties in determining whether an AI system presents a high-risk or not.
+2. Increased burden on AI system developers and deployers: The expanded scope of high-risk AI systems may result in a heavier burden on AI system developers and deployers to comply with the regulation, as they must undertake more comprehensive assessments and ensure compliance with additional requirements.
+3. Challenges in defining and measuring AI harms: The EU AI Act's focus on systemic risks and fundamental rights may involve a shift from traditional safety-related harm to more complex and nuanced harm concepts, such as emotional distress, privacy infringements, or social discrimination. Defining and measuring these types of harm can be challenging, requiring new methodologies and approaches.
+4. Balancing conflicting interests: The EU AI Act aims to balance conflicting interests, such as promoting AI development and innovation while ensuring a high level of protection of health, safety, and fundamental rights. This balancing act may be difficult, particularly when dealing with complex AI systems that can have both positive and negative impacts.
+5. Ensuring accountability and liability: With the expanded scope of high-risk AI systems, there may be concerns about accountability and liability. Who would be responsible in case of harm or damage caused by an AI system that presents a risk to fundamental rights or systemic stability?
+
+Regarding the delineation of AI harms, the EU AI Act introduces new concepts, such as "harm to health and safety, or an adverse impact on fundamental rights, and that risk is equivalent to, or greater than, the risk of harm or of adverse impact posed by the high-risk AI systems already referred to in Annex III" (Article 7). This new definition aims to capture the complexity of AI system risks beyond traditional safety-related harm.
+
+In summary, the EU AI Act's expansion to include risks to fundamental rights and systemic risks presents challenges in identifying and assessing AI system risks, ensuring compliance, defining and measuring AI harms, balancing conflicting interests, and ensuring accountability and liability."

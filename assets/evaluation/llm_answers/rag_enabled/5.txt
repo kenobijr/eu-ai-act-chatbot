@@ -1,0 +1,15 @@
+Question: "What constitutes a 'significant risk' for general-purpose AI models and what are the associated compliance requirements?"
+RAG Enriched: True
+
+LLM Response:
+"A significant risk for general-purpose AI models with systemic risk is a high-impact capability, as defined in Article 51(1) of the EU AI Act. According to this provision, a general-purpose AI model shall be classified as a general-purpose AI model with systemic risk if it meets any of the following conditions: (a) it has high-impact capabilities evaluated on the basis of appropriate technical tools and methodologies, including indicators and benchmarks, or (b) based on a decision of the Commission, ex officio or following a qualified alert from the scientific panel, it has capabilities or an impact equivalent to those set out in point (a) having regard to the criteria set out in Annex XIII.
+
+To demonstrate compliance with the obligations set out in Article 55, providers of general-purpose AI models with systemic risk must perform model evaluation in accordance with standardised protocols and tools reflecting the state of the art, conduct and document adversarial testing of the model, assess and mitigate possible systemic risks at Union level, keep track of, document, and report serious incidents and possible corrective measures, ensure an adequate level of cybersecurity protection, and cooperate with the Commission and national competent authorities in the exercise of their competences and powers.
+
+Article 53(1) outlines the obligations for all providers of general-purpose AI models, including drawing up and keeping up-to-date the technical documentation of the model, making it available to downstream providers, putting in place a policy to comply with Union law on copyright and related rights, and making a public summary of the content used for training the model available. Providers of general-purpose AI models with systemic risk must also comply with the additional obligations set out in Article 55.
+
+It is also worth noting that the Commission is empowered to adopt delegated acts in accordance with Article 97 to amend the thresholds listed in Article 51, as well as to supplement benchmarks and indicators in light of evolving technological developments, in order to reflect the state of the art.
+
+Please note that while I can provide a comprehensive answer based on the EU AI Act, it is always recommended to consult the full Act or a legal professional to ensure compliance with specific requirements and regulations.
+
+Limitations: The EU AI Act is a legal instrument that applies at the EU level, and its implementation may vary at the national level. Additionally, compliance with the Act requires consideration of specific requirements and obligations, as well as ongoing technical and scientific developments. This response should not be considered as legal advice, but rather as a summary of the EU AI Act's provisions and obligations."

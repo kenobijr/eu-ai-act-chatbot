@@ -1,0 +1,41 @@
+Question: "Which types of AI systems are considered as High-Risk AI Systems under Article 6 in combination with Annex 3?"
+RAG Enriched: True
+
+LLM Response:
+"According to Article 6 of the EU AI Act and Annex III, the following types of AI systems are considered High-Risk AI Systems:
+
+1. Biometrics, in certain areas, such as:
+   - Remote biometric identification systems
+   - Biometric categorisation based on sensitive or protected attributes
+   - Emotion recognition
+2. Critical infrastructure, such as:
+   - AI systems used as safety components in managing and operating critical digital infrastructure
+3. Education and vocational training, in areas such as:
+   - Determining access or admission to educational and vocational training institutions
+   - Evaluating learning outcomes
+   - Assessing the appropriate level of education
+   - Monitoring and detecting prohibited behaviour of students
+4. Employment, workers management and access to self-employment, in areas such as:
+   - Recruitment or selection of candidates
+   - Making decisions affecting terms of work-related relationships
+   - Allocating tasks based on individual behaviour
+5. Access to and enjoyment of essential private services and essential public services and benefits, in areas such as:
+   - Evaluating the eligibility of individuals for benefits
+   - Granting, reducing, or reclaiming benefits
+   - Evaluating creditworthiness
+   - Assessing risk in life and health insurance
+   - Classifying emergency calls
+6. Law enforcement, in areas such as:
+   - Assessing the risk of a natural person becoming a victim of criminal offences
+   - Evaluating the reliability of evidence
+   - Assessing personality traits and characteristics
+   - Profiling individuals
+7. Migration, asylum and border control management, in areas such as:
+   - Assessing applications for asylum
+   - Evaluating the eligibility of individuals
+   - Detecting, recognizing, or identifying individuals
+8. Administration of justice and democratic processes, in areas such as:
+   - Assisting judicial authorities in researching and interpreting facts
+   - Influencing the outcome of elections or referendums
+
+Please note that these categories are not exhaustive, as the EU AI Act allows for amendments to Annex III, which may be made by the European Commission via delegated acts."

@@ -1,0 +1,17 @@
+Question: "How do conformity assessments determine whether AI systems pose 'acceptable' risks to fundamental rights under the EU AI Act, and who makes these determinations?"
+RAG Enriched: False
+
+LLM Response:
+"Conformity assessments, as outlined in the EU AI Act, play a crucial role in determining whether AI systems pose "acceptable" risks to fundamental rights. Here's a concise summary:
+
+Conformity assessments, led by Notified Bodies (NBs) or other independent third-party certification bodies, verify that AI systems comply with the requirements set forth in the EU AI Act. These assessments aim to identify and mitigate any risks AI systems may pose to fundamental rights, such as privacy, non-discrimination, and transparency.
+
+Step-by-step reasoning:
+
+1. AI system developers, providers, or deployers (Article 15) must conduct a risk-benefit analysis to identify potential risks their AI system may pose to fundamental rights (Article 7). They must also specify the measures they will take to mitigate these risks.
+2. NBs or other independent third-party certification bodies, designated by the member states (Article 24), will conduct conformity assessments to verify the AI system's compliance with the EU AI Act. These assessments will cover areas such as data protection, transparency, accountability, and non-discrimination.
+3. During the assessment, the NBs or independent third-party certification bodies will review the AI system's risk-benefit analysis, ensuring it meets the requirements outlined in the EU AI Act. They will also verify the measures put in place to mitigate any identified risks.
+4. If the AI system meets the EU AI Act requirements, the NB or independent third-party certification body will issue a conformity certificate, indicating that the AI system poses "acceptable" risks to fundamental rights (Article 26).
+5. Member states, through their National Competent Authorities (NCAs), will be responsible for monitoring AI systems' compliance with the EU AI Act and ensuring that any non-compliant systems are corrected or blocked (Article 33).
+
+Limitations:"

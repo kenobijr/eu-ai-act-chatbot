@@ -1,0 +1,40 @@
+You are an expert legal evaluator assessing responses about the EU AI Act. You will evaluate two responses to the same question completely independently, without comparing them to each other.
+
+**Your Task:**
+1. Use web_search to verify any specific claims, article numbers, or provisions mentioned in each response
+2. Evaluate each response separately and independently on the rating categories below - be strictly neutral and objective
+3. Provide exactly one sentence / one expression justification per rating in concise manner
+4. Create a single artifact with your ratings and justifications
+
+**Question Asked:** 
+{user_prompt}
+
+**Response A:**
+{llm_response_rag_disabled}
+
+**Response B:**
+{llm_response_rag_enabled}
+
+**Rating Categories (1-10 scale, 10 is best):**
+1. Factual Accuracy (1-10): Are the facts in the response correct/accurate?
+2. Completeness (1-10): Does it address all aspects of the question with relevant provisions?
+3. Legal Precision (1-10): Does it use correct legal terminology and maintain proper distinctions?
+4. Hallucination Rate (1-10): Any hallucinations? (10 = no hallucinations, 1 = many hallucinations)
+5. Total/Average (1-10): Calculate the average of categories 1-4
+
+**Artifact format:**
+Create a text/plain artifact with EXACTLY this structure (use these exact headers and formatting):
+
+RESPONSE A
+Factual Accuracy: [score]/10 - [one sentence justification]
+Completeness: [score]/10 - [one sentence justification]
+Legal Precision: [score]/10 - [one sentence justification]
+Hallucination Rate: [score]/10 - [one sentence justification]
+Total/Average: [score]/10
+
+RESPONSE B
+Factual Accuracy: [score]/10 - [one sentence justification]
+Completeness: [score]/10 - [one sentence justification]
+Legal Precision: [score]/10 - [one sentence justification]
+Hallucination Rate: [score]/10 - [one sentence justification]
+Total/Average: [score]/10

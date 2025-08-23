@@ -1,0 +1,15 @@
+Question: "Define and distinguish Deployers of high-risk AI systems from Providers of high-risk AI systems as defined in the EU AI Act."
+RAG Enriched: True
+
+LLM Response:
+"The EU AI Act defines and distinguishes between Deployers and Providers of high-risk AI systems. 
+
+Deployers of high-risk AI systems refer to the entities that put the high-risk AI system into service or use it in their operations. This includes bodies governed by public law, private entities providing public services, and entities that use high-risk AI systems in specific areas, such as healthcare, finance, or transport. Deployers are responsible for ensuring that the high-risk AI system is used in a way that minimizes the risks it poses to the health and safety or the fundamental rights of persons.
+
+Providers of high-risk AI systems, on the other hand, refer to the entities that develop, manufacture, or supply the high-risk AI system. Providers are responsible for ensuring that the high-risk AI system is designed and developed in a way that minimizes the risks it poses to the health and safety or the fundamental rights of persons. Providers are also responsible for ensuring that the high-risk AI system is compliant with the requirements set out in the EU AI Act, such as the requirements for conformity assessment, CE marking, and technical documentation.
+
+It is worth noting that Article 25 of the EU AI Act states that any distributor, importer, deployer, or other third-party who puts their name or trademark on a high-risk AI system, makes a substantial modification to a high-risk AI system, or modifies the intended purpose of an AI system, shall be considered to be a provider of the high-risk AI system for the purposes of the EU AI Act.
+
+In summary, Deployers of high-risk AI systems are those who put the high-risk AI system into service or use it in their operations, while Providers of high-risk AI systems are those who develop, manufacture, or supply the high-risk AI system. Both Deployers and Providers have specific responsibilities under the EU AI Act to ensure that high-risk AI systems are used and developed in a way that minimizes the risks they pose to the health and safety or the fundamental rights of persons.
+
+Limitations: This response is based on the EU AI Act and does not constitute legal advice. The EU AI Act is a complex regulation, and its provisions may be subject to change. For specific guidance on the EU AI Act, consult the full Act or a legal professional. The jurisdiction of the EU AI Act is EU-wide, but member states are responsible for implementing the Act. This response is intended to provide general guidance and may not be applicable to specific situations."

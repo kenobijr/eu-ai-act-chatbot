@@ -1,0 +1,28 @@
+Question: "Which types of AI systems are considered as High-Risk AI Systems under Article 6 in combination with Annex 3?"
+RAG Enriched: False
+
+LLM Response:
+"Summary: According to the EU AI Act, High-Risk AI Systems are classified as per Article 6, in combination with Annex 3. These types of AI systems are deemed to be high-risk due to their potential harm or damage to natural persons.
+
+Step-by-Step Reasoning:
+Article 6 of the EU AI Act defines high-risk AI as systems that "are likely to cause harm or damage to natural persons, in particular, as a result of their function, design, or use, and may cause physical or non-physical harm, including, but not limited to, emotional or psychological harm, or material or financial loss." (Article 6(1) and (2))
+
+Annex 3 of the EU AI Act specifies the categories of AI systems that are considered high-risk, including:
+
+* AI systems that are used for remote biometric identification, including facial recognition systems
+* AI systems that are used for predictive policing, including systems that use AI to predict and prevent crime
+* AI systems that are used for recruitment decision-making, including systems that use AI to assess candidates
+* AI systems that are used for law enforcement, including systems that use AI to monitor and track individuals
+* AI systems that are used in the medical field, including systems that make medical diagnoses
+* AI systems that are used in the financial sector, including systems that make financial decisions
+* AI systems that are used in the field of education, including systems that assess student performance
+* AI systems that are used in the field of public administration, including systems that make decisions about benefit eligibility
+* AI systems that are used in the field of transport, including systems that make safety-related decisions
+* AI systems that are used in the field of healthcare, including systems that make medical diagnoses
+* AI systems that are used in the field of telemedicine, including systems that make medical diagnoses
+* AI systems that are used in the field of cyb ersecurity, including systems that detect and respond to security threats
+* AI systems that are used in the field of e-commerce, including systems that make product recommendations
+* AI systems that are used in the field of social media, including systems that make content recommendations
+* AI systems that are used in the field of AI development, including systems that generate AI code
+
+Limitations: The EU AI Act applies EU-wide, but member states are responsible for implementing its provisions. This response is meant to provide general guidance only and should not be considered as legal advice. For specific legal advice regarding the EU AI Act, it is recommended to consult with a legal professional."

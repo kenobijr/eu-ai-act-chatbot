@@ -1,0 +1,16 @@
+Question: "Define and distinguish Deployers of high-risk AI systems from Providers of high-risk AI systems as defined in the EU AI Act."
+RAG Enriched: False
+
+LLM Response:
+"Summary:
+According to the EU AI Act, Deployers and Providers of high-risk AI systems are two distinct entities with different responsibilities. Deployers are the entities that physically or logically deploy an AI system, while Providers are the entities that develop, manufacture, or assemble the AI system.
+
+Step-by-Step Reasoning:
+Article 4 of the EU AI Act defines a Provider as "a natural or legal person, public or private, who is responsible for the development, manufacturing, or assembly of an AI system" (Article 4(1)). This includes companies that design, manufacture, or assemble AI systems, as well as those that develop AI-powered software or hardware.
+
+On the other hand, Article 4(2) defines a Deployer as "a natural or legal person, public or private, who physically or logically deploys an AI system, or makes it available to the public or to a specific group of natural or legal persons, but does not fall within the definition of a Provider". This includes entities that install, configure, or operate AI systems, as well as those that provide AI-powered services.
+
+A key distinction between Deployers and Providers is their level of responsibility. Providers are responsible for ensuring that their AI systems meet certain safety and performance criteria, as well as for providing transparency and explainability (Article 15). Deployers, on the other hand, are responsible for ensuring that the AI system is deployed and operated in a way that meets these criteria, as well as for providing information to users about the AI system (Article 16).
+
+Limitations:
+It's essential to note that the EU AI Act is a EU-wide regulation, and its implementation will be carried out by member states. While this answer provides a general understanding of the roles of Deployers and Providers, individual countries may have additional requirements or interpretations. This response is meant to provide general guidance only and should not be considered as legal advice. If you have specific questions about the implementation of the EU AI Act in your country, it is recommended that you consult with a legal professional."

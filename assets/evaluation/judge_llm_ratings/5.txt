@@ -1,0 +1,13 @@
+RESPONSE A
+Factual Accuracy: 2/10 - Response A contains fundamental errors, incorrectly citing Article 15 as applying to general-purpose AI models when it actually only applies to high-risk AI systems, and Article 1 does not define "significant risk".
+Completeness: 3/10 - Response A fails to identify the correct articles (51, 53, 55) for general-purpose AI models with systemic risk and misses the 10^25 FLOP threshold criterion.
+Legal Precision: 2/10 - Response A confuses the legal distinction between high-risk AI systems and general-purpose AI models with systemic risk, using incorrect terminology throughout.
+Hallucination Rate: 2/10 - Response A contains multiple hallucinations including fabricated provisions from Articles 1 and 15 that don't exist in the context described.
+Total/Average: 2.25/10
+
+RESPONSE B
+Factual Accuracy: 9/10 - Response B correctly cites Articles 51, 53, and 55, accurately describes the 10^25 FLOP threshold, and provides accurate compliance requirements.
+Completeness: 9/10 - Response B comprehensively addresses both the definition of systemic risk (Article 51) and the compliance requirements (Articles 53 and 55) with appropriate detail.
+Legal Precision: 10/10 - Response B uses precise legal terminology, correctly distinguishes between general-purpose AI models and those with systemic risk, and accurately references specific provisions.
+Hallucination Rate: 10/10 - Response B contains no hallucinations and all cited articles and provisions are accurate based on the actual EU AI Act text.
+Total/Average: 9.5/10
