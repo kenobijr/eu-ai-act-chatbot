@@ -1,0 +1,67 @@
+You are an expert legal evaluator assessing responses about the EU AI Act. You will evaluate two responses to the same question completely independently, without comparing them to each other.
+
+**Your Task:**
+1. Use web_search to verify any specific claims, article numbers, or provisions mentioned in each response
+2. Evaluate each response separately and independently on the rating categories below - be strictly neutral and objective
+3. Provide exactly one sentence / one expression justification per rating in concise manner
+4. Create a single artifact with your ratings and justifications
+
+**Question Asked:** 
+"What are the transparency obligations for high-risk AI systems under Article 13?"
+
+**Response A:**
+"Summary: According to Article 13 of the EU AI Act, providers of high-risk AI systems must ensure transparency regarding their AI systems, including explanation, notice, and access to information.
+
+Step-by-Step Reasoning:
+
+Article 13 requires providers of high-risk AI systems to ensure transparency by providing the following:
+
+* Explanation (Article 13(4)): Providers must, as a minimum, provide an explanation to the end-user about the AI system's decision-making processes, the data used, and the expected outcome. This explanation should be clear, concise, and in a language the end-user can understand.
+* Notice (Article 13(3)): Providers must, as a minimum, provide a clear and concise notice about the AI system's uses, data processing, and the existence of human oversight.
+* Access to information (Article 13(5)): Providers must, upon request, provide the end-user with access to information about the AI system, including its decision-making processes, the data used, and the expected outcome.
+
+The transparency obligations in Article 13 aim to ensure that end-users are informed about the AI system's functioning and can make informed decisions about its use.
+
+Limitations: These obligations are part of the EU-wide AI Act, and member states are responsible for implementing the Act into their national laws. This response is intended as a general overview and does not constitute legal advice. For specific guidance or advice on compliance with the AI Act, it is recommended to consult with a legal professional or seek guidance from the National Competent Authorities (NCA) responsible for implementing the Act in the relevant member state."
+
+**Response B:**
+"**Summary:** Under Article 13 of the EU AI Act, high-risk AI systems must be designed and developed to ensure transparency, enabling deployers to interpret the system's output and use it appropriately. The article outlines specific requirements for transparency, including provision of instructions for use, information on the system's characteristics, performance, and limitations, and human oversight measures.
+
+**Step-by-Step Reasoning:**
+
+Article 13 focuses on transparency and provision of information to deployers of high-risk AI systems. The article ensures that the operation of these systems is sufficiently transparent, enabling deployers to interpret the system's output and use it appropriately.
+
+The article requires high-risk AI systems to be accompanied by instructions for use, which must include concise, complete, correct, and clear information that is relevant, accessible, and comprehensible to deployers (Article 13.2). These instructions must contain at least the following information:
+
+1. Identity and contact details of the provider and, where applicable, its authorized representative (Article 13.3(a)).
+2. Characteristics, capabilities, and limitations of the high-risk AI system, including its intended purpose, level of accuracy, and any known or foreseeable circumstances that may impact the system's performance (Article 13.3(b)).
+3. Changes to the system and its performance that have been predetermined by the provider (Article 13.3(c)).
+4. Human oversight measures, including technical measures to facilitate interpretation of the system's output (Article 13.3(d)).
+5. Computational and hardware resources needed, expected lifetime, and necessary maintenance and care measures (Article 13.3(e)).
+6. Mechanisms for collecting, storing, and interpreting logs, where applicable (Article 13.3(f)).
+
+**Limitations:** This answer is based on the EU AI Act and is intended to provide general information. It is not intended as legal advice and should not be relied upon as such. For specific guidance or advice, please consult the full Act or a qualified legal professional. The EU AI Act is a complex and dynamic legal framework, and its application may be subject to jurisdictional and contextual factors."
+
+**Rating Categories (1-10 scale, 10 is best):**
+1. Factual Accuracy (1-10): Are the facts in the response correct/accurate?
+2. Completeness (1-10): Does it address all aspects of the question with relevant provisions?
+3. Legal Precision (1-10): Does it use correct legal terminology and maintain proper distinctions?
+4. Hallucination Rate (1-10): Any hallucinations? (10 = no hallucinations, 1 = many hallucinations)
+5. Total/Average (1-10): Calculate the average of categories 1-4
+
+**Artifact format:**
+Create a text/plain artifact with EXACTLY this structure (use these exact headers and formatting):
+
+RESPONSE A
+Factual Accuracy: [score]/10 - [one sentence justification]
+Completeness: [score]/10 - [one sentence justification]
+Legal Precision: [score]/10 - [one sentence justification]
+Hallucination Rate: [score]/10 - [one sentence justification]
+Total/Average: [score]/10
+
+RESPONSE B
+Factual Accuracy: [score]/10 - [one sentence justification]
+Completeness: [score]/10 - [one sentence justification]
+Legal Precision: [score]/10 - [one sentence justification]
+Hallucination Rate: [score]/10 - [one sentence justification]
+Total/Average: [score]/10

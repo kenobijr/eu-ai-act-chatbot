@@ -1,0 +1,17 @@
+Question: "What constitutes a 'significant risk' for general-purpose AI models and what are the associated compliance requirements?"
+RAG Enriched: False
+
+LLM Response:
+"Summary: According to the EU AI Act, a "significant risk" refers to a high-level risk that may cause harm to natural persons or society as a whole. General-purpose AI models that pose a significant risk must comply with stricter safety and risk management requirements, as outlined in Article 15.
+
+Step-by-step reasoning: The EU AI Act defines a "significant risk" as a risk that may cause harm to natural persons or society as a whole, taking into account the likelihood and potential impact of harm (Article 1, (30)). General-purpose AI models, as per Article 3, (2), are AI systems that can be used in multiple sectors, industries, or applications, and can be capable of producing a range of outputs, including text, images, or voice.
+
+Compliance requirements for general-purpose AI models that pose a significant risk are outlined in Article 15. These requirements include:
+
+1. Rigorous testing and validation: Providers must conduct rigorous testing and validation of their AI systems to ensure they do not pose a significant risk (Article 15, (2)(a)).
+2. Risk management: Providers must put in place a risk management system to identify, assess, and mitigate risks (Article 15, (2)(b)).
+3. Transparency: Providers must ensure transparency in the development, deployment, and use of their AI systems, including providing clear explanations of their decision-making processes (Article 15, (2)(c)).
+4. Reporting obligations: Providers must report any risks they identify to the national competent authority (Article 15, (2)(d)).
+5. Compliance with sector-specific requirements: General-purpose AI models may be subject to sector-specific requirements, such as those related to data privacy, security, or safety, depending on their application (Article 15, (3)).
+
+Limitations: The EU AI Act applies to all member states, but its implementation may differ in each country. This summary is not legal advice, and it is recommended to consult with a legal professional to ensure compliance with specific national requirements."

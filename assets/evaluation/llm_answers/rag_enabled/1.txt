@@ -1,0 +1,20 @@
+Question: "What are the transparency obligations for high-risk AI systems under Article 13?"
+RAG Enriched: True
+
+LLM Response:
+"**Summary:** Under Article 13 of the EU AI Act, high-risk AI systems must be designed and developed to ensure transparency, enabling deployers to interpret the system's output and use it appropriately. The article outlines specific requirements for transparency, including provision of instructions for use, information on the system's characteristics, performance, and limitations, and human oversight measures.
+
+**Step-by-Step Reasoning:**
+
+Article 13 focuses on transparency and provision of information to deployers of high-risk AI systems. The article ensures that the operation of these systems is sufficiently transparent, enabling deployers to interpret the system's output and use it appropriately.
+
+The article requires high-risk AI systems to be accompanied by instructions for use, which must include concise, complete, correct, and clear information that is relevant, accessible, and comprehensible to deployers (Article 13.2). These instructions must contain at least the following information:
+
+1. Identity and contact details of the provider and, where applicable, its authorized representative (Article 13.3(a)).
+2. Characteristics, capabilities, and limitations of the high-risk AI system, including its intended purpose, level of accuracy, and any known or foreseeable circumstances that may impact the system's performance (Article 13.3(b)).
+3. Changes to the system and its performance that have been predetermined by the provider (Article 13.3(c)).
+4. Human oversight measures, including technical measures to facilitate interpretation of the system's output (Article 13.3(d)).
+5. Computational and hardware resources needed, expected lifetime, and necessary maintenance and care measures (Article 13.3(e)).
+6. Mechanisms for collecting, storing, and interpreting logs, where applicable (Article 13.3(f)).
+
+**Limitations:** This answer is based on the EU AI Act and is intended to provide general information. It is not intended as legal advice and should not be relied upon as such. For specific guidance or advice, please consult the full Act or a qualified legal professional. The EU AI Act is a complex and dynamic legal framework, and its application may be subject to jurisdictional and contextual factors."

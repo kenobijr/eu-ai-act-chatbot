@@ -1,0 +1,13 @@
+RESPONSE A
+Factual Accuracy: 3/10 - Contains numerous inaccuracies including wrong article numbers (Article 15 doesn't relate to developers/providers/deployers, Article 24 doesn't exist for NBs, Article 26 doesn't exist for conformity certificates, Article 33 doesn't cover member state monitoring).
+Completeness: 4/10 - Misses key aspects like the actual conformity assessment procedures, presumption of conformity under Article 42, and completely lacks mention of who makes "acceptable risk" determinations beyond NBs.
+Legal Precision: 3/10 - Incorrectly conflates providers/deployers, mischaracterizes role of NBs, and shows fundamental misunderstanding of the conformity assessment framework.
+Hallucination Rate: 2/10 - Extensive hallucinations about article numbers and their content, inventing processes not described in the Act.
+Total/Average: 3.0/10
+
+RESPONSE B
+Factual Accuracy: 7/10 - Correctly identifies Articles 47 and 42, accurately describes EU declaration of conformity process, though incorrectly cites Article 67 for something unrelated to its actual content.
+Completeness: 7/10 - Covers declaration of conformity, presumption of conformity, role of national competent authorities, notified bodies, and complaints mechanism reasonably well.
+Legal Precision: 7/10 - Uses correct terminology for most concepts, properly distinguishes between different authorities and their roles, though misattributes Article 67.
+Hallucination Rate: 7/10 - One significant error with Article 67 (which concerns Advisory Forum not risk determinations), but otherwise content aligns with actual provisions.
+Total/Average: 7.0/10

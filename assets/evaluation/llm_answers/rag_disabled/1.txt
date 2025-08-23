@@ -1,0 +1,17 @@
+Question: "What are the transparency obligations for high-risk AI systems under Article 13?"
+RAG Enriched: False
+
+LLM Response:
+"Summary: According to Article 13 of the EU AI Act, providers of high-risk AI systems must ensure transparency regarding their AI systems, including explanation, notice, and access to information.
+
+Step-by-Step Reasoning:
+
+Article 13 requires providers of high-risk AI systems to ensure transparency by providing the following:
+
+* Explanation (Article 13(4)): Providers must, as a minimum, provide an explanation to the end-user about the AI system's decision-making processes, the data used, and the expected outcome. This explanation should be clear, concise, and in a language the end-user can understand.
+* Notice (Article 13(3)): Providers must, as a minimum, provide a clear and concise notice about the AI system's uses, data processing, and the existence of human oversight.
+* Access to information (Article 13(5)): Providers must, upon request, provide the end-user with access to information about the AI system, including its decision-making processes, the data used, and the expected outcome.
+
+The transparency obligations in Article 13 aim to ensure that end-users are informed about the AI system's functioning and can make informed decisions about its use.
+
+Limitations: These obligations are part of the EU-wide AI Act, and member states are responsible for implementing the Act into their national laws. This response is intended as a general overview and does not constitute legal advice. For specific guidance or advice on compliance with the AI Act, it is recommended to consult with a legal professional or seek guidance from the National Competent Authorities (NCA) responsible for implementing the Act in the relevant member state."

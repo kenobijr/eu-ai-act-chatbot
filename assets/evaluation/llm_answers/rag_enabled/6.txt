@@ -1,0 +1,20 @@
+Question: "What are the specific obligations for hospitals developing their own AI diagnostic systems versus those merely using commercial AI medical devices under the EU AI Act?"
+RAG Enriched: True
+
+LLM Response:
+"I'll provide a comprehensive answer based on the provided EU AI Act content, while noting that I don't have sufficient information about specific obligations for hospitals developing their own AI diagnostic systems versus those merely using commercial AI medical devices. Consult the full Act or a legal professional for detailed guidance.
+
+Summary:
+The EU AI Act sets obligations for hospitals developing their own AI diagnostic systems and those using commercial AI medical devices. However, specific obligations for hospitals developing their own AI diagnostic systems versus those merely using commercial AI medical devices are not clearly defined in the provided EU AI Act content.
+
+Step-by-Step Reasoning:
+The EU AI Act introduces obligations for hospitals, which are considered "operators" (Art 3, point 15), to ensure compliance with the Regulation's requirements. However, the specific obligations for hospitals developing their own AI diagnostic systems versus those merely using commercial AI medical devices are not explicitly mentioned in the provided EU AI Act content.
+
+Article 16, which outlines obligations for providers of high-risk AI systems, may be relevant to hospitals developing their own AI diagnostic systems. Providers of high-risk AI systems, including hospitals, must ensure compliance with requirements set out in Section 2, maintain a quality management system, keep documentation, and comply with registration obligations (Art 16).
+
+On the other hand, hospitals using commercial AI medical devices may be considered "deployers" (Art 3, point 16) and would be subject to the obligations outlined in Article 22, which deals with the responsibilities of deployers. Deployers must, among other things, verify that the AI system is in compliance with the Regulation, maintain documentation, and cooperate with competent authorities (Art 22).
+
+Limitations:
+This response is based on the provided EU AI Act content and does not provide specific guidance on obligations for hospitals developing their own AI diagnostic systems versus those merely using commercial AI medical devices. The EU AI Act is complex, and its implementation may vary depending on the specific circumstances. It is recommended to consult the full Act or a legal professional for detailed guidance.
+
+Jurisdiction: The EU AI Act is part of EU law, and its obligations are applicable to member states implementing the Regulation."

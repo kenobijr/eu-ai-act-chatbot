@@ -1,0 +1,25 @@
+Question: "What are the specific obligations for hospitals developing their own AI diagnostic systems versus those merely using commercial AI medical devices under the EU AI Act?"
+RAG Enriched: False
+
+LLM Response:
+"Summary:
+ Hospitals developing their own AI diagnostic systems (as providers) have specific obligations under the EU AI Act, whereas those merely using commercial AI medical devices (as deployers) have different obligations. Both types of hospitals must ensure compliance with the Act's requirements for transparency, data protection, and safety.
+
+Step-by-Step Reasoning:
+
+Hospitals developing their own AI diagnostic systems (as providers) must comply with the EU AI Act's obligations on high-risk AI systems, as per Article 15. This means they must:
+
+1. Conduct a thorough impact assessment (Article 15(4)) to identify any potential risks or harm caused by their AI system.
+2. Ensure a continuous risk management process (Article 15(5)) to mitigate identified risks.
+3. Keep a record of their development, testing, and deployment process (Article 15(6)).
+4. Ensure transparency in their decision-making and ensure their AI system is explainable (Article 15(7)).
+
+In contrast, hospitals merely using commercial AI medical devices (as deployers) must comply with the EU AI Act's obligations on placing AI systems on the market. They must:
+
+1. Verify that the commercial AI medical device meets the safety and performance requirements (Article 14(2)).
+2. Ensure that the manufacturer has conducted a conformity assessment (Article 14(3)) and has CE certification.
+3. Keep records of their deployment, maintenance, and update processes (Article 14(4)).
+4. Ensure transparency in their decision-making and ensure their AI system is explainable (Article 15(7)).
+
+Limitations:
+Please note that the obligations mentioned above are EU-wide, but member states are responsible for implementing the Act. This response is meant to provide general guidance and is not intended as legal advice. Hospitals should consult with legal professionals to ensure compliance with specific national regulations."

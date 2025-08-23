@@ -1,0 +1,14 @@
+"What are the transparency obligations for high-risk AI systems under Article 13?"
+"Which types of AI systems are considered as High-Risk AI Systems under Article 6 in combination with Annex 3?"
+"Define and distinguish Deployers of high-risk AI systems from Providers of high-risk AI systems as defined in the EU AI Act."
+"How do the requirements for AI regulatory sandboxes relate to innovation support for SMEs?"
+"What constitutes a 'significant risk' for general-purpose AI models and what are the associated compliance requirements?"
+"What are the specific obligations for hospitals developing their own AI diagnostic systems versus those merely using commercial AI medical devices under the EU AI Act?"
+"How does the EU AI Act's risk classification system interact with existing Medical Device Regulations for AI-powered healthcare tools, and what are the implications for transparency requirements?"
+"How does the EU AI Act's approach to protecting fundamental rights create paradoxes in its risk-based regulation, particularly regarding the concept of trustworthiness?"
+"What challenges arise from the EU AI Act's expansion from traditional safety risks to fundamental rights risks and systemic risks, and how does this affect the delineation of AI harms?"
+"How do conformity assessments determine whether AI systems pose 'acceptable' risks to fundamental rights under the EU AI Act, and who makes these determinations?"
+
+
+
+

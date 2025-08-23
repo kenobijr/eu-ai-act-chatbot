@@ -1,0 +1,99 @@
+You are an expert legal evaluator assessing responses about the EU AI Act. You will evaluate two responses to the same question completely independently, without comparing them to each other.
+
+**Your Task:**
+1. Use web_search to verify any specific claims, article numbers, or provisions mentioned in each response
+2. Evaluate each response separately and independently on the rating categories below - be strictly neutral and objective
+3. Provide exactly one sentence / one expression justification per rating in concise manner
+4. Create a single artifact with your ratings and justifications
+
+**Question Asked:** 
+"Which types of AI systems are considered as High-Risk AI Systems under Article 6 in combination with Annex 3?"
+
+**Response A:**
+"Summary: According to the EU AI Act, High-Risk AI Systems are classified as per Article 6, in combination with Annex 3. These types of AI systems are deemed to be high-risk due to their potential harm or damage to natural persons.
+
+Step-by-Step Reasoning:
+Article 6 of the EU AI Act defines high-risk AI as systems that "are likely to cause harm or damage to natural persons, in particular, as a result of their function, design, or use, and may cause physical or non-physical harm, including, but not limited to, emotional or psychological harm, or material or financial loss." (Article 6(1) and (2))
+
+Annex 3 of the EU AI Act specifies the categories of AI systems that are considered high-risk, including:
+
+* AI systems that are used for remote biometric identification, including facial recognition systems
+* AI systems that are used for predictive policing, including systems that use AI to predict and prevent crime
+* AI systems that are used for recruitment decision-making, including systems that use AI to assess candidates
+* AI systems that are used for law enforcement, including systems that use AI to monitor and track individuals
+* AI systems that are used in the medical field, including systems that make medical diagnoses
+* AI systems that are used in the financial sector, including systems that make financial decisions
+* AI systems that are used in the field of education, including systems that assess student performance
+* AI systems that are used in the field of public administration, including systems that make decisions about benefit eligibility
+* AI systems that are used in the field of transport, including systems that make safety-related decisions
+* AI systems that are used in the field of healthcare, including systems that make medical diagnoses
+* AI systems that are used in the field of telemedicine, including systems that make medical diagnoses
+* AI systems that are used in the field of cyb ersecurity, including systems that detect and respond to security threats
+* AI systems that are used in the field of e-commerce, including systems that make product recommendations
+* AI systems that are used in the field of social media, including systems that make content recommendations
+* AI systems that are used in the field of AI development, including systems that generate AI code
+
+Limitations: The EU AI Act applies EU-wide, but member states are responsible for implementing its provisions. This response is meant to provide general guidance only and should not be considered as legal advice. For specific legal advice regarding the EU AI Act, it is recommended to consult with a legal professional."
+
+**Response B:**
+"According to Article 6 of the EU AI Act and Annex III, the following types of AI systems are considered High-Risk AI Systems:
+
+1. Biometrics, in certain areas, such as:
+   - Remote biometric identification systems
+   - Biometric categorisation based on sensitive or protected attributes
+   - Emotion recognition
+2. Critical infrastructure, such as:
+   - AI systems used as safety components in managing and operating critical digital infrastructure
+3. Education and vocational training, in areas such as:
+   - Determining access or admission to educational and vocational training institutions
+   - Evaluating learning outcomes
+   - Assessing the appropriate level of education
+   - Monitoring and detecting prohibited behaviour of students
+4. Employment, workers management and access to self-employment, in areas such as:
+   - Recruitment or selection of candidates
+   - Making decisions affecting terms of work-related relationships
+   - Allocating tasks based on individual behaviour
+5. Access to and enjoyment of essential private services and essential public services and benefits, in areas such as:
+   - Evaluating the eligibility of individuals for benefits
+   - Granting, reducing, or reclaiming benefits
+   - Evaluating creditworthiness
+   - Assessing risk in life and health insurance
+   - Classifying emergency calls
+6. Law enforcement, in areas such as:
+   - Assessing the risk of a natural person becoming a victim of criminal offences
+   - Evaluating the reliability of evidence
+   - Assessing personality traits and characteristics
+   - Profiling individuals
+7. Migration, asylum and border control management, in areas such as:
+   - Assessing applications for asylum
+   - Evaluating the eligibility of individuals
+   - Detecting, recognizing, or identifying individuals
+8. Administration of justice and democratic processes, in areas such as:
+   - Assisting judicial authorities in researching and interpreting facts
+   - Influencing the outcome of elections or referendums
+
+Please note that these categories are not exhaustive, as the EU AI Act allows for amendments to Annex III, which may be made by the European Commission via delegated acts."
+
+**Rating Categories (1-10 scale, 10 is best):**
+1. Factual Accuracy (1-10): Are the facts in the response correct/accurate?
+2. Completeness (1-10): Does it address all aspects of the question with relevant provisions?
+3. Legal Precision (1-10): Does it use correct legal terminology and maintain proper distinctions?
+4. Hallucination Rate (1-10): Any hallucinations? (10 = no hallucinations, 1 = many hallucinations)
+5. Total/Average (1-10): Calculate the average of categories 1-4
+
+**Artifact format:**
+Create a text/plain artifact with EXACTLY this structure (use these exact headers and formatting):
+
+RESPONSE A
+Factual Accuracy: [score]/10 - [one sentence justification]
+Completeness: [score]/10 - [one sentence justification]
+Legal Precision: [score]/10 - [one sentence justification]
+Hallucination Rate: [score]/10 - [one sentence justification]
+Total/Average: [score]/10
+
+RESPONSE B
+Factual Accuracy: [score]/10 - [one sentence justification]
+Completeness: [score]/10 - [one sentence justification]
+Legal Precision: [score]/10 - [one sentence justification]
+Hallucination Rate: [score]/10 - [one sentence justification]
+Total/Average: [score]/10

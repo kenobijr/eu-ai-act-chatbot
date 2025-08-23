@@ -1,0 +1,62 @@
+You are an expert legal evaluator assessing responses about the EU AI Act. You will evaluate two responses to the same question completely independently, without comparing them to each other.
+
+**Your Task:**
+1. Use web_search to verify any specific claims, article numbers, or provisions mentioned in each response
+2. Evaluate each response separately and independently on the rating categories below - be strictly neutral and objective
+3. Provide exactly one sentence / one expression justification per rating in concise manner
+4. Create a single artifact with your ratings and justifications
+
+**Question Asked:** 
+"What constitutes a 'significant risk' for general-purpose AI models and what are the associated compliance requirements?"
+
+**Response A:**
+"Summary: According to the EU AI Act, a "significant risk" refers to a high-level risk that may cause harm to natural persons or society as a whole. General-purpose AI models that pose a significant risk must comply with stricter safety and risk management requirements, as outlined in Article 15.
+
+Step-by-step reasoning: The EU AI Act defines a "significant risk" as a risk that may cause harm to natural persons or society as a whole, taking into account the likelihood and potential impact of harm (Article 1, (30)). General-purpose AI models, as per Article 3, (2), are AI systems that can be used in multiple sectors, industries, or applications, and can be capable of producing a range of outputs, including text, images, or voice.
+
+Compliance requirements for general-purpose AI models that pose a significant risk are outlined in Article 15. These requirements include:
+
+1. Rigorous testing and validation: Providers must conduct rigorous testing and validation of their AI systems to ensure they do not pose a significant risk (Article 15, (2)(a)).
+2. Risk management: Providers must put in place a risk management system to identify, assess, and mitigate risks (Article 15, (2)(b)).
+3. Transparency: Providers must ensure transparency in the development, deployment, and use of their AI systems, including providing clear explanations of their decision-making processes (Article 15, (2)(c)).
+4. Reporting obligations: Providers must report any risks they identify to the national competent authority (Article 15, (2)(d)).
+5. Compliance with sector-specific requirements: General-purpose AI models may be subject to sector-specific requirements, such as those related to data privacy, security, or safety, depending on their application (Article 15, (3)).
+
+Limitations: The EU AI Act applies to all member states, but its implementation may differ in each country. This summary is not legal advice, and it is recommended to consult with a legal professional to ensure compliance with specific national requirements."
+
+**Response B:**
+"A significant risk for general-purpose AI models with systemic risk is a high-impact capability, as defined in Article 51(1) of the EU AI Act. According to this provision, a general-purpose AI model shall be classified as a general-purpose AI model with systemic risk if it meets any of the following conditions: (a) it has high-impact capabilities evaluated on the basis of appropriate technical tools and methodologies, including indicators and benchmarks, or (b) based on a decision of the Commission, ex officio or following a qualified alert from the scientific panel, it has capabilities or an impact equivalent to those set out in point (a) having regard to the criteria set out in Annex XIII.
+
+To demonstrate compliance with the obligations set out in Article 55, providers of general-purpose AI models with systemic risk must perform model evaluation in accordance with standardised protocols and tools reflecting the state of the art, conduct and document adversarial testing of the model, assess and mitigate possible systemic risks at Union level, keep track of, document, and report serious incidents and possible corrective measures, ensure an adequate level of cybersecurity protection, and cooperate with the Commission and national competent authorities in the exercise of their competences and powers.
+
+Article 53(1) outlines the obligations for all providers of general-purpose AI models, including drawing up and keeping up-to-date the technical documentation of the model, making it available to downstream providers, putting in place a policy to comply with Union law on copyright and related rights, and making a public summary of the content used for training the model available. Providers of general-purpose AI models with systemic risk must also comply with the additional obligations set out in Article 55.
+
+It is also worth noting that the Commission is empowered to adopt delegated acts in accordance with Article 97 to amend the thresholds listed in Article 51, as well as to supplement benchmarks and indicators in light of evolving technological developments, in order to reflect the state of the art.
+
+Please note that while I can provide a comprehensive answer based on the EU AI Act, it is always recommended to consult the full Act or a legal professional to ensure compliance with specific requirements and regulations.
+
+Limitations: The EU AI Act is a legal instrument that applies at the EU level, and its implementation may vary at the national level. Additionally, compliance with the Act requires consideration of specific requirements and obligations, as well as ongoing technical and scientific developments. This response should not be considered as legal advice, but rather as a summary of the EU AI Act's provisions and obligations."
+
+**Rating Categories (1-10 scale, 10 is best):**
+1. Factual Accuracy (1-10): Are the facts in the response correct/accurate?
+2. Completeness (1-10): Does it address all aspects of the question with relevant provisions?
+3. Legal Precision (1-10): Does it use correct legal terminology and maintain proper distinctions?
+4. Hallucination Rate (1-10): Any hallucinations? (10 = no hallucinations, 1 = many hallucinations)
+5. Total/Average (1-10): Calculate the average of categories 1-4
+
+**Artifact format:**
+Create a text/plain artifact with EXACTLY this structure (use these exact headers and formatting):
+
+RESPONSE A
+Factual Accuracy: [score]/10 - [one sentence justification]
+Completeness: [score]/10 - [one sentence justification]
+Legal Precision: [score]/10 - [one sentence justification]
+Hallucination Rate: [score]/10 - [one sentence justification]
+Total/Average: [score]/10
+
+RESPONSE B
+Factual Accuracy: [score]/10 - [one sentence justification]
+Completeness: [score]/10 - [one sentence justification]
+Legal Precision: [score]/10 - [one sentence justification]
+Hallucination Rate: [score]/10 - [one sentence justification]
+Total/Average: [score]/10

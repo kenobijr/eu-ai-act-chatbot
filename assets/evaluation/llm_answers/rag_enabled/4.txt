@@ -1,0 +1,17 @@
+Question: "How do the requirements for AI regulatory sandboxes relate to innovation support for SMEs?"
+RAG Enriched: True
+
+LLM Response:
+"Summary: The AI regulatory sandboxes, as specified in Article 58, are designed to support innovation by providing a controlled environment for AI system development, testing, and validation under regulatory supervision. The requirements for AI regulatory sandboxes, as outlined in Article 58 and Recital 139, are intended to foster innovation by ensuring compliance with this Regulation and other relevant Union and national laws, while also allowing for flexibility and flexibility in the development and testing of innovative AI systems.
+
+Step-by-Step Reasoning:
+
+Article 58 outlines the detailed arrangements for the establishment, development, implementation, operation, and supervision of AI regulatory sandboxes. The implementing acts, as referred to in Article 98(2), will specify the common principles for eligibility and selection criteria, procedures for application, participation, monitoring, exiting from, and termination of the AI regulatory sandbox, as well as the terms and conditions applicable to participants.
+
+Recital 139 highlights the objectives of AI regulatory sandboxes, which are to "foster AI innovation by establishing a controlled experimentation and testing environment in the development and pre-marketing phase with a view to ensuring compliance of the innovative AI systems with this Regulation and other relevant Union and national law."
+
+Article 58(2) specifies that AI regulatory sandboxes must be open to any applying provider or prospective provider of an AI system who fulfills eligibility and selection criteria, which are transparent and fair. National competent authorities must inform applicants of their decision within three months of the application, and AI regulatory sandboxes must allow broad and equal access, with the option for providers and prospective providers to submit applications in partnership with deployers and other relevant third parties.
+
+Article 62(1) requires Member States to provide SMEs, including start-ups, with priority access to AI regulatory sandboxes, provided they fulfill the eligibility conditions and selection criteria. This priority access should not preclude other SMEs from accessing the AI regulatory sandbox, provided they also meet the eligibility conditions and selection criteria.
+
+Limitations: The AI regulatory sandbox requirements, as outlined in Article 58 and Recital 139, are EU-wide, but Member States implement them. As a legal expert, I am providing a summary of the requirements, but it is recommended that you consult the full Act and a legal professional for specific guidance."
