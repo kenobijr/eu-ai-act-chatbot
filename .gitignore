@@ -21,8 +21,6 @@ config/secrets.json
 # data
 /data/chroma_db/
 
-# assets
-assets/
 
 # claude ai
 .claudeignore
@@ -35,5 +33,3 @@ requirements.md
 .gradio/
 flagged/
 
-# evaluation assets groundtruth pdfs -> rejected by hf!
-assets/evaluation/groundtruth_papers/*.pdf
