@@ -7,6 +7,14 @@ from src.vector_db import DB
 
 
 @pytest.fixture
+def rag_eng(rag_cfg, tk_man, mock_db):
+    return RAGEngine(
+        config=rag_cfg,
+        tm=tk_man,
+        db=mock_db,
+    )
+
+@pytest.fixture
 def tk_man(rag_cfg):
     return TokenManager(
         config=rag_cfg,
@@ -16,6 +24,20 @@ def tk_man(rag_cfg):
 @pytest.fixture
 def rag_cfg():
     return RAGConfig()
+
+
+@pytest.fixture
+def art_1_final_rag_str():
+
+    return """[Relevance: -320%]
+Article: Test Article 1: Subject Matter
+            Part of Chapter I: General Provisions hehehe
+            Date of entry into force: 2 February 2025
+            Mock content for article 1 about subject matter
+
+---
+
+"""
 
 
 @pytest.fixture

@@ -38,11 +38,11 @@ class RAGEngine:
     - relationship boost is applied to entities which were referenced in relevant articles
     - update rag token budget -> direct text search -> cosine similarity search -> return rag str
     """
-    def __init__(self, config: RAGConfig, tm: TokenManager):
+    def __init__(self, config: RAGConfig, tm: TokenManager, db=None):
         self.config = config
         self.tm = tm
         # connect to chromadb in read only mode
-        self.db = DB.read_mode()
+        self.db = db if db is not None else DB.read_mode()
         self.entities = self.db.entities
         # collect id's of entities added to rag context to prevent duplicates
         self.used_ids = set()
@@ -291,7 +291,7 @@ class RAGPipeline:
         # create llm response prompt
         llm_response = self._query_llm(user_prompt=user_prompt, rag_enriched=rag_enriched)
         # testing print delete for production
-        #print(f"RAG Content: \n{self.rag_context}")
+        print(f"RAG Content: \n{self.rag_context}")
         return llm_response
 
 
