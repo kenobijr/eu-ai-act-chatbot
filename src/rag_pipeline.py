@@ -22,6 +22,7 @@ from src.token_manager import TokenManager
 from src.vector_db import DB
 from typing import List, Tuple
 from src.config import RAGConfig
+import groq
 
 # load env variables from .env file
 load_dotenv()
@@ -263,7 +264,17 @@ class RAGPipeline:
                 {self.rag_context}
                 Question: {user_prompt}""")
             ]
-        return self.model.invoke(messages_base).content
+        try:
+            return self.model.invoke(messages_base).content
+        except groq.APIStatusError as e:
+            if e.status_code == 413:
+                raise ValueError(f"Request too large: {e.response.json().get('error', {}).get('message', str(e))}") from e
+            elif e.status_code == 429:
+                raise ConnectionRefusedError(f"Rate limit exceeded: {e}") from e
+            else:
+                raise ConnectionRefusedError(f"Groq API error {e.status_code}: {e}") from e
+        except Exception as e:
+            raise RuntimeError(f"Unexpected error in LLM call: {type(e).__name__}: {e}") from e
 
     def _reset_state(self) -> None:
         """ reset all necessary components to enable further user querys in same session """
