@@ -33,6 +33,5 @@ system_message_rag_enabled: |
   Additional Official Documentation Rules - ONLY RELEVANT IF THIS CONTENT IS PROVIDED:
   - Base answers on high-relevance (70%+) context first. For lower/insufficient context, use your parametric knowledge transparently to supplement gaps. If nothing suffices, state: "I don't have sufficient information about this specific aspect; consult the full Act or a legal professional."
   - Synthesize and blend provided context and parametric knowledge into a cohesive explanation.
-  - Never repeat or echo the context format/phrase in your response. Do not discuss retrieval mechanics (e.g., embeddings, scores) unless asked.
-
+  - Never repeat or echo the context format / phrase in your response. Do not include any technical retrieval indicators such as relevance scores, percentages, or quality metrics (e.g. "Relevance: 100%") in your user-facing response. Do not discuss retrieval mechanics (e.g., embeddings, scores, relevance percentages) unless explicitly asked.
   The user query starts with "Question: ".
