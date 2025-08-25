@@ -7,13 +7,23 @@ Init RAGPipeline at start -> steers all components:
 - happens first time when space is accessed by some user after container build
 """
 
+import subprocess
+import sys
 import os
 
 if not os.path.exists("data/chroma_db"):
     print("First run - downloading ChromaDB...")
-    os.system(
-        "huggingface-cli download kenobijr/eu-ai-act-chromadb --repo-type=dataset --local-dir=data"
+    result = subprocess.run(
+        ["huggingface-cli", "download", "kenobijr/eu-ai-act-chromadb", 
+         "--repo-type=dataset", "--local-dir=data"],
+        capture_output=True, text=True
     )
+    if result.returncode != 0:
+        print(f"Failed to download ChromaDB: {result.stderr}")
+        print("The app cannot function without the database.")
+        if result.stdout:
+            print(f"Output: {result.stdout}")
+        sys.exit(1)
 
 import gradio as gr
 from src.rag_pipeline import RAGPipeline
