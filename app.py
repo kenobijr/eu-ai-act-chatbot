@@ -81,19 +81,19 @@ body {{
     background-repeat: repeat;
     background-size: 200px 200px;
 }}
-.gradio-container {
+.gradio-container {{
     max-width: 1200px;
     margin: auto;
     padding: 2rem 1rem;
     background-color: transparent;
-}
-#title { text-align: center; color: #ff7f00; font-size: 2.5rem; margin-bottom: 1rem; }
-#instructions {
+}}
+#title {{ text-align: center; color: #ff7f00; font-size: 2.5rem; margin-bottom: 1rem; }}
+#instructions {{
     # font-size: 0.95rem;
     # color: #a0a0a0;
     # text-align: center; margin-bottom: 2rem; line-height: 1.5;
-}
-.response {
+}}
+.response {{
     background-color: #2a2a2a;
     border: 1px solid #404040;
     border-radius: 8px;
@@ -104,36 +104,32 @@ body {{
     white-space: pre-wrap;
     word-wrap: break-word;
     margin-top: 1rem;
-}
-.input-textbox textarea {
+}}
+.input-textbox textarea {{
     background-color: #2a2a2a;
     border: 1px solid #404040;
     color: #f0f0f0;
     resize: vertical;
-}
-.button-row {
+}}
+.button-row {{
     display: flex;
     justify-content: center;
     gap: 1rem;
     margin-top: 1rem;
-}
-footer { display: none !important; }  /* Hide Gradio footer for clean look */
+}}
+footer {{ display: none !important; }}  /* Hide Gradio footer for clean look */
 """
+css = css.format(svg_url=svg_url)
 
 with gr.Blocks(theme=theme, css=css, title="EU AI Act Bot") as demo:
     gr.Markdown("<h1 id='title'>EU AI Act Bot ⚖️</h1>")
 
-    gr.Markdown(
-        """
+    gr.Markdown("""
     <div id='instructions'>
     Ask precise questions about the EU AI Act and receive RAG-enhanced responses by LLama 3 8B.<br>
     • One question -> One response. Use 'New Question' to start fresh.<br>
     • For best results include references like "Article 17" or "Annex 3" into your prompt.<br>
-    </div>
-    """.format(
-            max_chars=max_chars, tokens=rag.tm.user_query_tokens if rag else "N/A"
-        )
-    )
+    </div>""")
 
     user_input = gr.Textbox(
         label="User Prompt",
