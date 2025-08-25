@@ -266,13 +266,19 @@ class RAGPipeline:
             ]
         try:
             return self.model.invoke(messages_base).content
+        except groq.AuthenticationError as e:
+            raise ValueError("Invalid API key; check .env or HF secrets.") from e
         except groq.APIStatusError as e:
             if e.status_code == 413:
-                raise ValueError(f"Request too large: {e.response.json().get('error', {}).get('message', str(e))}") from e
+                raise ValueError(f"Request too large: {e}") from e
             elif e.status_code == 429:
                 raise ConnectionRefusedError(f"Rate limit exceeded: {e}") from e
             else:
                 raise ConnectionRefusedError(f"Groq API error {e.status_code}: {e}") from e
+        except groq.APITimeoutError as e:
+            raise TimeoutError(f"Groq API timeout: {e}") from e
+        except groq.APIConnectionError as e:
+            raise ConnectionError(f"Groq API connection error: {e}") from e
         except Exception as e:
             raise RuntimeError(f"Unexpected error in LLM call: {type(e).__name__}: {e}") from e
 
