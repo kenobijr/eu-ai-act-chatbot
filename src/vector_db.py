@@ -135,7 +135,6 @@ class DB:
                     "type": "article",
                     "term": item_data["title"],
                     "chapter": item_data["chapter_title"],
-                    # SECTION TITLE???
                     "entry_date": item_data["entry_date"],
                     "related_articles": json.dumps(item_data.get("related_article_ids", [])),
                     "related_recitals": json.dumps(item_data.get("related_recital_ids", [])),
