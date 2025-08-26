@@ -6,16 +6,26 @@ colorTo: yellow
 sdk: docker
 app_port: 7860
 ---
-# RAG EU AI Act Chatbot
 
-- Add one sentence claim what it is
-- One sentence about performance of LLM it achievd by rag -> link to rag section
+# EU AI Act Chatbot
+
+EU AI Act Bot is a production-ready RAG-enriched chatbot powered by Llama 3 8B, enabling accurate and context-aware queries on the EU AI Act through semantic search, vector embeddings, and dynamic token management
 
 ---
 
-## Test app by yourself on HF -> link
+## Live Demo
 
-....
+Try the app directly in your browser on Hugging Face Spaces:
+
+[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces.svg)](https://huggingface.co/spaces/kenobijr/eu-ai-act-bot)
+
+![EU AI Act Bot Interface](assets/images/app-screenshot.png)
+
+**Quick Start:**
+- No installation required - runs entirely in your browser
+- Ask questions about any aspect of the EU AI Act
+- Responses include citations to specific Articles, Annexes, and Recitals
+- One question → One response
 
 ---
 
@@ -31,6 +41,18 @@ app_port: 7860
 - **Deployment**: Automated CI/CD pipeline with GitHub Action: GitHub to HuggingFace Space
 - **Tokenizer**: Tiktokenizer cl100k_base (Context window restraint calc)
 - **Scraping**: Beatiful soup, Requests
+
+---
+
+## Core Logic: Multi-stage RAG Retrieval
+
+The Core RAG engine leverages a combination of Semantic and Direct / Lexical search technics:
+
+    1. Direct search for entity titles (e.g. "Article 12")
+    2. Semanctic search for the 50-60 nearest entities (Cosine Distance)
+    3. Always take top 3 nearest articles -> they are the "Central Hub" (including internal references to other entitites)
+    4. Relationship boost -> boost related entities of top 3 articles and Direct seach hit by manipulating Cosine Distance values
+    5. Fill up remaining RAG Context with nearest entities (minus Top 3 articles & Direct Search hits) -> add only entities which are over a certain releavance threshold until there are no more suitable candidates availabel or no more RAG Space available
 
 ---
 
@@ -73,38 +95,53 @@ Check detailed results, questions, answers, systemmessages and raw data in [Supp
 
 ---
 
+## Project Structure
 
-
-### Core Logic: Multi-stage RAG Retrieval
-
-The Core RAG engine leverages a combination of Semantic and Direct / Lexical search technics:
-
-    1. Direct search for entity titles (e.g. "Article 12")
-    2. Semanctic search for the 50-60 nearest entities (Cosine Distance)
-    3. Always take top 3 nearest articles -> they are the "Central Hub" (including internal references to other entitites)
-    4. Relationship boost -> boost related entities of top 3 articles and Direct seach hit by manipulating Cosine Distance values
-    5. Fill up remaining RAG Context with nearest entities (minus Top 3 articles & Direct Search hits) -> add only entities which are over a certain releavance threshold until there are no more suitable candidates availabel or no more RAG Space available
-
----
-
-## Evaluation / Benchmarking of RAG-Impact
-
-
-
-
-
-
----
-
-
+```
+eu-ai-act-chatbot/
+├── app.py                      # Main Gradio web interface & HuggingFace Spaces entry point
+├── Dockerfile                  # Production container configuration
+├── requirements_runtime.txt    # Developement & Production dependencies
+├── requirements.txt            # Production dependencies only
+├── src/                        # Core application modules
+│   ├── rag_pipeline.py         # RAG orchestration & LLM integration
+│   ├── vector_db.py            # ChromaDB operations & semantic search
+│   ├── token_manager.py        # Context window & token budget management
+│   └── config.py               # Configuration dataclasses
+├── data/                       # Data assets & vector database
+│   ├── system_messages.yml     # LLM system prompts
+│   ├── raw/                    # Scraped EU AI Act data (articles, annexes, recitals, definitions)
+│   └── chroma_db/              # ChromaDB vector database files
+├── scripts/                    # Data processing & deployment utilities
+└── tests/                      # Test suite
+```
 
 ---
 
 ## Architecture
 
-- short list of most important modules, scripts, .....
-- integrate part vector db into it?
+**Web Interface (app.py)**  
+- Gradio orchestrates UI + HuggingFace Spaces deployment entry point  
+- CSS styling with Tailwind for production-ready interface  
 
+**RAG Pipeline (rag_pipeline.py)**  
+- RAGPipeline manages end-to-end query processing with LLM integration  
+- Multi-stage retrieval: direct entity search + semantic search + relationship boosting  
+- Token budget enforcement with dynamic context allocation  
+
+**Vector Database (vector_db.py)**  
+- ChromaDB operations with all-MiniLM-L6-v2 embeddings (384-dim)  
+- HNSW indexing with cosine distance for similarity matching  
+- Runtime download from HuggingFace Datasets on first startup  
+
+**Token Management (token_manager.py)**  
+- Context window constraint calculations using tiktoken cl100k_base  
+- Dynamic token allocation between user query, RAG content, and LLM response  
+- 95% accurate Llama tokenization with 1MB dependency vs 750MB native tokenizer  
+
+**Configuration (config.py)**  
+- Dataclass-based configs for RAG, vector DB, and token management  
+- Environment-aware API key and model selection
 
 ---
 
@@ -124,7 +161,6 @@ The Core RAG engine leverages a combination of Semantic and Direct / Lexical sea
 - With tiktoken (cl100k_base): ~95% accurate for Llama counting -> 1MB dependency
 - With native Llama 3 8B tokenizer: 100% accurate -> transformers + tokenizer 750MB dependencies!
 - Tiktokenizer + 15 % buffer
-
 
 ---
 
@@ -358,47 +394,3 @@ Total/Average: [score]/10
 
 ### Reproducibility Note
 All evaluation data, including questions, responses, and judge ratings, are available in [`/assets/evaluation/`](./assets/evaluation/) for full transparency and reproducibility of results.
-
----
-
-## TBD
-
-- Deployment / Docker
-    - what is with stuff from requirements.txt, which i need only for building, but not relevant at runtime?? exclude for lightweight container?
-
-- DB
-    - ARTICLE SECTION  TITLE -> sometimes null, but always ignored at DB Creation?
-
-- RAG context
-    - convert arabic numbers at annexes into roman ones, for better lmms understanding?
-    - support common abbreviations for certain entities at direct search, e.g. art. ?
-
-- App / FE
-    - use user_query_len method from RAGPipeline as FE Validation / inform user!
-
-- Dir structure
-    - sep dir for all scripts instead of just at root?
-
-- RAG Pipeline:
-    - catch such expressions:
-
-File "/Users/peter/coding/showcase/eu-ai-act-chatbot/.venv/lib/python3.13/site-packages/groq/resources/chat/completions.py", line 378, in create
-    return self._post(
-           ~~~~~~~~~~^
-        "/openai/v1/chat/completions",
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<41 lines>...
-        stream_cls=Stream[ChatCompletionChunk],
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/Users/peter/coding/showcase/eu-ai-act-chatbot/.venv/lib/python3.13/site-packages/groq/_base_client.py", line 1242, in post
-    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
-                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/peter/coding/showcase/eu-ai-act-chatbot/.venv/lib/python3.13/site-packages/groq/_base_client.py", line 1044, in request
-    raise self._make_status_error_from_response(err.response) from None
-groq.APIStatusError: Error code: 413 - {'error': {'message': 'Request too large for model `llama3-8b-8192` in organization `org_01k25q1m76fymvc2msc88qsdpb` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 6021, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
-
-
-
-
