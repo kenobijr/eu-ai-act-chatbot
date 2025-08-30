@@ -1,7 +1,35 @@
 import pytest
-from src.rag_pipeline import TokenManager
-from src.config import RAGConfig
+from src.config import RAGConfig, DBConfig
+from src.rag_pipeline import RAGPipeline
 import json
+
+
+
+def test_RAGPipeline_process_query_base(rag_pipe, user_prompt, mock_chatgroq):
+    """ test with mock_chatgroq patch to mock groqchat instances to prevent real llm calls"""
+    result = rag_pipe.process_query(user_prompt=user_prompt, rag_enriched=False)
+    assert result == "Mocked LLM response for testing!"
+
+
+def test_RAGPipeline_validate_user_prompt_fail(rag_pipe, user_prompt_too_long):
+    with pytest.raises(AssertionError):
+        rag_pipe._validate_user_prompt(user_prompt_too_long)
+
+
+def test_RAGPipeline_validate_user_prompt(rag_pipe, user_prompt):
+    """ check val of user prompt within valid range """
+    assert rag_pipe._validate_user_prompt(user_prompt)
+
+
+def test_RAGPipeline_init_base(rag_eng, rag_cfg, tk_man):
+    """ test init obj & user_query_len getter"""
+    pipe = RAGPipeline(
+        config=rag_cfg,
+        tm=tk_man,
+        rag_engine=rag_eng
+    )
+    assert pipe.rag_context == "" and pipe.model is None
+    assert pipe.user_query_len == 3744
 
 
 def test_RAGEngine_format_rag_context(rag_eng, art_1_final_rag_str):

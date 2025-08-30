@@ -1,9 +1,26 @@
 import pytest
+from unittest.mock import MagicMock, patch
 from src.config import RAGConfig, DBConfig
 from src.rag_pipeline import TokenManager, RAGEngine, RAGPipeline
 from src.vector_db import DB
 
 
+@pytest.fixture
+def mock_chatgroq():
+    with patch('src.rag_pipeline.ChatGroq') as mock_groq:
+        mock_instance = MagicMock()
+        mock_instance.invoke.return_value.content = "Mocked LLM response for testing!"
+        mock_groq.return_value = mock_instance
+        yield mock_groq
+
+
+@pytest.fixture
+def rag_pipe(rag_cfg, tk_man, rag_eng):
+    return RAGPipeline(
+        config=rag_cfg,
+        tm=tk_man,
+        rag_engine=rag_eng,
+    )
 
 
 @pytest.fixture
@@ -13,6 +30,7 @@ def rag_eng(rag_cfg, tk_man, mock_db):
         tm=tk_man,
         db=mock_db,
     )
+
 
 @pytest.fixture
 def tk_man(rag_cfg):
@@ -44,6 +62,13 @@ Article: Test Article 1: Subject Matter
 def user_prompt():
     return "How do the requirements for AI regulatory sandboxes \
             relate to innovation support for SMEs?"
+
+
+@pytest.fixture
+def user_prompt_too_long():
+    """Create a user prompt that exceeds the token limit of 936 tokens"""
+    base_question = "How do the requirements for AI regulatory sandboxes relate to innovation support for SMEs? "
+    return base_question * 60
 
 
 @pytest.fixture
