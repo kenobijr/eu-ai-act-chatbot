@@ -19,7 +19,7 @@ Try the app directly in your browser on Hugging Face Spaces:
 
 [![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces.svg)](https://huggingface.co/spaces/kenobijr/eu-ai-act-bot)
 
-![EU AI Act Bot Interface](assets/images/app-screenshot.png)
+![EU AI Act Bot Interface](assets/images/homepage.png)
 
 **Quick Start:**
 - No installation required - runs entirely in your browser
