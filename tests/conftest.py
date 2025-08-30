@@ -5,6 +5,7 @@ from src.rag_pipeline import TokenManager, RAGEngine, RAGPipeline
 from src.vector_db import DB
 
 
+
 @pytest.fixture
 def mock_chatgroq():
     with patch('src.rag_pipeline.ChatGroq') as mock_groq:
@@ -40,8 +41,11 @@ def tk_man(rag_cfg):
 
 
 @pytest.fixture
-def rag_cfg():
-    return RAGConfig()
+def rag_cfg(mock_rag_disabled_systemmessage, mock_rag_enabled_systemmessage):
+    cfg = RAGConfig()
+    cfg.system_message_rag_disabled = mock_rag_disabled_systemmessage
+    cfg.system_message_rag_enabled = mock_rag_enabled_systemmessage
+    return cfg
 
 
 @pytest.fixture
@@ -52,6 +56,47 @@ Article: Test Article 1: Subject Matter
             Part of Chapter I: General Provisions hehehe
             Date of entry into force: 2 February 2025
             Mock content for article 1 about subject matter
+
+---
+
+"""
+
+
+@pytest.fixture
+def mock_rag_context():
+    return """[Relevance: 52%]
+Article: Article 58: Detailed Arrangements for AI Regulatory Sandboxes
+Mock content about AI regulatory sandboxes arrangements and procedures.
+
+---
+
+[Relevance: 44%]
+Article: Article 1: Subject Matter
+Mock content about regulation purpose and internal market functioning.
+
+---
+
+[Relevance: 40%]
+Article: Article 62: Measures for Providers and Deployers, in Particular SMEs
+Mock content about SME support measures and priority access.
+
+---
+
+[Relevance: 62%]
+Recital 139
+Mock recital about AI regulatory sandbox objectives and innovation fostering.
+
+---
+
+[Relevance: 49%]
+Definition: AI regulatory sandbox
+Mock definition of controlled framework for AI system development and testing.
+
+---
+
+[Relevance: 45%]
+Recital 138
+Mock recital about AI development requirements and regulatory oversight.
 
 ---
 
@@ -192,3 +237,13 @@ def mock_entity_jsons(shared_tmp_path):
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(entities, f, indent=2, ensure_ascii=False)
     return save_dir
+
+
+@pytest.fixture
+def mock_rag_disabled_systemmessage():
+    return "Mock system message for RAG disabled mode - legal expert providing AI Act guidance."
+
+
+@pytest.fixture
+def mock_rag_enabled_systemmessage():
+    return "Mock system message for RAG enabled mode - legal expert with document context."

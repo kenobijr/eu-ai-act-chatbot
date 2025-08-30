@@ -4,6 +4,13 @@ from src.rag_pipeline import RAGPipeline
 import json
 
 
+def test_RAGPipeline_reset_state(rag_pipe, user_prompt, mock_chatgroq, mock_rag_context):
+    rag_pipe.rag_context = mock_rag_context
+    rag_pipe.process_query(user_prompt=user_prompt, rag_enriched=True)
+    assert rag_pipe.rag_context != "" and rag_pipe.model is not None
+    rag_pipe._reset_state()
+    assert rag_pipe.rag_context == "" and rag_pipe.model is None
+
 
 def test_RAGPipeline_process_query_base(rag_pipe, user_prompt, mock_chatgroq):
     """ test with mock_chatgroq patch to mock groqchat instances to prevent real llm calls"""
