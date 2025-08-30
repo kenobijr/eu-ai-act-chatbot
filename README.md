@@ -17,9 +17,7 @@ EU AI Act Bot is a production-ready RAG-enriched chatbot powered by Llama 3 8B, 
 
 Try the app directly in your browser on Hugging Face Spaces:
 
-[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces.svg)](https://huggingface.co/spaces/kenobijr/eu-ai-act-bot)
-
-![EU AI Act Bot Interface](assets/images/homepage.png)
+[![EU AI Act Bot Interface](assets/images/homepage.png)](https://huggingface.co/spaces/kenobijr/eu-ai-act-bot)
 
 **Quick Start:**
 - No installation required - runs entirely in your browser
