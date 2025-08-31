@@ -4,10 +4,10 @@ import pytest
 import json
 
 
-def test_DB_read_article(mock_db, mock_db_cfg, user_prompt):
+def test_DB_read_article(mock_db, mock_db_cfg, mock_user_prompt):
     db = mock_db.read_mode(config=mock_db_cfg)
     result = db.collections["articles"].query(
-        query_texts=[user_prompt],
+        query_texts=[mock_user_prompt],
         n_results=3,
     )
     # assertions on the overall result structure
@@ -37,10 +37,10 @@ def test_DB_read_article(mock_db, mock_db_cfg, user_prompt):
     assert metadata_003["chapter"] == "Chapter I: General Provisions"
 
 
-def test_DB_read_annex(mock_db, mock_db_cfg, user_prompt):
+def test_DB_read_annex(mock_db, mock_db_cfg, mock_user_prompt):
     db = mock_db.read_mode(config=mock_db_cfg)
     result = db.collections["annexes"].query(
-        query_texts=[user_prompt],
+        query_texts=[mock_user_prompt],
         n_results=3,
     )
     assert len(result["ids"][0]) == 3
@@ -55,10 +55,10 @@ def test_DB_read_annex(mock_db, mock_db_cfg, user_prompt):
     assert metadata_02["term"] == "Test Annex II: Criminal Offences"
 
 
-def test_DB_read_definition(mock_db, mock_db_cfg, user_prompt):
+def test_DB_read_definition(mock_db, mock_db_cfg, mock_user_prompt):
     db = mock_db.read_mode(config=mock_db_cfg)
     result = db.collections["definitions"].query(
-        query_texts=[user_prompt],
+        query_texts=[mock_user_prompt],
         n_results=3,
     )
     assert len(result["ids"][0]) == 3
@@ -73,10 +73,10 @@ def test_DB_read_definition(mock_db, mock_db_cfg, user_prompt):
     assert metadata_02["term"] == "risk"
 
 
-def test_DB_read_recital(mock_db, mock_db_cfg, user_prompt):
+def test_DB_read_recital(mock_db, mock_db_cfg, mock_user_prompt):
     db = mock_db.read_mode(config=mock_db_cfg)
     result = db.collections["recitals"].query(
-        query_texts=[user_prompt],
+        query_texts=[mock_user_prompt],
         n_results=3,
     )
     assert len(result["ids"][0]) == 3

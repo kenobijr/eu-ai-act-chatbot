@@ -104,15 +104,16 @@ Mock recital about AI development requirements and regulatory oversight.
 
 
 @pytest.fixture
-def user_prompt():
+def mock_user_prompt():
     return "How do the requirements for AI regulatory sandboxes \
             relate to innovation support for SMEs?"
 
 
 @pytest.fixture
-def user_prompt_too_long():
-    """Create a user prompt that exceeds the token limit of 936 tokens"""
-    base_question = "How do the requirements for AI regulatory sandboxes relate to innovation support for SMEs? "
+def mock_user_prompt_too_long():
+    """ create a user prompt that exceeds the token limit of 936 tokens """
+    base_question = "How do the requirements for AI regulatory sandboxes relate to innovation \
+                    support for SMEs?"
     return base_question * 60
 
 
@@ -124,13 +125,13 @@ def mock_db(mock_entity_jsons, mock_db_cfg):
 
 @pytest.fixture
 def shared_tmp_path(tmp_path):
-    """ shared path for mock db config & mock jsons for DB build mode"""
+    """ shared path for mock db config & mock jsons for DB build mode """
     return tmp_path
 
 
 @pytest.fixture
 def mock_db_cfg(shared_tmp_path):
-    """database config fixture for testing DB build mode"""
+    """ database config fixture for testing DB build mode """
     return DBConfig(
         entities=["annexes", "articles", "definitions", "recitals"],
         data_dir=shared_tmp_path / "data" / "raw",

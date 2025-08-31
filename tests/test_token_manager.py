@@ -30,31 +30,31 @@ def test_TokenManager_rag_context_tokens(rag_cfg):
     assert tm.rag_context_tokens == 5444
 
 
-def test_TokenManager_get_amount_tokens(tk_man, user_prompt):
+def test_TokenManager_get_amount_tokens(tk_man, mock_user_prompt):
     """
     - fixture user prompt has 14 words, must be more tokens
     - 18 tokens with tiktoken cl100k_base
     """
-    token_amount = tk_man.get_token_amount(user_prompt)
+    token_amount = tk_man.get_token_amount(mock_user_prompt)
     assert isinstance(token_amount, int) and token_amount == 18
 
 
-def test_TokenManager_reduce_remaining_tokens_valid(rag_cfg, user_prompt):
+def test_TokenManager_reduce_remaining_tokens_valid(rag_cfg, mock_user_prompt):
     """
     - remaining_tokens after itit with 10k: 8200
     - user_prompt has 18 tokens
     """
     rag_cfg.total_available_tokens = 10000
     tm = TokenManager(rag_cfg)
-    tm.reduce_remaining_tokens(user_prompt)
+    tm.reduce_remaining_tokens(mock_user_prompt)
     assert tm.remaining_tokens == 8182
 
 
-def test_TokenManager_reduce_remaining_tokens_invalid(rag_cfg, user_prompt):
+def test_TokenManager_reduce_remaining_tokens_invalid(rag_cfg, mock_user_prompt):
     with pytest.raises(ValueError):
         rag_cfg.total_available_tokens = 10
         tm = TokenManager(rag_cfg)
-        tm.reduce_remaining_tokens(user_prompt)
+        tm.reduce_remaining_tokens(mock_user_prompt)
 
 
 def test_TokenManager_reset_remaining_tokens(tk_man):
