@@ -72,7 +72,7 @@ class RAGEngine:
         # search configs with ranges and padding per entity
         search_configs = self.config.search_configs
         # regex to find matches: whole words, case-insensitive
-        pattern = r'\b(article|recital|annex)\s+(\d+)\b'
+        pattern = rf'\b({"|".join(self.config.search_configs.keys())})\s+(\d+)\b'
         matches = re.findall(pattern, user_prompt, re.IGNORECASE)
         # collect up to 3 unique candidates; if more than 3, take first 3 from left to right
         candidates = []
