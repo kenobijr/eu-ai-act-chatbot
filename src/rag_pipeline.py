@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from src.token_manager import TokenManager
 from src.vector_db import DB
-from typing import List, Tuple, Dict
+from typing import Tuple, Dict
 from src.config import RAGConfig
 import groq
 
@@ -113,7 +113,7 @@ class RAGEngine:
             # update rag operation tokens
             self.tm.rag_ops_tokens -= tokens
 
-    def _find_semantic_matches(self, user_prompt: str) -> List[Tuple[str, float]]:
+    def _find_semantic_matches(self, user_prompt: str) -> None:
         """
         - get top nearest entries user_prompt across all entities
         - always grab top 3 nearest articles as "central hub" + their relationships
@@ -121,7 +121,7 @@ class RAGEngine:
         - fill up top relations (minus the 3 already added articles) with entities over a
           relevance threshold until rag token limit reached
         """
-        # query db for nearest entities (different amounts depending on entity type: -> config)
+        # 1. query db for nearest entities -> different fixed amounts depending on entity type
         nearest_entries = {
             entity: self.db.collections[entity].query(
                 query_texts=[user_prompt],
@@ -129,7 +129,7 @@ class RAGEngine:
             )
             for entity in self.entities
         }
-        # BASE RAG CONTEXT: always add top n articles (independend of cos similarity)
+        # 2. grab n nearest articles as base -> independent of cosine distance
         for i in range(min(self.config.base_articles, len(nearest_entries["articles"]["ids"][0]))):
             # fetch needed data to execute safety check first with token count
             text_content = nearest_entries["articles"]["documents"][0][i]
@@ -148,8 +148,7 @@ class RAGEngine:
             self.used_ids.add(article_id)
             self.rel_boost_ids.update(self._extract_related_ids(metadata))
             self.tm.rag_ops_tokens -= tokens
-
-        # create candidates of nearest entities: boost; filter for relevance; prevent duplicates
+        # 3. create filtered candidates list: boost; filter for relevance; prevent duplicates
         candidates = []
         for entity in self.entities:
             candidate = nearest_entries[entity]
@@ -162,8 +161,7 @@ class RAGEngine:
                 # filtering: no duplicates; only entities with over relevance threshold
                 if item_id not in self.used_ids and dist < self.config.rel_threshold:
                     candidates.append({"content": doc, "distance": dist})
-
-        # ADDITIONAL RAG CONTEXT: fill up remaining space as long suited candidates are available
+        # 4. add candidates -> fill up remaining space as long suited candidates are available
         for candidate in sorted(candidates, key=lambda x: x["distance"]):
             rag_item = self._format_rag_context((candidate["content"], candidate["distance"]))
             tokens = self.tm.get_token_amount(rag_item)
