@@ -121,13 +121,13 @@ class DB:
                 doc = f"Recital {item_id.split('_')[1]}\n{item_data['text_content']}"
                 meta_item = {"type": "recital"}
             elif entity == "annexes":
-                doc = f"Annex: {item_data['title']}\n{item_data['text_content']}"
+                doc = f"{item_data['title']}\n{item_data['text_content']}"
                 meta_item = {"type": "annex", "term": item_data["title"]}
             else:  # articles
                 sect_title = item_data.get("section_title", "")
                 if sect_title is None:
                     sect_title = ""
-                doc = f"""Article: {item_data['title']}
+                doc = f"""{item_data['title']}
             Part of {item_data['chapter_title']} {sect_title}
             Date of entry into force: {item_data['entry_date']}
             {item_data['text_content']}"""
