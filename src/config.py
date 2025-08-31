@@ -32,7 +32,7 @@ _MESSAGES = _load_system_messages(file_path="data/system_messages.yml")
 class RAGConfig:
     """ token management, sytemmessages, direct & semantic search parameters """
     # langchain model
-    llm: str = "llama3-8b-8192"
+    llm: str = "llama-3.1-8b-instant"
     # system prompts
     system_message_rag_disabled: str = _MESSAGES["system_message_rag_disabled"]
     system_message_rag_enabled: str = _MESSAGES["system_message_rag_enabled"]
@@ -63,6 +63,7 @@ class RAGConfig:
     nearest_annexes: int = 5  # total number 13
     nearest_recitals: int = 15  # total number 180
     nearest_definitions: int = 15  # total number 68
+    base_articles: int = 3  # always take amount of n articles as rag base (independent of cos sim)
     rel_threshold: float = 0.8  # rag relevance threshold for cosine distance
     # relationship boost -> multiplicate cosine distance of boosted entities by factor
     relationship_boost: float = 0.5

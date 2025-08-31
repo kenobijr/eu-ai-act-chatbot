@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from src.token_manager import TokenManager
 from src.vector_db import DB
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from src.config import RAGConfig
 import groq
 
@@ -48,7 +48,7 @@ class RAGEngine:
         # collect id's of entities added to rag context to prevent duplicates
         self.used_ids = set()
         # collect metadata from top 3 articles and direct matches to apply relationship boost on
-        self.articles_relationships = []
+        self.rel_boost_ids = set()
         # collect rag_context until passing it to RAGPipeline at end of operation
         self.rag_context = ""
 
@@ -109,7 +109,7 @@ class RAGEngine:
             self.used_ids.add(entity_id)
             # if entity is article: add metadata to article relationships to boost them
             if collection_name == "articles":
-                self.articles_relationships.append(result["metadatas"][0])
+                self.rel_boost_ids.update(self._extract_related_ids(result["metadatas"][0]))
             # update rag operation tokens
             self.tm.rag_ops_tokens -= tokens
 
@@ -129,8 +129,8 @@ class RAGEngine:
             )
             for entity in self.entities
         }
-        # BASE RAG CONTEXT: always add top 3 articles (independend of distance)
-        for i in range(min(3, len(nearest_entries["articles"]["ids"][0]))):
+        # BASE RAG CONTEXT: always add top n articles (independend of cos similarity)
+        for i in range(min(self.config.base_articles, len(nearest_entries["articles"]["ids"][0]))):
             # fetch needed data to execute safety check first with token count
             text_content = nearest_entries["articles"]["documents"][0][i]
             distance = nearest_entries["articles"]["distances"][0][i]
@@ -146,10 +146,9 @@ class RAGEngine:
             # append / add data to containers & update token budget
             self.rag_context += rag_item
             self.used_ids.add(article_id)
-            self.articles_relationships.append(metadata)
+            self.rel_boost_ids.update(self._extract_related_ids(metadata))
             self.tm.rag_ops_tokens -= tokens
-        # convert references to other entitites from json str into combined set across entity types
-        related_id_sets = self._get_related_id_sets()
+
         # create candidates of nearest entities: boost; filter for relevance; prevent duplicates
         candidates = []
         for entity in self.entities:
@@ -158,11 +157,12 @@ class RAGEngine:
                 candidate["ids"][0], candidate["distances"][0], candidate["documents"][0]
             ):
                 # check if item gets relationship boost
-                if item_id in related_id_sets:
+                if item_id in self.rel_boost_ids:
                     dist *= self.config.relationship_boost
                 # filtering: no duplicates; only entities with over relevance threshold
                 if item_id not in self.used_ids and dist < self.config.rel_threshold:
                     candidates.append({"content": doc, "distance": dist})
+
         # ADDITIONAL RAG CONTEXT: fill up remaining space as long suited candidates are available
         for candidate in sorted(candidates, key=lambda x: x["distance"]):
             rag_item = self._format_rag_context((candidate["content"], candidate["distance"]))
@@ -172,16 +172,16 @@ class RAGEngine:
             self.rag_context += rag_item
             self.tm.rag_ops_tokens -= tokens
 
-    def _get_related_id_sets(self) -> set:
+    @staticmethod
+    def _extract_related_ids(article_meta: Dict) -> set:
         """
-        - extract relationship ids from articles metadata into combined set across all entity types
+        - extract relationship ids from one article metadata dict as input & return set of ids
         - read out from json str; there are no relationships to definitons entity
         """
         related_ids = set()
-        rel_entities = ["article", "recital", "annex"]
-        for metadata in self.articles_relationships:
-            for entity in rel_entities:
-                related_ids.update(json.loads(metadata.get(f"related_{entity}", "[]")))
+        rel_entities = ["articles", "recitals", "annexes"]
+        for entity in rel_entities:
+            related_ids.update(json.loads(article_meta.get(f"related_{entity}", "[]")))
         return related_ids
 
     @staticmethod
@@ -195,7 +195,7 @@ class RAGEngine:
     def _reset_state(self) -> None:
         """ resets all components of RAGEngine to enable further user queries in same session """
         self.used_ids = set()
-        self.articles_relationships = []
+        self.rel_boost_ids = set()
         self.rag_context = ""
 
 
@@ -309,13 +309,14 @@ class RAGPipeline:
         llm_response = self._query_llm(user_prompt=user_prompt, rag_enriched=rag_enriched)
         # testing print delete for production
         print(f"RAG Content: \n{self.rag_context}")
+        print(f"BOOST_rels: \n{self.engine.rel_boost_ids}")
         return llm_response
 
 
 def main():
     app = RAGPipeline()
     #print(f"MAX USER QUERY CHARS: {app.user_query_len}")
-    prompt = "How do the requirements for AI regulatory sandboxes relate to innovation support for SMEs?"
+    prompt = "How do the requirements for AI regulatory sandboxes relate to innovation support for SMEs, and what about Article 2?"
     #print(f"USER PROMPT: \n {prompt}")
     print(f"LLM RESPONSE: \n{app.process_query(user_prompt=prompt, rag_enriched=True)}")
 
