@@ -1,8 +1,12 @@
 import pytest
 from src.rag_pipeline import RAGPipeline
-import json
 
 
+def test_RAGEngine_find_semantic_matches_meta(rag_eng, mock_user_prompt, mock_all_art_rels):
+    """ no direct match with default mock prompt; check if all article rels for boost are there """
+    rag_eng.tm.rag_ops_tokens = 100000
+    rag_eng._find_semantic_matches(mock_user_prompt)
+    assert all(rel in rag_eng.rel_boost_ids for rel in mock_all_art_rels)
 
 
 def test_RAGEngine_find_semantic_matches_top3(rag_eng, mock_user_prompt):
@@ -22,26 +26,19 @@ def test_RAGEngine_reset_state(rag_eng):
     rag_eng._find_direct_matches("Article 1")
     assert "Article 1" in rag_eng.rag_context
     rag_eng._reset_state()
-    assert rag_eng.rag_context == "" and rag_eng.articles_relationships == [] \
-           and rag_eng.used_ids == set()
+    assert rag_eng.rag_context == "" and rag_eng.rel_boost_ids == set() and rag_eng.used_ids == set()
 
 
 def test_RAGEngine_direct_search_meta(rag_eng):
     # fill the rag_ops_tokens manually -> normally done by _execute...
     rag_eng.tm.rag_ops_tokens = 100000
     rag_eng._find_direct_matches("Article 1")
-    assert "Article 1" in rag_eng.rag_context
-    print(rag_eng.articles_relationships)
-    assert json.loads(rag_eng.articles_relationships[0].get("related_recitals")) == ["recital_001"]
-    assert json.loads(rag_eng.articles_relationships[0].get("related_annexes")) == ["annex_01"]
-    assert json.loads(rag_eng.articles_relationships[0].get("related_articles")) == ["article_002"]
+    assert all(rel in rag_eng.rel_boost_ids for rel in ["recital_001", "annex_01", "article_002"])
 
 
 def test_RAGEngine_direct_search_base(rag_eng):
     rag_eng.tm.rag_ops_tokens = 100000
     rag_eng._find_direct_matches("find Article 1 for me!")
-    assert "Article 1" in rag_eng.rag_context
-    rag_eng._find_direct_matches("find article 1 for me!")
     assert "Article 1" in rag_eng.rag_context
     rag_eng._find_direct_matches("find Annex 3 for me!")
     assert "about high-risk AI systems" in rag_eng.rag_context

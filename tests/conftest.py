@@ -141,6 +141,15 @@ def mock_db_cfg(shared_tmp_path):
 
 
 @pytest.fixture
+def mock_all_art_rels():
+    """ returns set of all rel boost art rels for the mock_entities db set """
+    return {
+        "recital_001", "annex_01", "article_002", "recital_002", "annex_02", "article_001",
+        "article_003", "recital_003",
+    }
+
+
+@pytest.fixture
 def mock_entity_jsons(shared_tmp_path):
     """create mock json data for all entities for DB build mode"""
     save_dir = shared_tmp_path / "data" / "raw"
