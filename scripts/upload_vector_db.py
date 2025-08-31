@@ -4,9 +4,9 @@
 """
 
 from huggingface_hub import HfApi
-from pathlib import Path
 from dotenv import load_dotenv
 import os
+from src.config import DBConfig
 
 
 # load env variables from .env file
@@ -21,14 +21,15 @@ if not hf_token:
 api = HfApi(token=hf_token)
 repo_id = "kenobijr/eu-ai-act-chromadb"
 
-# create repos if not existing yet
-folder_path = Path(__file__).parent / "data" / "chroma_db"
+# create repos if not existing yet; get path from DBConfig
+config = DBConfig()
+folder_path = config.save_dir
 folder_path.mkdir(parents=True, exist_ok=True)
 
 api.upload_folder(
-    folder_path=str(folder_path),
+    folder_path=folder_path,
     path_in_repo="chroma_db",
     repo_id=repo_id,
-    repo_type="dataset"
+    repo_type="dataset",
 )
 print("Upload complete.")

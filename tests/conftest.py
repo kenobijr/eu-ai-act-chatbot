@@ -52,7 +52,7 @@ def rag_cfg(mock_rag_disabled_systemmessage, mock_rag_enabled_systemmessage):
 def art_1_final_rag_str():
 
     return """[Relevance: -320%]
-Article: Test Article 1: Subject Matter
+Test Article 1: Subject Matter
             Part of Chapter I: General Provisions hehehe
             Date of entry into force: 2 February 2025
             Mock content for article 1 about subject matter
@@ -65,19 +65,19 @@ Article: Test Article 1: Subject Matter
 @pytest.fixture
 def mock_rag_context():
     return """[Relevance: 52%]
-Article: Article 58: Detailed Arrangements for AI Regulatory Sandboxes
+Article 58: Detailed Arrangements for AI Regulatory Sandboxes
 Mock content about AI regulatory sandboxes arrangements and procedures.
 
 ---
 
 [Relevance: 44%]
-Article: Article 1: Subject Matter
+Article 1: Subject Matter
 Mock content about regulation purpose and internal market functioning.
 
 ---
 
 [Relevance: 40%]
-Article: Article 62: Measures for Providers and Deployers, in Particular SMEs
+Article 62: Measures for Providers and Deployers, in Particular SMEs
 Mock content about SME support measures and priority access.
 
 ---
