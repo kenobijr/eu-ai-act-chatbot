@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 from src.config import RAGConfig, DBConfig
 from src.rag_pipeline import TokenManager, RAGEngine, RAGPipeline
 from src.vector_db import DB
+import json
 
 
 
@@ -241,7 +242,6 @@ def mock_entity_jsons(shared_tmp_path):
         }
     }
     # save json files
-    import json
     for entity_type, entities in mock_data.items():
         file_path = save_dir / f"{entity_type}.json"
         with open(file_path, "w", encoding="utf-8") as f:
@@ -257,3 +257,12 @@ def mock_rag_disabled_systemmessage():
 @pytest.fixture
 def mock_rag_enabled_systemmessage():
     return "Mock system message for RAG enabled mode - legal expert with document context."
+
+
+@pytest.fixture
+def mock_rag_instance():
+    """ mock rag pipeline instance for app testing """
+    mock_rag = MagicMock()
+    mock_rag.user_query_len = 3744
+    mock_rag.process_query.return_value = "Mock RAG response"
+    return mock_rag

@@ -1,7 +1,7 @@
 """
 Init RAGPipeline at start -> steers all components:
 - RAGPipeline.user_query_len delivers max allowed user query chars based on RAGConfig
-- RAGPipeline.process takes user query as argument and returns rag-enriched llm response
+- RAGPipeline.process_query takes user query as argument and returns rag-enriched llm response
 - input to and output from RAGPipeline are bind to gradio input / response components
 - when app deployed as docker container on hf spaces, chromadb is downloaded from hf datasets
 - happens first time when space is accessed by some user after container build
@@ -10,7 +10,10 @@ Init RAGPipeline at start -> steers all components:
 import subprocess
 import sys
 import os
+import gradio as gr
+from src.rag_pipeline import RAGPipeline
 
+# check if chroma_db was downloaded already -> if not, download it
 if not os.path.exists("data/chroma_db"):
     print("First run - downloading ChromaDB...")
     result = subprocess.run(
@@ -25,13 +28,8 @@ if not os.path.exists("data/chroma_db"):
             print(f"Output: {result.stdout}")
         sys.exit(1)
 
-import gradio as gr
-from src.rag_pipeline import RAGPipeline
 
-# define theme
-theme = gr.themes.Base()
-
-# init rag pipeline once at startup
+# init rag pipeline
 print("... initializing rag pipeline ...")
 try:
     rag = RAGPipeline()
@@ -40,8 +38,8 @@ except Exception as e:
     print(f"Failed to load rag due to: {e}")
     rag = None
 
-max_chars = rag.user_query_len if rag else 1000  # Fallback if rag fails
-
+# get max allowed user query chars from rag pipeline; fallback if rag fails
+max_chars = rag.user_query_len if rag else 1000
 
 def process_query(user_input):
     """
@@ -50,10 +48,8 @@ def process_query(user_input):
     """
     if not user_input:
         return "Enter a question."
-
     if rag is None:
         return "Error: RAG pipeline failed to initialize. Please check logs and restart the app."
-
     try:
         response = rag.process_query(
             user_prompt=user_input,
@@ -64,7 +60,7 @@ def process_query(user_input):
         return f"Error: {e}"
 
 
-# custom theme: clean & minimalistic
+# custom theme
 theme = gr.themes.Soft(
     primary_hue="orange",
     secondary_hue="gray",
@@ -74,7 +70,7 @@ theme = gr.themes.Soft(
     spacing_size=gr.themes.sizes.spacing_md,
 )
 
-# custom CSS for enhanced styling, full response display, wider layout, and subtle legal theme
+# custom CSS
 svg_url = (
     "data:image/svg+xml;utf8,"
     "<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'>"
@@ -151,6 +147,7 @@ with gr.Blocks(theme=theme, css=css, title="EU AI Act Bot") as demo:
         ),
         elem_classes="input-textbox",
         interactive=True,  # ensure typable
+        submit_btn=True,  # enable enter to submit
     )
 
     with gr.Row(elem_classes="button-row"):
