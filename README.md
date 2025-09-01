@@ -9,7 +9,7 @@ app_port: 7860
 
 # EU AI Act Chatbot
 
-EU AI Act Bot is a production-ready RAG-enriched chatbot powered by Llama 3 8B, enabling accurate and context-aware queries on the EU AI Act through semantic search, vector embeddings, and dynamic token management
+EU AI Act Bot is a production-ready RAG-enriched chatbot powered by llama-3.1-8b-instant, enabling accurate and context-aware queries on the EU AI Act through semantic search, vector embeddings, and dynamic token management
 
 ---
 
@@ -29,7 +29,7 @@ Try the app directly in your browser on Hugging Face Spaces:
 
 ## Tech Stack / Tools 
 
-- **Llama 3 8B Instruct as LLM**: Llama 3 8B Instruct (~8,192 token context window)
+- **llama-3.1-8b-instant as LLM**: llama-3.1-8b-instant (~8,192 token context window)
 - **Langchain Groq Integration**: LLM queried via GroqCloud free tier API calls (6k TPM limit)
 - **Vector Database**: ChromaDB (lightweight, Docker-friendly, built-in persistence)
 - **Embedding Model**: all-MiniLM-L6-v2 (384 dimensions, fast inference)
@@ -38,7 +38,7 @@ Try the app directly in your browser on Hugging Face Spaces:
 - **Containerization**: Docker Container
 - **Deployment**: Automated CI/CD pipeline with GitHub Action: GitHub to HuggingFace Space
 - **Tokenizer**: Tiktokenizer cl100k_base (Context window restraint calc)
-- **Scraping**: Beatiful soup, Requests
+- **Scraping**: Beautiful Soup, Requests
 
 ---
 
@@ -56,10 +56,12 @@ The Core RAG engine leverages a combination of Semantic and Direct / Lexical sea
 
 ## Evaluation RAG-Impact -> Llama 3 8B performs 233 % better when asked about EU AI Act
 
+**Note about model change**: The evaluation tests were conducted using Llama 3 8B Instruct. After completion of the tests, this model was deprecated by Groq and replaced with llama-3.1-8b-instant. The app now uses the new model, but all else remains the same including the 6k TPM limit.
+
 ### Objective
 
 - **Test if / how much RAG content did improve the quality of LLM answers out of a Legal / Expert perspective**
-- Same legal questions / Query same LLM: LLama 3 8B / Same LLM-Judge: Claude Opus 4.1
+- Same legal questions / Query same LLM: Llama 3 8B / Same LLM-Judge: Claude Opus 4.1
 - Q1-5: Category Basic understanding / Definitions / Entity Retrieval
 - Q6-10: Category Deep Understanding / Synthesis
 - Rating categories: Factual Accuracy, Completeness, Legal Precision, Hallucination Rate
@@ -71,15 +73,15 @@ The Core RAG engine leverages a combination of Semantic and Direct / Lexical sea
 | Q1: What are the transparency obligations for high-r... | 2.0/10 | 9.0/10 | +350% |
 | Q2: Which types of AI systems are considered as Hig... | 2.0/10 | 9.3/10 | +363% |
 | Q3: Define and distinguish Deployers of high-risk AI... | 2.8/10 | 8.8/10 | +218% |
-| Q4: How do the requirements for AI regulatory sandbox | 3.0/10 | 9.0/10 | +200% |
+| Q4: How do the requirements for AI regulatory sandboxes | 3.0/10 | 9.0/10 | +200% |
 | Q5: What constitutes a 'significant risk' for genera | 2.3/10 | 9.5/10 | +322% |
-| **Category Avg: General Understanding** | **2.4/10** | **9.1/10** | **+279%** |
+| **Category Average: General Understanding** | **2.4/10** | **9.1/10** | **+279%** |
 | Q6: What are the specific obligations for hospitals d | 2.3/10 | 8.0/10 | +256% |
 | Q7: How does the EU AI Act's risk classification sys... | 2.0/10 | 5.8/10 | +188% |
 | Q8: How does the EU AI Act's approach to protecting  | 2.8/10 | 6.8/10 | +145% |
 | Q9: What challenges arise from the EU AI Act's expan | 2.0/10 | 6.8/10 | +238% |
 | Q10: How do conformity assessments determine whether  | 3.0/10 | 7.0/10 | +133% |
-| **Category Avg: Deep Understanding** | **2.4/10** | **6.9/10** | **+188%** |
+| **Category Average: Deep Understanding** | **2.4/10** | **6.9/10** | **+188%** |
 | **TOTAL AVERAGE** | **2.4/10** | **8.0/10** | **+233%** |
 
 ### Notable Insights:
@@ -157,7 +159,7 @@ eu-ai-act-chatbot/
 
 **tiktoken cl100k_base to check prompt / context length**
 - With tiktoken (cl100k_base): ~95% accurate for Llama counting -> 1MB dependency
-- With native Llama 3 8B tokenizer: 100% accurate -> transformers + tokenizer 750MB dependencies!
+- With native llama-3.1-8b-instant tokenizer: 100% accurate -> transformers + tokenizer 750MB dependencies!
 - Tiktokenizer + 15 % buffer
 
 ---
@@ -257,15 +259,15 @@ Feel free to reach out for collaboration or questions:
 | Q1: What are the transparency obligations for high-r... | 2/10 | 3/10 | 2/10 | 1/10 | 2.0/10 | 9/10 | 8/10 | 9/10 | 10/10 | 9.0/10 | +350% |
 | Q2: Which types of AI systems are considered as Hig... | 2/10 | 3/10 | 2/10 | 1/10 | 2.0/10 | 9/10 | 9/10 | 9/10 | 10/10 | 9.3/10 | +363% |
 | Q3: Define and distinguish Deployers of high-risk AI... | 2/10 | 4/10 | 3/10 | 2/10 | 2.8/10 | 9/10 | 8/10 | 9/10 | 9/10 | 8.8/10 | +218% |
-| Q4: How do the requirements for AI regulatory sandbox | 2/10 | 5/10 | 3/10 | 2/10 | 3.0/10 | 9/10 | 9/10 | 9/10 | 9/10 | 9.0/10 | +200% |
+| Q4: How do the requirements for AI regulatory sandboxes | 2/10 | 5/10 | 3/10 | 2/10 | 3.0/10 | 9/10 | 9/10 | 9/10 | 9/10 | 9.0/10 | +200% |
 | Q5: What constitutes a 'significant risk' for genera | 2/10 | 3/10 | 2/10 | 2/10 | 2.3/10 | 9/10 | 9/10 | 10/10 | 10/10 | 9.5/10 | +322% |
-| **Category Avg: General Understanding** | **2.0/10** | **3.6/10** | **2.4/10** | **1.6/10** | **2.4/10** | **9.0/10** | **8.6/10** | **9.2/10** | **9.6/10** | **9.1/10** | **+279%** |
+| **Category Average: General Understanding** | **2.0/10** | **3.6/10** | **2.4/10** | **1.6/10** | **2.4/10** | **9.0/10** | **8.6/10** | **9.2/10** | **9.6/10** | **9.1/10** | **+279%** |
 | Q6: What are the specific obligations for hospitals d | 2/10 | 3/10 | 2/10 | 2/10 | 2.3/10 | 8/10 | 6/10 | 9/10 | 9/10 | 8.0/10 | +256% |
 | Q7: How does the EU AI Act's risk classification sys... | 2/10 | 3/10 | 2/10 | 1/10 | 2.0/10 | 6/10 | 5/10 | 5/10 | 7/10 | 5.8/10 | +188% |
 | Q8: How does the EU AI Act's approach to protecting  | 3/10 | 4/10 | 2/10 | 2/10 | 2.8/10 | 7/10 | 6/10 | 6/10 | 8/10 | 6.8/10 | +145% |
 | Q9: What challenges arise from the EU AI Act's expan | 2/10 | 3/10 | 2/10 | 1/10 | 2.0/10 | 7/10 | 6/10 | 6/10 | 8/10 | 6.8/10 | +238% |
 | Q10: How do conformity assessments determine whether  | 3/10 | 4/10 | 3/10 | 2/10 | 3.0/10 | 7/10 | 7/10 | 7/10 | 7/10 | 7.0/10 | +133% |
-| **Category Avg: Deep Understanding** | **2.4/10** | **3.4/10** | **2.2/10** | **1.6/10** | **2.4/10** | **7.0/10** | **6.0/10** | **6.6/10** | **7.8/10** | **6.9/10** | **+188%** |
+| **Category Average: Deep Understanding** | **2.4/10** | **3.4/10** | **2.2/10** | **1.6/10** | **2.4/10** | **7.0/10** | **6.0/10** | **6.6/10** | **7.8/10** | **6.9/10** | **+188%** |
 | **TOTAL AVERAGE** | **2.2/10** | **3.5/10** | **2.3/10** | **1.6/10** | **2.4/10** | **8.0/10** | **7.3/10** | **7.9/10** | **8.7/10** | **8.0/10** | **+233%** |
 
 ### Procedure

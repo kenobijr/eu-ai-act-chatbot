@@ -6,7 +6,6 @@ from src.vector_db import DB
 import json
 
 
-
 @pytest.fixture
 def mock_chatgroq():
     with patch('src.rag_pipeline.ChatGroq') as mock_groq:

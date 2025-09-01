@@ -2,12 +2,12 @@
 Core RAG logic steered / run by the following components:
 - RAGPipeline:
     - sits in middle -> only component talking to App / FE and LLM
-    - instanciates RAGConfig -> TokenManager -> RAGEngine
+    - instantiates RAGConfig -> TokenManager -> RAGEngine
     - passes these instances further & manages state resets -> all components have same state
 - App / FE: passes user prompt to RAGPipeline, gets back RAG-enriched LLM response
 - RAGEngine:
     - receives user prompt from RAGPipeline, passes back RAG content for LLM call
-    - instanciates VectorDB -> only component talking to VectorDB
+    - instantiates VectorDB -> only component talking to VectorDB
 - VectorDB: ChromaDB client for cosine similarity and text search
 - TokenManager: calculates & reports state of available tokens to RAGEngine & RAGPipeline
 - RAGConfig: provides RAG / token / llm parameters to all other components
@@ -64,7 +64,7 @@ class RAGEngine:
     def _find_direct_matches(self, user_prompt: str) -> None:
         """
         - scans user prompt for direct references to articles, annexes, or recitals
-        - supports case-insensitive whole-word matches like "Article 5", "annex 12", "Recital 18"
+        - supports case-insensitive whole-word matches like "Article 5", "annex 12" (→ annex_12), "Recital 18"
         - collects up to 3 unique valid matches in left-to-right order
         - queries DB for exact IDs, adds to rag_context with distance 0.0 (= 100 % match)
         - updates used_ids and remaining_rag_tokens
@@ -303,21 +303,5 @@ class RAGPipeline:
         self.rag_context = self.engine.execute(user_prompt=user_prompt)
         # init langchain model providing remaining tokens to specify max_tokens llm response
         self._init_model(token_budget=self.tm.llm_response_tokens)
-        # create llm response prompt
-        llm_response = self._query_llm(user_prompt=user_prompt, rag_enriched=rag_enriched)
-        # testing print delete for production
-        print(f"RAG Content: \n{self.rag_context}")
-        print(f"BOOST_rels: \n{self.engine.rel_boost_ids}")
-        return llm_response
-
-
-def main():
-    app = RAGPipeline()
-    #print(f"MAX USER QUERY CHARS: {app.user_query_len}")
-    prompt = "How do the requirements for AI regulatory sandboxes relate to innovation support for SMEs, and what about Article 2?"
-    #print(f"USER PROMPT: \n {prompt}")
-    print(f"LLM RESPONSE: \n{app.process_query(user_prompt=prompt, rag_enriched=True)}")
-
-
-if __name__ == "__main__":
-    main()
+        # return llm response prompt
+        return self._query_llm(user_prompt=user_prompt, rag_enriched=rag_enriched)

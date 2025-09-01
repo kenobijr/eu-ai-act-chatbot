@@ -125,8 +125,6 @@ class DB:
                 meta_item = {"type": "annex", "term": item_data["title"]}
             else:  # articles
                 sect_title = item_data.get("section_title", "")
-                if sect_title is None:
-                    sect_title = ""
                 doc = f"""{item_data['title']}
             Part of {item_data['chapter_title']} {sect_title}
             Date of entry into force: {item_data['entry_date']}

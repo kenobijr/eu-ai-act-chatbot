@@ -1,6 +1,6 @@
 """
 - contains all logic related to the token budged for llm prompts
-- tiktoken cl100k_base used for calculations, saved at obj at init
+- tiktoken cl100k_base used for calculations, saved at obj, at init
 - calculate initial budget and report to RAGPipeline / FE
 - update budget after consume; inform about current budget
 - getters for user query and rag tokens and llm response
@@ -49,7 +49,7 @@ class TokenManager:
         return self.remaining_tokens
 
     def get_token_amount(self, text: str) -> int:
-        """ receive str and return token amoumt with tiktokenizer """
+        """ receive str and return token amount with tiktokenizer """
         return len(self.tokenizer.encode(text))
 
     def reduce_remaining_tokens(self, text: str) -> None:

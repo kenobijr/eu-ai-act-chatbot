@@ -95,9 +95,9 @@ body {{
 }}
 #title {{ text-align: center; color: #ff7f00; font-size: 2.5rem; margin-bottom: 1rem; }}
 #instructions {{
-    # font-size: 0.95rem;
-    # color: #a0a0a0;
-    # text-align: center; margin-bottom: 2rem; line-height: 1.5;
+    font-size: 0.95rem;
+    color: #a0a0a0;
+    text-align: center; margin-bottom: 2rem; line-height: 1.5;
 }}
 .response {{
     background-color: #2a2a2a;
@@ -142,7 +142,7 @@ with gr.Blocks(theme=theme, css=css, title="EU AI Act Bot") as demo:
         lines=3,
         max_lines=6,
         placeholder=(
-            f"Type your question here (e.g., 'Explain obligations under Article 17')."
+            f"Type your question here (e.g., 'Explain obligations under Article 17'). "
             f"Max {max_chars} characters."
         ),
         elem_classes="input-textbox",

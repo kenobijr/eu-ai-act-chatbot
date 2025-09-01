@@ -1,6 +1,5 @@
-import pytest
 from app import process_query
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 def test_process_query_empty_input():
