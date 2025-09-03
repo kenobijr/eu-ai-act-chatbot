@@ -33,3 +33,7 @@ requirements.md
 .gradio/
 flagged/
 
+# pytest
+.pytest_cache/
+__pycache__/
+*.pyc
